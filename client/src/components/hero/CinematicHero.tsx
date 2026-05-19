@@ -113,7 +113,7 @@ export const CinematicHero: React.FC = () => {
                 Rajasthan State <br className="hidden sm:block" /><span className="text-orange-500"> Pollution Control Board</span>
               </h1>
               <p className="text-xs sm:text-base md:text-lg text-slate-300 max-w-xl mx-auto mb-4 sm:mb-10 drop-shadow-md px-2 leading-relaxed">
-                Our industries are leaving a heavy carbon footprint. Click the factory or the button below to initiate state-wide optimization.
+                Our activities are leaving a heavy carbon footprint. Click  the button below to initiate District-wide optimization.
               </p>
               <button
                 onClick={handleTransform}
