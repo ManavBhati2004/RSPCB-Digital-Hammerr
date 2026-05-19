@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf } from 'lucide-react';
 import { SmokeAnimation } from './SmokeAnimation';
 import { HeroEnvironment } from './HeroEnvironment';
 import { TreeGrowth } from './TreeGrowth';
@@ -142,11 +141,8 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
               >
-                <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/30 backdrop-blur-md border border-white/40 text-emerald-900 text-[11px] sm:text-sm font-extrabold mb-3 sm:mb-5 shadow-xl">
-                  <Leaf size={14} /> Eco-Optimized State
-                </div>
-                <h1 className="text-2xl sm:text-4xl md:text-3xl lg:text-5xl font-black text-emerald-800 drop-shadow-lg leading-snug" style={{ fontFamily: 'sans-serif' }}>
-                  "SAVE FUEL <br /> SAVE INDIA"
+                <h1 className="text-2xl sm:text-4xl md:text-3xl lg:text-5xl font-black text-emerald-800 drop-shadow-lg leading-snug whitespace-nowrap" style={{ fontFamily: 'sans-serif' }}>
+                  "SAVE FUEL <br /> &nbsp;&nbsp;SAVE INDIA"
                 </h1>
               </motion.div>
 
