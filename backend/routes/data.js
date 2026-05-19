@@ -250,4 +250,66 @@ router.get('/leaderboard', async (req, res) => {
   }
 });
 
+router.get('/leaderboard/combined', async (req, res) => {
+  try {
+    const nameGroupStage = {
+      $group: {
+        _id: {
+          $let: {
+            vars: {
+              trimmedIndiv: { $trim: { input: { $ifNull: ['$individualName', ''] } } },
+              trimmedFactory: { $trim: { input: { $ifNull: ['$factoryName', ''] } } }
+            },
+            in: {
+              $cond: [
+                { $gt: [{ $strLenCP: '$$trimmedIndiv' }, 0] },
+                '$$trimmedIndiv',
+                { $cond: [{ $gt: [{ $strLenCP: '$$trimmedFactory' }, 0] }, '$$trimmedFactory', 'Anonymous'] }
+              ]
+            }
+          }
+        },
+        co2Saved: { $sum: { $ifNull: ['$co2Saved', 0] } }
+      }
+    };
+
+    const [electricityTotals, vehicleTotals] = await Promise.all([
+      ElectricityRecord.aggregate([nameGroupStage]),
+      VehicleRecord.aggregate([nameGroupStage])
+    ]);
+
+    const byName = new Map();
+    for (const row of electricityTotals) {
+      byName.set(row._id, { name: row._id, electricity: row.co2Saved, vehicle: 0 });
+    }
+    for (const row of vehicleTotals) {
+      const existing = byName.get(row._id);
+      if (existing) existing.vehicle = row.co2Saved;
+      else byName.set(row._id, { name: row._id, electricity: 0, vehicle: row.co2Saved });
+    }
+
+    const combined = [...byName.values()]
+      .map((e) => {
+        const hasElec = e.electricity > 0;
+        const hasVeh = e.vehicle > 0;
+        let category = 'Combined';
+        if (hasElec && !hasVeh) category = 'Electricity';
+        else if (!hasElec && hasVeh) category = 'Vehicle';
+        return {
+          username: e.name,
+          category,
+          totalCO2: e.electricity + e.vehicle
+        };
+      })
+      .filter((e) => e.totalCO2 > 0)
+      .sort((a, b) => b.totalCO2 - a.totalCO2)
+      .slice(0, 10)
+      .map((e, i) => ({ rank: i + 1, ...e }));
+
+    res.json(combined);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
