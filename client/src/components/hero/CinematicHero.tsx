@@ -146,21 +146,12 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
                   <Leaf size={14} /> Eco-Optimized State
                 </div>
                 <h1 className="text-2xl sm:text-4xl md:text-3xl lg:text-5xl font-black text-emerald-800 drop-shadow-lg leading-snug" style={{ fontFamily: 'sans-serif' }}>
-                  "पेट्रोल बचाएं, <br /> देश बचाएं"
+                  "SAVE FUEL <br /> SAVE INDIA"
                 </h1>
               </motion.div>
 
-              {/* Center: Office text */}
-              <motion.div
-                className="w-full md:flex-1 text-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.4, duration: 0.8 }}
-              >
-                <p className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg leading-tight px-2 font-sans" style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif' }}>
-                  District Collector Regional Office and Rajasthan State Pollution Control Board
-                </p>
-              </motion.div>
+              {/* Spacer to keep slogan left and Modi card right */}
+              <div className="hidden md:block md:flex-1" />
 
               {/* Right: Modi photo (anchored far right on md+) */}
               <motion.div
