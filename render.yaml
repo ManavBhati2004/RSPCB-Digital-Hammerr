@@ -1,0 +1,33 @@
+# Render Blueprint — Infrastructure as Code for this repo.
+#
+# How to use:
+#   1. Commit this file and push to GitHub.
+#   2. Go to https://dashboard.render.com/select-repo → connect your GitHub →
+#      pick ManavBhati2004/RSPCB-Digital-Hammerr.
+#   3. Render detects this file and shows the Blueprint preview.
+#   4. Fill in any env var marked `sync: false` (MONGO_URI) when prompted —
+#      those values stay in the Render dashboard, NOT in this file.
+#   5. Apply. Render provisions the service and gives you a public URL like
+#      https://rspcb-backend.onrender.com
+#
+# Atlas note: in MongoDB Atlas → Network Access, add 0.0.0.0/0 to the IP
+# Allowlist so Render's outbound IPs (which aren't static on the free plan)
+# can reach your cluster.
+
+services:
+  - type: web
+    name: rspcb-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # MONGO_URI is a secret — Render will prompt for its value when you
+      # apply the Blueprint. Paste the same value that's in backend/.env locally.
+      - key: MONGO_URI
+        sync: false
