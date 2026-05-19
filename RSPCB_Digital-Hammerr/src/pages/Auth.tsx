@@ -8,27 +8,27 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-8 sm:p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden">
       {/* Animated Background */}
-      <div className="absolute top-[-10%] left-[-10%] w-64 h-64 sm:w-96 sm:h-96 bg-green-400/20 rounded-full blur-3xl opacity-60"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 sm:w-[30rem] sm:h-[30rem] bg-emerald-400/20 rounded-full blur-3xl opacity-60"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-green-400/20 rounded-full blur-3xl opacity-60"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] bg-emerald-400/20 rounded-full blur-3xl opacity-60"></div>
 
-      <motion.div
+      <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="glass-card w-full max-w-md p-6 sm:p-8 relative z-10"
+        className="glass-card w-full max-w-md p-8 relative z-10"
       >
-        <div className="flex justify-center mb-5 sm:mb-6">
+        <div className="flex justify-center mb-6">
           <Link to="/">
-            <RspcbLogo className="w-12 h-12 sm:w-14 sm:h-14 p-0.5 border border-green-100 shadow-lg shadow-green-500/20" />
+            <RspcbLogo className="w-14 h-14 p-0.5 border border-green-100 shadow-lg shadow-green-500/20" />
           </Link>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-900 mb-2">
+        <h2 className="text-3xl font-bold text-center text-slate-900 mb-2">
           {isLogin ? 'Welcome Back' : 'Create Account'}
         </h2>
-        <p className="text-center text-slate-500 mb-6 sm:mb-8 text-xs sm:text-sm px-2">
+        <p className="text-center text-slate-500 mb-8 text-sm">
           {isLogin ? 'Login to the Factory & Environmental Portal' : 'Register your factory for sustainability tracking'}
         </p>
 

@@ -87,7 +87,7 @@ const LandingPage = () => {
     if (isPaused) return;
     const interval = setInterval(() => {
       setActivePage((prev) => (prev + 1) % pages.length);
-    }, 10000); // 10 seconds per page
+    }, 12000); // 12 seconds per page
     return () => clearInterval(interval);
   }, [pages.length, isPaused]);
 
@@ -103,7 +103,7 @@ const LandingPage = () => {
   const AwarenessIcon = awarenessSlide.icon;
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-slate-900">
+    <div className="relative w-full h-screen overflow-hidden bg-slate-900">
       {/* Dynamic Backgrounds based on active page */}
       <div className="absolute inset-0 transition-colors duration-1000 z-0" style={{
         backgroundColor: 
@@ -117,7 +117,7 @@ const LandingPage = () => {
       <nav className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-2 transition-all duration-300">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <RspcbLogo className="w-10 h-10 sm:w-11 sm:h-11 p-0.5 border border-green-100 shadow-lg shadow-green-500/20 shrink-0" />
-          <div className={`min-w-0 ${[0, 4].includes(activePage) ? 'text-white drop-shadow-md' : 'text-slate-900'}`}>
+          <div className={`min-w-0 ${activePage === 4 ? 'text-white' : 'text-slate-900'}`}>
             <h1 className="font-bold text-base sm:text-lg leading-tight transition-colors duration-500">RSPCB</h1>
             <p className="hidden sm:block text-[10px] uppercase tracking-wider font-semibold opacity-80">State Pollution Control Board</p>
           </div>
@@ -163,7 +163,7 @@ const LandingPage = () => {
       </div>
 
       {/* Main Content Area (Full Screen Slider) */}
-      <div className="relative w-full h-full z-10 flex items-center justify-center pt-14 sm:pt-16">
+      <div className="relative w-full h-full z-10 flex items-center justify-center pt-16">
         <AnimatePresence mode="wait">
           
           {/* PAGE 0: HERO */}
@@ -184,10 +184,10 @@ const LandingPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -100 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-7xl mx-auto text-slate-900 pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-16 max-h-full overflow-y-auto no-scrollbar"
+              className="absolute w-full px-4 sm:px-6 max-w-7xl mx-auto text-slate-900 pt-12 sm:pt-0"
             >
               <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-white/20 rounded-full blur-3xl pointer-events-none"></div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-12 lg:mb-16 text-center">Live State Intelligence</h2>
+              <h2 className="text-3xl sm:text-5xl font-extrabold mb-8 sm:mb-16 text-center">Live State Intelligence</h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 pb-6">
                 {[
                   { label: 'CO2 Saved (Tons)', value: '1,245,892', icon: Wind, color: 'text-green-600' },
@@ -200,11 +200,11 @@ const LandingPage = () => {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: i * 0.1, duration: 0.5 }}
                     key={i}
-                    className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-3 sm:p-6 md:p-8 shadow-xl hover:bg-white/80 transition-all cursor-default"
+                    className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-4 sm:p-6 md:p-8 shadow-xl hover:bg-white/80 transition-all cursor-default"
                   >
-                    <stat.icon className={`w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-6 ${stat.color}`} />
-                    <div className="text-lg sm:text-2xl md:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 break-words leading-tight">{stat.value}</div>
-                    <div className="text-[9px] sm:text-xs md:text-sm text-slate-600 uppercase tracking-wider sm:tracking-widest font-bold leading-tight">{stat.label}</div>
+                    <stat.icon className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-3 sm:mb-6 ${stat.color}`} />
+                    <div className="text-xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 break-words">{stat.value}</div>
+                    <div className="text-[10px] sm:text-xs md:text-sm text-slate-600 uppercase tracking-wider sm:tracking-widest font-bold">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -219,9 +219,9 @@ const LandingPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-7xl mx-auto max-h-full overflow-y-auto no-scrollbar pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-16"
+              className="absolute w-full px-4 sm:px-6 max-w-7xl mx-auto max-h-full overflow-y-auto pt-12 sm:pt-0"
             >
-              <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12 lg:gap-16 pb-6">
+              <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12 lg:gap-16 pb-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-4 sm:gap-5 mb-5 sm:mb-8">
                     <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shrink-0">
@@ -262,11 +262,11 @@ const LandingPage = () => {
                       exit={{ opacity: 0, y: -24 }}
                       transition={{ duration: 0.45, ease: 'easeOut' }}
                     >
-                      <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-3 sm:mb-6 leading-tight">{awarenessSlide.title}</h2>
-                      <p className="text-sm sm:text-lg md:text-xl text-slate-600 font-medium mb-4 sm:mb-8 leading-relaxed">
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 sm:mb-6">{awarenessSlide.title}</h2>
+                      <p className="text-base sm:text-lg md:text-xl text-slate-600 font-medium mb-6 sm:mb-8 leading-relaxed">
                         {awarenessSlide.body}
                       </p>
-                      <ul className="space-y-2.5 sm:space-y-4 text-slate-800 font-bold text-sm sm:text-base md:text-lg">
+                      <ul className="space-y-3 sm:space-y-4 text-slate-800 font-bold text-sm sm:text-base md:text-lg">
                         {awarenessSlide.points.map((point, i) => (
                           <li key={point} className="flex items-center gap-3 sm:gap-4">
                             <motion.div
@@ -282,7 +282,7 @@ const LandingPage = () => {
                     </motion.div>
                   </AnimatePresence>
                 </div>
-                <div className="flex-1 w-full h-[220px] sm:h-[360px] md:h-[400px] lg:h-[500px] bg-slate-200 rounded-3xl overflow-hidden relative shadow-2xl group">
+                <div className="flex-1 w-full h-[260px] sm:h-[400px] lg:h-[500px] bg-slate-200 rounded-3xl overflow-hidden relative shadow-2xl group">
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={awarenessSlide.image}
@@ -295,7 +295,14 @@ const LandingPage = () => {
                       transition={{ duration: 0.65, ease: 'easeOut' }}
                     />
                   </AnimatePresence>
-
+                  <motion.div
+                    key={`orbit-${activeAwarenessSlide}`}
+                    className="absolute top-5 right-5 w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/50"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 6, ease: 'linear', repeat: Infinity }}
+                  >
+                    <div className="absolute left-1/2 top-0 w-3 h-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-green-400 shadow-[0_0_18px_rgba(74,222,128,0.9)]" />
+                  </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/85 via-slate-900/20 to-transparent flex items-end p-5 sm:p-8">
                     <AnimatePresence mode="wait">
                       <motion.p
@@ -323,13 +330,13 @@ const LandingPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-4xl mx-auto text-center text-white max-h-full overflow-y-auto no-scrollbar pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-16 flex flex-col items-center"
+              className="absolute w-full px-4 sm:px-6 max-w-4xl mx-auto text-center text-white"
             >
-              <RspcbLogo className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 p-1 mb-4 sm:mb-8 shadow-[0_0_40px_rgba(255,255,255,0.45)]" />
-              <h2 className="text-2xl sm:text-5xl md:text-7xl font-extrabold mb-3 sm:mb-8 drop-shadow-lg leading-tight">Calculate Your Impact</h2>
-              <p className="text-sm sm:text-xl md:text-2xl mb-6 sm:mb-12 text-green-50 font-bold px-2 leading-relaxed">Use our official government algorithms to calculate exact CO2 savings for your electricity and vehicle usage.</p>
-              <Link to="/calculator" className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-10 py-3 sm:py-5 bg-white text-green-600 rounded-full text-sm sm:text-xl font-extrabold hover:scale-105 transition-transform shadow-2xl hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]">
-                Launch Calculator <ArrowRight size={18} />
+              <RspcbLogo className="w-20 h-20 sm:w-28 sm:h-28 p-1 mx-auto mb-5 sm:mb-8 shadow-[0_0_40px_rgba(255,255,255,0.45)]" />
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-extrabold mb-4 sm:mb-8 drop-shadow-lg">Calculate Your Impact</h2>
+              <p className="text-base sm:text-xl md:text-2xl mb-8 sm:mb-12 text-green-50 font-bold px-2">Use our official government algorithms to calculate exact CO2 savings for your electricity and vehicle usage.</p>
+              <Link to="/calculator" className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-10 py-3.5 sm:py-5 bg-white text-green-600 rounded-full text-base sm:text-xl font-extrabold hover:scale-105 transition-transform shadow-2xl hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]">
+                Launch Calculator <ArrowRight size={20} />
               </Link>
             </motion.div>
           )}
@@ -337,8 +344,8 @@ const LandingPage = () => {
         </AnimatePresence>
       </div>
 
-      {/* Play/Pause Indicator Overlay (desktop/tablet only — mobile uses top dots) */}
-      <div className="hidden sm:flex absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 items-center gap-2 z-40 pointer-events-none">
+      {/* Play/Pause Indicator Overlay */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 z-50">
         {pages.map((_, i) => (
           <div key={i} className={`h-1.5 rounded-full transition-all duration-700 ${activePage === i ? 'w-12 bg-slate-500' : 'w-4 bg-slate-300'}`}></div>
         ))}

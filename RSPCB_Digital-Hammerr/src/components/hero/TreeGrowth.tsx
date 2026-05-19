@@ -18,7 +18,7 @@ export const TreeGrowth: React.FC<Props> = ({ isTransformed }) => {
   ];
 
   return (
-    <div className="absolute bottom-6 sm:bottom-10 w-full h-40 sm:h-56 md:h-64 z-[25] pointer-events-none flex justify-center">
+    <div className="absolute bottom-10 w-full h-64 z-[25] pointer-events-none flex justify-center">
       <div className="relative w-full h-full">
         {trees.map((tree, i) => (
           <motion.div
@@ -26,12 +26,12 @@ export const TreeGrowth: React.FC<Props> = ({ isTransformed }) => {
             className="absolute bottom-0 flex flex-col items-center origin-bottom"
             style={{ left: tree.left }}
             initial={{ scale: 0, opacity: 0 }}
-            animate={{
-              scale: isTransformed ? tree.scale : 0,
-              opacity: isTransformed ? 1 : 0
+            animate={{ 
+              scale: isTransformed ? tree.scale : 0, 
+              opacity: isTransformed ? 1 : 0 
             }}
-            transition={{
-              duration: 2,
+            transition={{ 
+              duration: 2, 
               delay: isTransformed ? 1 + tree.delay : 0,
               type: "spring",
               stiffness: 40,
@@ -39,12 +39,12 @@ export const TreeGrowth: React.FC<Props> = ({ isTransformed }) => {
             }}
           >
             {/* Tree Top */}
-            <div className="relative w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-green-500 rounded-full shadow-[inset_-10px_-10px_0_rgba(0,0,0,0.1)] -mb-4 sm:-mb-6 z-10">
-              <div className="absolute top-1.5 -left-2.5 sm:-left-3 md:-left-4 w-9 h-9 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-green-400 rounded-full z-10" />
-              <div className="absolute top-1.5 -right-2.5 sm:-right-3 md:-right-4 w-9 h-9 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-emerald-500 rounded-full z-10" />
+            <div className="relative w-24 h-24 bg-green-500 rounded-full shadow-[inset_-10px_-10px_0_rgba(0,0,0,0.1)] -mb-6 z-10">
+              <div className="absolute top-2 -left-4 w-16 h-16 bg-green-400 rounded-full z-10" />
+              <div className="absolute top-2 -right-4 w-16 h-16 bg-emerald-500 rounded-full z-10" />
             </div>
             {/* Trunk */}
-            <div className="w-4 h-12 sm:w-5 sm:h-16 md:w-6 md:h-20 bg-amber-800 rounded-sm" />
+            <div className="w-6 h-20 bg-amber-800 rounded-sm" />
           </motion.div>
         ))}
       </div>

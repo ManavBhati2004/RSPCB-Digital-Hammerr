@@ -164,7 +164,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
         {/* Top Header */}
-        <header className="h-auto md:h-20 bg-white border-b border-slate-200 px-3 sm:px-6 md:px-8 py-3 md:py-0 flex items-center justify-between gap-2 sm:gap-3 shrink-0">
+        <header className="h-auto md:h-20 bg-white border-b border-slate-200 px-4 sm:px-6 md:px-8 py-3 md:py-0 flex items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <button
               className="md:hidden p-2 -ml-2 text-slate-700"
@@ -184,16 +184,16 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <div className="bg-slate-100 p-0.5 sm:p-1 rounded-lg flex items-center border border-slate-200 shadow-inner">
+            <div className="bg-slate-100 p-1 rounded-lg flex items-center border border-slate-200 shadow-inner">
               <button
                 onClick={() => { setRole('factory'); setActiveTab('dashboard'); }}
-                className={`px-2 sm:px-4 py-1 sm:py-1.5 text-[11px] sm:text-sm font-bold rounded-md transition-all ${role === 'factory' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-2.5 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-bold rounded-md transition-all ${role === 'factory' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Factory
               </button>
               <button
                 onClick={() => { setRole('admin'); setActiveTab('dashboard'); }}
-                className={`px-2 sm:px-4 py-1 sm:py-1.5 text-[11px] sm:text-sm font-bold rounded-md transition-all ${role === 'admin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-2.5 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-bold rounded-md transition-all ${role === 'admin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Admin
               </button>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Car, ChevronDown, User, Factory as FactoryIcon, ArrowLeft } from 'lucide-react';
+import { Zap, Car, ChevronDown, User, Factory as FactoryIcon } from 'lucide-react';
 import axios from 'axios';
 
 type UseType = 'Personal' | 'Factory';
@@ -105,8 +105,8 @@ const Calculator = () => {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300/30 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto relative z-10">
-        <Link to="/" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-700 font-bold rounded-full shadow-md hover:shadow-lg hover:text-green-600 hover:-translate-y-0.5 transition-all mb-6 sm:mb-8 text-sm sm:text-base border border-slate-200">
-          <ArrowLeft size={18} /> Back to Home
+        <Link to="/" className="text-green-600 font-semibold mb-6 sm:mb-8 inline-block hover:underline text-sm sm:text-base">
+          &larr; Back to Home
         </Link>
 
         {/* Identity / Use Type slide-down bar */}
@@ -237,7 +237,7 @@ const Calculator = () => {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-semibold text-slate-700 mb-2">Upload Photo of Data/Bill</label>
-                        <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="w-full max-w-full px-3 sm:px-4 py-2.5 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white text-xs sm:text-sm file:mr-3 file:py-2 file:px-3 sm:file:px-4 file:rounded-full file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
+                        <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="w-full px-3 sm:px-4 py-2.5 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white text-sm file:mr-3 file:py-2 file:px-3 sm:file:px-4 file:rounded-full file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
                       </div>
                     </div>
                     <button type="submit" disabled={isSubmitting} className="w-full py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
