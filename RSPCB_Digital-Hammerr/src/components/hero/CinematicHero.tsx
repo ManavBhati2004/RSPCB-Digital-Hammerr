@@ -8,9 +8,10 @@ import { EcoTransition } from './EcoTransition';
 
 interface Props {
   onInteract: () => void;
+  onTransform?: () => void;
 }
 
-export const CinematicHero: React.FC<Props> = ({ onInteract }) => {
+export const CinematicHero: React.FC<Props> = ({ onInteract, onTransform }) => {
   const [isTransformed, setIsTransformed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -18,6 +19,7 @@ export const CinematicHero: React.FC<Props> = ({ onInteract }) => {
     if (!isTransformed) {
       setIsTransformed(true);
       onInteract(); // Pause the auto-slider
+      onTransform?.();
     }
   };
 

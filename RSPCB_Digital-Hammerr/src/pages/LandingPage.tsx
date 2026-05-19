@@ -73,6 +73,8 @@ const LandingPage = () => {
   const [activePage, setActivePage] = useState(0);
   const [activeAwarenessSlide, setActiveAwarenessSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [heroTransformed, setHeroTransformed] = useState(false);
+  const showNav = activePage !== 0 || heroTransformed;
 
   const pages = [
     { id: 'hero', name: 'Home' },
@@ -114,7 +116,13 @@ const LandingPage = () => {
       }}></div>
 
       {/* Global Navbar */}
-      <nav className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-2 transition-all duration-300">
+      <motion.nav
+        initial={false}
+        animate={{ opacity: showNav ? 1 : 0, y: showNav ? 0 : -16 }}
+        transition={{ duration: 0.9, ease: 'easeOut', delay: showNav ? 0.5 : 0 }}
+        style={{ pointerEvents: showNav ? 'auto' : 'none' }}
+        className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-2"
+      >
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <RspcbLogo className="w-10 h-10 sm:w-11 sm:h-11 p-0.5 border border-green-100 shadow-lg shadow-green-500/20 shrink-0" />
           <div className={`min-w-0 ${activePage === 4 ? 'text-white' : 'text-slate-900'}`}>
@@ -148,10 +156,16 @@ const LandingPage = () => {
             <span className="hidden sm:inline">Factory </span>Data
           </Link>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile page nav (dots) */}
-      <div className="lg:hidden absolute top-[60px] sm:top-[72px] left-1/2 -translate-x-1/2 z-50 flex gap-2 px-3 py-1.5 rounded-full bg-slate-900/70 backdrop-blur-md border border-slate-700">
+      <motion.div
+        initial={false}
+        animate={{ opacity: showNav ? 1 : 0, y: showNav ? 0 : -16 }}
+        transition={{ duration: 0.9, ease: 'easeOut', delay: showNav ? 0.5 : 0 }}
+        style={{ pointerEvents: showNav ? 'auto' : 'none' }}
+        className="lg:hidden absolute top-[60px] sm:top-[72px] left-1/2 -translate-x-1/2 z-50 flex gap-2 px-3 py-1.5 rounded-full bg-slate-900/70 backdrop-blur-md border border-slate-700"
+      >
         {pages.map((page, index) => (
           <button
             key={index}
@@ -160,7 +174,7 @@ const LandingPage = () => {
             className={`h-2 rounded-full transition-all ${activePage === index ? 'w-6 bg-green-400' : 'w-2 bg-slate-500'}`}
           />
         ))}
-      </div>
+      </motion.div>
 
       {/* Main Content Area (Full Screen Slider) */}
       <div className="relative w-full h-full z-10 flex items-center justify-center pt-16">
@@ -168,7 +182,7 @@ const LandingPage = () => {
           
           {/* PAGE 0: HERO */}
           {activePage === 0 && (
-            <CinematicHero onInteract={() => setIsPaused(true)} />
+            <CinematicHero onInteract={() => setIsPaused(true)} onTransform={() => setHeroTransformed(true)} />
           )}
 
           {/* PAGE 1: AIM */}

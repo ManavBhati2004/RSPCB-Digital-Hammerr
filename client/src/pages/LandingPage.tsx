@@ -225,6 +225,8 @@ const LandingPage = () => {
   const [activePage, setActivePage] = useState(0);
   const [activeAwarenessSlide, setActiveAwarenessSlide] = useState(0);
   const [autoCycle, setAutoCycle] = useState(true);
+  const [heroTransformed, setHeroTransformed] = useState(false);
+  const showNav = activePage !== 0 || heroTransformed;
 
 
   const pages = [
@@ -262,7 +264,13 @@ const LandingPage = () => {
       }}></div>
 
       {/* Global Navbar */}
-      <nav className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-center items-center transition-all duration-300">
+      <motion.nav
+        initial={false}
+        animate={{ opacity: showNav ? 1 : 0, y: showNav ? 0 : -16 }}
+        transition={{ duration: 0.9, ease: 'easeOut', delay: showNav ? 0.5 : 0 }}
+        style={{ pointerEvents: showNav ? 'auto' : 'none' }}
+        className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-center items-center"
+      >
         <div className="hidden lg:flex items-center gap-3 xl:gap-5 p-2 pl-3 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700 shadow-xl">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 pr-2 border-r border-slate-700">
             <RspcbLogo className="w-9 h-9 p-0.5 border border-green-100 shadow-lg shadow-green-500/20 shrink-0" />
@@ -291,10 +299,16 @@ const LandingPage = () => {
             Contribution
           </Link>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile Nav (unified, centered) */}
-      <div className="lg:hidden absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 w-fit max-w-[95vw] z-50 overflow-x-auto no-scrollbar pointer-events-auto">
+      <motion.div
+        initial={false}
+        animate={{ opacity: showNav ? 1 : 0, y: showNav ? 0 : -16 }}
+        transition={{ duration: 0.9, ease: 'easeOut', delay: showNav ? 0.5 : 0 }}
+        style={{ pointerEvents: showNav ? 'auto' : 'none' }}
+        className="lg:hidden absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 w-fit max-w-[95vw] z-50 overflow-x-auto no-scrollbar"
+      >
         <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 pl-2 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700 shadow-xl">
           <div className="flex items-center gap-1.5 pr-1.5 sm:pr-2 border-r border-slate-700 shrink-0">
             <RspcbLogo className="w-7 h-7 p-0.5 border border-green-100 shadow-md shadow-green-500/20 shrink-0" />
@@ -320,7 +334,7 @@ const LandingPage = () => {
             Contribution
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Content Area (Full Screen Slider) */}
       <div className="relative w-full h-full z-10 flex items-center justify-center pt-14 sm:pt-16">
@@ -328,7 +342,7 @@ const LandingPage = () => {
           
           {/* PAGE 0: HERO */}
           {activePage === 0 && (
-            <CinematicHero />
+            <CinematicHero onTransform={() => setHeroTransformed(true)} />
           )}
 
           {/* PAGE 1: ANALYTICS */}

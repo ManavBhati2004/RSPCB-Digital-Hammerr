@@ -8,7 +8,11 @@ import { EcoTransition } from './EcoTransition';
 import { ModiInteractiveCard } from '../aim/ModiInteractiveCard';
 import { InfiniteImageSlider } from '../home/InfiniteImageSlider';
 
-export const CinematicHero: React.FC = () => {
+interface Props {
+  onTransform?: () => void;
+}
+
+export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
   const [isTransformed, setIsTransformed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   // Responsive upward shift applied to the parallax (factory + trees) and central content
@@ -18,6 +22,7 @@ export const CinematicHero: React.FC = () => {
   const handleTransform = () => {
     if (!isTransformed) {
       setIsTransformed(true);
+      onTransform?.();
     }
   };
 
