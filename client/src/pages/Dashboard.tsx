@@ -15,7 +15,8 @@ const sourceData = [
 ];
 const COLORS = ['#10b981', '#3b82f6', '#8b5cf6'];
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
+const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
 type ElectricityRow = {
   _id?: string;
@@ -335,7 +336,7 @@ const Dashboard = () => {
                         </li>
                       ))}
                       {stats.electricity.length === 0 && (
-                        <li className="p-6 text-center text-sm text-slate-500">No entries yet. Submit one from the calculator.</li>
+                        <li className="p-6 text-center text-sm text-slate-500">No entries yet. Submit one from the contribution page.</li>
                       )}
                     </ul>
                   </div>
@@ -364,7 +365,7 @@ const Dashboard = () => {
                         </li>
                       ))}
                       {stats.vehicles.length === 0 && (
-                        <li className="p-6 text-center text-sm text-slate-500">No entries yet. Submit one from the calculator.</li>
+                        <li className="p-6 text-center text-sm text-slate-500">No entries yet. Submit one from the contribution page.</li>
                       )}
                     </ul>
                   </div>

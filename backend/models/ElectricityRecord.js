@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const electricityRecordSchema = new mongoose.Schema({
   factory: { type: mongoose.Schema.Types.ObjectId, ref: 'Factory', required: true },
   factoryName: { type: String, default: '' },
+  individualName: { type: String, default: '' },
   useType: { type: String, enum: ['Personal', 'Factory'], default: 'Factory' },
   month: { type: Number, required: true },
   year: { type: Number, required: true },

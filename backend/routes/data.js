@@ -89,12 +89,13 @@ router.get('/stats', async (req, res) => {
 
 router.post('/electricity', async (req, res) => {
   try {
-    const { consumption, nonConsumption, co2Saved, documentUrl, docName, factoryName, useType } = req.body;
+    const { consumption, nonConsumption, co2Saved, documentUrl, docName, factoryName, individualName, useType } = req.body;
     const factory = await resolveFactory({ useType, factoryName });
 
     const record = await ElectricityRecord.create({
       factory: factory._id,
       factoryName: factoryName || '',
+      individualName: individualName || '',
       useType: useType === 'Personal' ? 'Personal' : 'Factory',
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
@@ -113,12 +114,13 @@ router.post('/electricity', async (req, res) => {
 
 router.post('/vehicle', async (req, res) => {
   try {
-    const { category, fuelType, distance, co2Saved, factoryName, useType } = req.body;
+    const { category, fuelType, distance, co2Saved, factoryName, individualName, useType } = req.body;
     const factory = await resolveFactory({ useType, factoryName });
 
     const record = await VehicleRecord.create({
       factory: factory._id,
       factoryName: factoryName || '',
+      individualName: individualName || '',
       useType: useType === 'Personal' ? 'Personal' : 'Factory',
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
@@ -130,6 +132,119 @@ router.post('/vehicle', async (req, res) => {
     });
     const populated = await record.populate('factory');
     res.json(populated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/leaderboard', async (req, res) => {
+  try {
+    const LIMIT = 20;
+
+    const electricityFactories = await ElectricityRecord.aggregate([
+      { $match: { useType: 'Factory' } },
+      { $lookup: { from: 'factories', localField: 'factory', foreignField: '_id', as: 'factoryDoc' } },
+      { $unwind: { path: '$factoryDoc', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$factory',
+          name: { $first: { $ifNull: ['$factoryDoc.name', { $ifNull: ['$factoryName', 'Unknown Factory'] }] } },
+          co2Saved: { $sum: '$co2Saved' },
+          energySaved: { $sum: { $add: [{ $ifNull: ['$consumption', 0] }, { $ifNull: ['$nonConsumption', 0] }] } },
+          entries: { $sum: 1 }
+        }
+      },
+      { $sort: { co2Saved: -1 } },
+      { $limit: LIMIT }
+    ]);
+
+    const electricityIndividuals = await ElectricityRecord.aggregate([
+      { $match: { useType: 'Personal' } },
+      {
+        $group: {
+          _id: {
+            $let: {
+              vars: {
+                trimmedIndiv: { $trim: { input: { $ifNull: ['$individualName', ''] } } },
+                trimmedFactory: { $trim: { input: { $ifNull: ['$factoryName', ''] } } }
+              },
+              in: {
+                $cond: [
+                  { $gt: [{ $strLenCP: '$$trimmedIndiv' }, 0] },
+                  '$$trimmedIndiv',
+                  { $cond: [{ $gt: [{ $strLenCP: '$$trimmedFactory' }, 0] }, '$$trimmedFactory', 'Anonymous'] }
+                ]
+              }
+            }
+          },
+          co2Saved: { $sum: '$co2Saved' },
+          energySaved: { $sum: { $add: [{ $ifNull: ['$consumption', 0] }, { $ifNull: ['$nonConsumption', 0] }] } },
+          entries: { $sum: 1 }
+        }
+      },
+      { $project: { _id: 0, name: '$_id', co2Saved: 1, energySaved: 1, entries: 1 } },
+      { $sort: { co2Saved: -1 } },
+      { $limit: LIMIT }
+    ]);
+
+    const fuelFactories = await VehicleRecord.aggregate([
+      { $match: { useType: 'Factory' } },
+      { $lookup: { from: 'factories', localField: 'factory', foreignField: '_id', as: 'factoryDoc' } },
+      { $unwind: { path: '$factoryDoc', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$factory',
+          name: { $first: { $ifNull: ['$factoryDoc.name', { $ifNull: ['$factoryName', 'Unknown Factory'] }] } },
+          co2Saved: { $sum: '$co2Saved' },
+          distance: { $sum: { $ifNull: ['$distance', 0] } },
+          entries: { $sum: 1 }
+        }
+      },
+      { $sort: { co2Saved: -1 } },
+      { $limit: LIMIT }
+    ]);
+
+    const fuelIndividuals = await VehicleRecord.aggregate([
+      { $match: { useType: 'Personal' } },
+      {
+        $group: {
+          _id: {
+            $let: {
+              vars: {
+                trimmedIndiv: { $trim: { input: { $ifNull: ['$individualName', ''] } } },
+                trimmedFactory: { $trim: { input: { $ifNull: ['$factoryName', ''] } } }
+              },
+              in: {
+                $cond: [
+                  { $gt: [{ $strLenCP: '$$trimmedIndiv' }, 0] },
+                  '$$trimmedIndiv',
+                  { $cond: [{ $gt: [{ $strLenCP: '$$trimmedFactory' }, 0] }, '$$trimmedFactory', 'Anonymous'] }
+                ]
+              }
+            }
+          },
+          co2Saved: { $sum: '$co2Saved' },
+          distance: { $sum: { $ifNull: ['$distance', 0] } },
+          entries: { $sum: 1 }
+        }
+      },
+      { $project: { _id: 0, name: '$_id', co2Saved: 1, distance: 1, entries: 1 } },
+      { $sort: { co2Saved: -1 } },
+      { $limit: LIMIT }
+    ]);
+
+    const rankList = (arr) => arr.map((entry, i) => ({ rank: i + 1, ...entry, _id: undefined }));
+
+    res.json({
+      electricity: {
+        factories: rankList(electricityFactories),
+        individuals: rankList(electricityIndividuals)
+      },
+      fuel: {
+        factories: rankList(fuelFactories),
+        individuals: rankList(fuelIndividuals)
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

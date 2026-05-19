@@ -35,7 +35,7 @@ export const AimSection: React.FC = () => {
           </h2>
 
           <h3 className="text-xl sm:text-3xl md:text-6xl font-black text-emerald-800 mb-4 sm:mb-8 drop-shadow-sm leading-snug" style={{ fontFamily: 'sans-serif' }}>
-            "पेट्रोल बचाएं, <br/> देश बचाएं"
+            "पेट्रोल बचाएं, <br /> देश बचाएं"
           </h3>
 
           <p className="text-sm sm:text-base md:text-xl text-slate-600 font-bold max-w-xl mx-auto md:mx-0 mb-5 sm:mb-10 leading-relaxed">
@@ -48,7 +48,7 @@ export const AimSection: React.FC = () => {
         </motion.div>
 
         {/* Right Interactive Card */}
-        <motion.div 
+        <motion.div
           className="flex-1 w-full"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}

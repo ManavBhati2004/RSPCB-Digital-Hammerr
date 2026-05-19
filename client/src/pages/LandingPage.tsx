@@ -1,10 +1,162 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Zap, Factory as FactoryIcon, Car, ArrowRight } from 'lucide-react';
+import { Wind, Zap, Factory as FactoryIcon, Car } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { CinematicHero } from '../components/hero/CinematicHero';
-import { AimSection } from '../components/aim/AimSection';
 import { RspcbLogo } from '../components/RspcbLogo';
+
+const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
+
+type LogEntry = { id: number; name: string; co2: number; createdAt: number };
+type Contributor = { name: string; co2: number };
+
+type LeaderboardBucket = { name?: string; co2Saved?: number }[];
+type LeaderboardResponse = {
+  electricity?: { factories?: LeaderboardBucket; individuals?: LeaderboardBucket };
+  fuel?: { factories?: LeaderboardBucket; individuals?: LeaderboardBucket };
+};
+
+const flattenLeaderboard = (data: LeaderboardResponse | undefined): Contributor[] => {
+  if (!data) return [];
+  const result: Contributor[] = [];
+  const pushBucket = (bucket: LeaderboardBucket | undefined) => {
+    if (!Array.isArray(bucket)) return;
+    for (const entry of bucket) {
+      if (entry?.name && typeof entry.co2Saved === 'number') {
+        result.push({
+          name: entry.name,
+          co2: Math.max(0, Math.round(entry.co2Saved)),
+        });
+      }
+    }
+  };
+  pushBucket(data.electricity?.factories);
+  pushBucket(data.electricity?.individuals);
+  pushBucket(data.fuel?.factories);
+  pushBucket(data.fuel?.individuals);
+  return result;
+};
+
+let liveLogIdCounter = 0;
+const makeEntryFromContributor = (c: Contributor): LogEntry => ({
+  id: liveLogIdCounter++,
+  name: c.name,
+  co2: c.co2,
+  createdAt: Date.now(),
+});
+
+const formatAgo = (createdAt: number, now: number) => {
+  const s = Math.max(0, Math.floor((now - createdAt) / 1000));
+  if (s < 5) return 'just now';
+  if (s < 60) return `${s}s ago`;
+  return `${Math.floor(s / 60)}m ago`;
+};
+
+const LiveLog = () => {
+  const [pool, setPool] = useState<Contributor[]>([]);
+  const [entries, setEntries] = useState<LogEntry[]>([]);
+  const [now, setNow] = useState(Date.now());
+  const poolRef = useRef<Contributor[]>([]);
+
+  // Keep the ref in sync so the long-lived rotate interval always sees the latest pool.
+  // When the pool first becomes non-empty, seed 4 entries so the panel doesn't sit blank.
+  useEffect(() => {
+    poolRef.current = pool;
+    if (pool.length > 0) {
+      setEntries(prev => {
+        if (prev.length > 0) return prev;
+        const seed: LogEntry[] = [];
+        for (let i = 0; i < Math.min(4, pool.length); i++) {
+          seed.push(makeEntryFromContributor(pool[Math.floor(Math.random() * pool.length)]));
+        }
+        return seed;
+      });
+    }
+  }, [pool]);
+
+  // Fetch the leaderboard on mount, refresh every 10 s.
+  useEffect(() => {
+    let cancelled = false;
+    const fetchPool = async () => {
+      try {
+        const res = await axios.get<LeaderboardResponse>(`${API}/api/data/leaderboard`);
+        if (cancelled) return;
+        setPool(flattenLeaderboard(res.data));
+      } catch (err) {
+        console.error('LiveLog leaderboard fetch failed:', err);
+      }
+    };
+    fetchPool();
+    const poolInterval = setInterval(fetchPool, 10000);
+    return () => {
+      cancelled = true;
+      clearInterval(poolInterval);
+    };
+  }, []);
+
+  // Rotate one new entry in every 3.5 s; tick the relative timestamps every second.
+  useEffect(() => {
+    const rotate = setInterval(() => {
+      if (poolRef.current.length === 0) return;
+      const c = poolRef.current[Math.floor(Math.random() * poolRef.current.length)];
+      setEntries(prev => [makeEntryFromContributor(c), ...prev.slice(0, 3)]);
+    }, 3500);
+    const tick = setInterval(() => setNow(Date.now()), 1000);
+    return () => {
+      clearInterval(rotate);
+      clearInterval(tick);
+    };
+  }, []);
+
+  return (
+    <div className="bg-white/70 backdrop-blur-md rounded-2xl border border-white/60 p-4 sm:p-5 shadow-2xl flex flex-col h-full">
+      <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-200/60 shrink-0">
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+        </span>
+        <h3 className="text-sm sm:text-base font-bold text-slate-900">Live Activity</h3>
+        <span className="ml-auto text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider">Realtime</span>
+      </div>
+
+      <div className="flex-1 overflow-hidden space-y-2.5">
+        {entries.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-slate-500 text-xs sm:text-sm font-medium px-4 text-center">
+            Waiting for first contributors…
+          </div>
+        ) : (
+          <AnimatePresence initial={false}>
+            {entries.map(entry => (
+              <motion.div
+                key={entry.id}
+                layout
+                initial={{ opacity: 0, x: 20, height: 0 }}
+                animate={{ opacity: 1, x: 0, height: 'auto' }}
+                exit={{ opacity: 0, x: -20, height: 0 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 transition-colors"
+              >
+                <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white text-sm sm:text-base font-bold shrink-0 shadow-md">
+                  {entry.name.charAt(0)}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-slate-900 font-bold leading-tight truncate">{entry.name}</p>
+                  <p className="text-xs sm:text-sm text-emerald-700 font-extrabold leading-tight mt-0.5">
+                    saved {entry.co2.toLocaleString()} kg CO₂
+                  </p>
+                </div>
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium shrink-0 ml-2">
+                  {formatAgo(entry.createdAt, now)}
+                </span>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const awarenessSlides = [
   {
@@ -72,32 +224,29 @@ const awarenessSlides = [
 const LandingPage = () => {
   const [activePage, setActivePage] = useState(0);
   const [activeAwarenessSlide, setActiveAwarenessSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [autoCycle, setAutoCycle] = useState(true);
+
 
   const pages = [
     { id: 'hero', name: 'Home' },
-    { id: 'aim', name: 'AIM' },
     { id: 'analytics', name: 'Analytics' },
-    { id: 'awareness', name: 'Awareness' },
-    { id: 'calculator', name: 'Calculator' }
+    { id: 'awareness', name: 'Awareness' }
   ];
 
-  // Auto-shift logic
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      setActivePage((prev) => (prev + 1) % pages.length);
-    }, 10000); // 10 seconds per page
-    return () => clearInterval(interval);
-  }, [pages.length, isPaused]);
+    if (!autoCycle) return;
+    const id = window.setInterval(() => {
+      setActivePage(prev => (prev + 1) % pages.length);
+    }, 15000);
+    return () => window.clearInterval(id);
+  }, [autoCycle, pages.length]);
 
-  useEffect(() => {
-    if (activePage !== 3) return;
-    const interval = setInterval(() => {
-      setActiveAwarenessSlide((prev) => (prev + 1) % awarenessSlides.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [activePage]);
+  const selectPage = (index: number) => {
+    setAutoCycle(false);
+    setActivePage(index);
+  };
+
+
 
   const awarenessSlide = awarenessSlides[activeAwarenessSlide];
   const AwarenessIcon = awarenessSlide.icon;
@@ -106,29 +255,26 @@ const LandingPage = () => {
     <div className="relative w-full h-[100dvh] overflow-hidden bg-slate-900">
       {/* Dynamic Backgrounds based on active page */}
       <div className="absolute inset-0 transition-colors duration-1000 z-0" style={{
-        backgroundColor: 
-          activePage === 0 ? '#f8fafc' : 
-          activePage === 1 ? '#ffffff' : 
-          activePage === 2 ? '#B2D3C2' : 
-          activePage === 3 ? '#f8fafc' : '#22c55e'
+        backgroundColor:
+          activePage === 0 ? '#f8fafc' :
+          activePage === 1 ? '#B2D3C2' :
+          '#f8fafc'
       }}></div>
 
       {/* Global Navbar */}
-      <nav className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-2 transition-all duration-300">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <RspcbLogo className="w-10 h-10 sm:w-11 sm:h-11 p-0.5 border border-green-100 shadow-lg shadow-green-500/20 shrink-0" />
-          <div className={`min-w-0 ${[0, 4].includes(activePage) ? 'text-white drop-shadow-md' : 'text-slate-900'}`}>
-            <h1 className="font-bold text-base sm:text-lg leading-tight transition-colors duration-500">RSPCB</h1>
-            <p className="hidden sm:block text-[10px] uppercase tracking-wider font-semibold opacity-80">State Pollution Control Board</p>
+      <nav className="absolute top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex justify-center items-center transition-all duration-300">
+        <div className="hidden lg:flex items-center gap-3 xl:gap-5 p-2 pl-3 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700 shadow-xl">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 pr-2 border-r border-slate-700">
+            <RspcbLogo className="w-9 h-9 p-0.5 border border-green-100 shadow-lg shadow-green-500/20 shrink-0" />
+            <div className="min-w-0 text-white">
+              <h1 className="font-bold text-sm leading-tight">RSPCB</h1>
+              <p className="hidden xl:block text-[9px] uppercase tracking-wider font-semibold text-slate-300">State Pollution Control Board</p>
+            </div>
           </div>
-        </div>
-
-        {/* Page Nav Indicators (desktop) */}
-        <div className="hidden lg:flex gap-2 xl:gap-4 p-2 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700 shadow-xl">
           {pages.map((page, index) => (
             <button
               key={index}
-              onClick={() => setActivePage(index)}
+              onClick={() => selectPage(index)}
               className={`px-4 xl:px-5 py-2 rounded-full text-sm font-bold transition-all ${
                 activePage === index
                 ? 'bg-green-500 text-white shadow-lg'
@@ -138,28 +284,42 @@ const LandingPage = () => {
               {page.name}
             </button>
           ))}
-        </div>
-
-        <div className="flex gap-2 sm:gap-4 items-center shrink-0">
-          <Link to="/calculator" className="lg:hidden px-3 py-2 bg-green-500 text-white rounded-full text-xs font-bold shadow-lg">
-            Calc
-          </Link>
-          <Link to="/dashboard" className="px-3 sm:px-6 py-2 sm:py-2.5 bg-slate-900 text-white border border-slate-700 rounded-full text-xs sm:text-sm font-bold hover:bg-green-600 transition-all shadow-xl">
-            <span className="hidden sm:inline">Factory </span>Data
+          <Link
+            to="/calculator"
+            className="px-4 xl:px-5 py-2 rounded-full text-sm font-bold transition-all text-slate-300 hover:text-white hover:bg-white/10"
+          >
+            Contribution
           </Link>
         </div>
       </nav>
 
-      {/* Mobile page nav (dots) */}
-      <div className="lg:hidden absolute top-[60px] sm:top-[72px] left-1/2 -translate-x-1/2 z-50 flex gap-2 px-3 py-1.5 rounded-full bg-slate-900/70 backdrop-blur-md border border-slate-700">
-        {pages.map((page, index) => (
-          <button
-            key={index}
-            onClick={() => setActivePage(index)}
-            aria-label={page.name}
-            className={`h-2 rounded-full transition-all ${activePage === index ? 'w-6 bg-green-400' : 'w-2 bg-slate-500'}`}
-          />
-        ))}
+      {/* Mobile Nav (unified, centered) */}
+      <div className="lg:hidden absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 w-fit max-w-[95vw] z-50 overflow-x-auto no-scrollbar pointer-events-auto">
+        <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 pl-2 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700 shadow-xl">
+          <div className="flex items-center gap-1.5 pr-1.5 sm:pr-2 border-r border-slate-700 shrink-0">
+            <RspcbLogo className="w-7 h-7 p-0.5 border border-green-100 shadow-md shadow-green-500/20 shrink-0" />
+            <span className="hidden xs:inline sm:inline text-white font-bold text-xs">RSPCB</span>
+          </div>
+          {pages.map((page, index) => (
+            <button
+              key={index}
+              onClick={() => selectPage(index)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                activePage === index
+                ? 'bg-green-500 text-white shadow-lg'
+                : 'text-slate-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              {page.name}
+            </button>
+          ))}
+          <Link
+            to="/calculator"
+            className="px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-white/10"
+          >
+            Contribution
+          </Link>
+        </div>
       </div>
 
       {/* Main Content Area (Full Screen Slider) */}
@@ -168,58 +328,67 @@ const LandingPage = () => {
           
           {/* PAGE 0: HERO */}
           {activePage === 0 && (
-            <CinematicHero onInteract={() => setIsPaused(true)} />
+            <CinematicHero />
           )}
 
-          {/* PAGE 1: AIM */}
+          {/* PAGE 1: ANALYTICS */}
           {activePage === 1 && (
-            <AimSection key="aim" />
-          )}
-
-          {/* PAGE 2: ANALYTICS */}
-          {activePage === 2 && (
             <motion.div
               key="analytics"
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -100 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-7xl mx-auto text-slate-900 pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-16 max-h-full overflow-y-auto no-scrollbar"
+              className="absolute inset-0 w-full h-full text-slate-900 overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-white/20 rounded-full blur-3xl pointer-events-none"></div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-12 lg:mb-16 text-center">Live State Intelligence</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 pb-6">
-                {[
-                  { label: 'CO2 Saved (Tons)', value: '1,245,892', icon: Wind, color: 'text-green-600' },
-                  { label: 'Registered Factories', value: '8,420', icon: FactoryIcon, color: 'text-blue-600' },
-                  { label: 'Energy Optimized (MWh)', value: '450,122', icon: Zap, color: 'text-yellow-600' },
-                  { label: 'Vehicles Tracked', value: '1.2M', icon: Car, color: 'text-purple-600' },
-                ].map((stat, i) => (
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    key={i}
-                    className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-3 sm:p-6 md:p-8 shadow-xl hover:bg-white/80 transition-all cursor-default"
-                  >
-                    <stat.icon className={`w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-6 ${stat.color}`} />
-                    <div className="text-lg sm:text-2xl md:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 break-words leading-tight">{stat.value}</div>
-                    <div className="text-[9px] sm:text-xs md:text-sm text-slate-600 uppercase tracking-wider sm:tracking-widest font-bold leading-tight">{stat.label}</div>
-                  </motion.div>
-                ))}
+
+              {/* Main content (header + stat cards), reserves right space for the log on lg+ */}
+              <div className="absolute inset-0 px-4 sm:px-6 pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-20 lg:pr-[440px] flex flex-col items-center justify-center">
+                <div className="w-full max-w-3xl mx-auto">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live State Intelligence</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8">
+                    {[
+                      { label: 'CO2 Saved (Tons)', value: '1,245,892', icon: Wind, color: 'text-green-600' },
+                      { label: 'Registered Factories', value: '8,420', icon: FactoryIcon, color: 'text-blue-600' },
+                    ].map((stat, i) => (
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: i * 0.1, duration: 0.5 }}
+                        key={i}
+                        className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-3 sm:p-6 md:p-8 shadow-xl hover:bg-white/80 transition-all cursor-default"
+                      >
+                        <stat.icon className={`w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-6 ${stat.color}`} />
+                        <div className="text-lg sm:text-2xl md:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 break-words leading-tight">{stat.value}</div>
+                        <div className="text-[9px] sm:text-xs md:text-sm text-slate-600 uppercase tracking-wider sm:tracking-widest font-bold leading-tight">{stat.label}</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               </div>
+
+              {/* Live log — stuck to the right edge of the screen (lg+ only) */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="hidden lg:flex absolute top-32 bottom-20 right-4 xl:right-6 w-[360px] xl:w-[400px] z-20"
+                >
+                <LiveLog />
+              </motion.div>
             </motion.div>
           )}
 
-          {/* PAGE 3: AWARENESS */}
-          {activePage === 3 && (
+          {/* PAGE 2: AWARENESS */}
+          {activePage === 2 && (
             <motion.div
               key="awareness"
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-7xl mx-auto max-h-full overflow-y-auto no-scrollbar pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-16"
+              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-7xl mx-auto max-h-full overflow-y-auto no-scrollbar pt-36 sm:pt-40 lg:pt-32 pb-24 sm:pb-16"
             >
               <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12 lg:gap-16 pb-6">
                 <div className="flex-1">
@@ -315,30 +484,11 @@ const LandingPage = () => {
             </motion.div>
           )}
 
-          {/* PAGE 4: CALCULATOR */}
-          {activePage === 4 && (
-            <motion.div
-              key="calculator"
-              initial={{ opacity: 0, y: -100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-4xl mx-auto text-center text-white max-h-full overflow-y-auto no-scrollbar pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-16 flex flex-col items-center"
-            >
-              <RspcbLogo className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 p-1 mb-4 sm:mb-8 shadow-[0_0_40px_rgba(255,255,255,0.45)]" />
-              <h2 className="text-2xl sm:text-5xl md:text-7xl font-extrabold mb-3 sm:mb-8 drop-shadow-lg leading-tight">Calculate Your Impact</h2>
-              <p className="text-sm sm:text-xl md:text-2xl mb-6 sm:mb-12 text-green-50 font-bold px-2 leading-relaxed">Use our official government algorithms to calculate exact CO2 savings for your electricity and vehicle usage.</p>
-              <Link to="/calculator" className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-10 py-3 sm:py-5 bg-white text-green-600 rounded-full text-sm sm:text-xl font-extrabold hover:scale-105 transition-transform shadow-2xl hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]">
-                Launch Calculator <ArrowRight size={18} />
-              </Link>
-            </motion.div>
-          )}
-
         </AnimatePresence>
       </div>
 
-      {/* Play/Pause Indicator Overlay (desktop/tablet only — mobile uses top dots) */}
-      <div className="hidden sm:flex absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 items-center gap-2 z-40 pointer-events-none">
+      {/* Play/Pause Indicator Overlay */}
+      <div className="flex absolute bottom-4 sm:bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 items-center gap-1.5 sm:gap-2 z-40 pointer-events-none">
         {pages.map((_, i) => (
           <div key={i} className={`h-1.5 rounded-full transition-all duration-700 ${activePage === i ? 'w-12 bg-slate-500' : 'w-4 bg-slate-300'}`}></div>
         ))}

@@ -3,10 +3,15 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Car, ChevronDown, User, Factory as FactoryIcon, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
+import DrivingCarHeader from '../components/calculator/DrivingCarHeader';
+import PowerTowerHeader from '../components/calculator/PowerTowerHeader';
+import GrowingTreeHeader from '../components/calculator/GrowingTreeHeader';
+import FarewellSection from '../components/calculator/FarewellSection';
 
 type UseType = 'Personal' | 'Factory';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
+const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
 const Calculator = () => {
   const [activeTab, setActiveTab] = useState<'electricity' | 'vehicle'>('electricity');
@@ -101,6 +106,7 @@ const Calculator = () => {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-slate-50 py-10 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300/30 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
@@ -110,11 +116,7 @@ const Calculator = () => {
         </Link>
 
         {/* Identity / Use Type slide-down bar */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card mb-5 sm:mb-6 overflow-hidden"
-        >
+        <div className="glass-card mb-5 sm:mb-6 overflow-hidden">
           <button
             type="button"
             onClick={() => setIdentityOpen(o => !o)}
@@ -188,13 +190,9 @@ const Calculator = () => {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card overflow-hidden"
-        >
+        <div className="glass-card overflow-hidden">
           <div className="flex border-b border-slate-200 bg-white/50">
             <button
               onClick={() => setActiveTab('electricity')}
@@ -224,7 +222,8 @@ const Calculator = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Electricity CO2 Calculator</h2>
+                  <PowerTowerHeader />
+                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Electricity CO2 Contribution</h2>
                   <form onSubmit={calculateElectricity} className="space-y-5 sm:space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                       <div>
@@ -245,7 +244,8 @@ const Calculator = () => {
                     </button>
                   </form>
                   {electricityResult !== null && (
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-green-50 rounded-xl border border-green-200 text-center">
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-green-50 rounded-xl border border-green-200 text-center overflow-hidden">
+                      <GrowingTreeHeader variant="saved" />
                       <h3 className="text-green-800 font-semibold mb-2 text-sm sm:text-base">Total CO2 Saved</h3>
                       <div className="text-3xl sm:text-5xl font-extrabold text-green-600 break-words">{electricityResult.toFixed(4)} <span className="text-base sm:text-xl">Tons</span></div>
                     </motion.div>
@@ -259,7 +259,8 @@ const Calculator = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Vehicle CO2 Calculator</h2>
+                  <DrivingCarHeader vehicleType={vType === '2 Wheeler' ? 'twoWheeler' : vType === 'Cycle' ? 'cycle' : 'fourWheeler'} />
+                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Vehicle CO2 Contribution</h2>
                   <form onSubmit={calculateVehicle} className="space-y-5 sm:space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
                       <div>
@@ -289,7 +290,8 @@ const Calculator = () => {
                     </button>
                   </form>
                   {vehicleResult !== null && (
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-blue-50 rounded-xl border border-blue-200 text-center overflow-hidden">
+                      <GrowingTreeHeader variant="saved" />
                       <h3 className="text-blue-800 font-semibold mb-2 text-sm sm:text-base">Total CO2 Saved</h3>
                       <div className="text-3xl sm:text-5xl font-extrabold text-blue-600 break-words">{vehicleResult.toFixed(4)} <span className="text-base sm:text-xl">Kg</span></div>
                     </motion.div>
@@ -298,9 +300,11 @@ const Calculator = () => {
               )}
             </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
+    <FarewellSection />
+    </>
   );
 };
 
