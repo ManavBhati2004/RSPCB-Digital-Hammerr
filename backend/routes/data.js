@@ -303,7 +303,7 @@ router.get('/leaderboard/combined', async (req, res) => {
       })
       .filter((e) => e.totalCO2 > 0)
       .sort((a, b) => b.totalCO2 - a.totalCO2)
-      .slice(0, 10)
+      .slice(0, 20)
       .map((e, i) => ({ rank: i + 1, ...e }));
 
     res.json(combined);
