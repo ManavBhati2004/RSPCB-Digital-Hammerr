@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { CinematicHero } from '../components/hero/CinematicHero';
 import { RspcbLogo } from '../components/RspcbLogo';
+import { AnalyticsLeaderboard } from '../components/analytics/AnalyticsLeaderboard';
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
@@ -378,6 +379,10 @@ const LandingPage = () => {
                         <div className="text-[9px] sm:text-xs md:text-sm text-slate-600 uppercase tracking-wider sm:tracking-widest font-bold leading-tight">{stat.label}</div>
                       </motion.div>
                     ))}
+                  </div>
+
+                  <div className="mt-8">
+                    <AnalyticsLeaderboard />
                   </div>
                 </div>
               </div>
