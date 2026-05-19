@@ -109,13 +109,6 @@ export const CinematicHero: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               className="pointer-events-auto flex flex-col items-center"
             >
-              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-slate-900/50 backdrop-blur-md border border-slate-700 text-red-400 text-[11px] sm:text-sm font-bold mb-3 sm:mb-6 cursor-pointer hover:bg-slate-900/80 transition-colors" onClick={handleTransform}>
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                </span>
-                Critical Emission Levels Detected
-              </div>
               <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold text-white mb-3 sm:mb-6 drop-shadow-lg leading-tight">
                 Rajasthan State <br className="hidden sm:block" /><span className="text-orange-500"> Pollution Control Board</span>
               </h1>
