@@ -16,77 +16,47 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
   .sort()
   .map(key => awarenessImageModules[key]);
 
-const awarenessPairs: [string, string][] = [
-  [awarenessImages[0], awarenessImages[1]],
-  [awarenessImages[2], awarenessImages[3]],
-  [awarenessImages[4], awarenessImages[5]],
-];
-
 const AWARENESS_DWELL_MS = 4000;
 
-type AwarenessRowProps = {
-  src: string;
-  direction: 'left' | 'right';
-  delay: number;
-};
-
-const AwarenessFlipRow = ({ src, direction, delay }: AwarenessRowProps) => {
-  const flipFrom = direction === 'right' ? -90 : 90;
-  const flipTo   = direction === 'right' ?  90 : -90;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.8, ease: 'easeOut' }}
-      className="flex items-center justify-center"
-    >
-      <div
-        className="relative aspect-video w-[min(92vw,72dvh)] sm:w-[min(90vw,74dvh)] md:w-[min(88vw,76dvh)] lg:w-[min(84vw,78dvh)] rounded-2xl"
-        style={{ perspective: '1500px' }}
-      >
-        <AnimatePresence>
-          <motion.img
-            key={src}
-            src={src}
-            alt=""
-            loading="lazy"
-            draggable={false}
-            initial={{ rotateY: flipFrom, opacity: 0 }}
-            animate={{ rotateY: 0, opacity: 1 }}
-            exit={{ rotateY: flipTo, opacity: 0 }}
-            transition={{ duration: 0.95, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute inset-0 w-full h-full object-cover rounded-2xl select-none shadow-[0_30px_80px_-20px_rgba(15,23,42,0.45)] ring-1 ring-white/40"
-            style={{
-              transformStyle: 'preserve-3d',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-            }}
-          />
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-};
-
-// Shared timer drives both rows so the pair flips in lockstep. Mounted only
-// while the user is on the awareness page, so the interval stops on exit.
+// One image at a time, iris (circular clip-path) reveal between images.
+// Old image shrinks its circle to 0 while the new image expands from 0 → full,
+// in the same DOM slot — visually reads as a single circular wipe.
 const AwarenessFlipShowcase = () => {
-  const [pairIndex, setPairIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setPairIndex(i => (i + 1) % awarenessPairs.length);
+      setIndex(i => (i + 1) % awarenessImages.length);
     }, AWARENESS_DWELL_MS);
     return () => window.clearInterval(id);
   }, []);
 
-  const [topSrc, bottomSrc] = awarenessPairs[pairIndex];
+  const src = awarenessImages[index];
 
   return (
-    <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-4 sm:gap-6 md:gap-8">
-      <AwarenessFlipRow src={topSrc}    direction="right" delay={0.2}  />
-      <AwarenessFlipRow src={bottomSrc} direction="left"  delay={0.55} />
+    <div className="relative z-10 flex-1 flex items-center justify-center min-h-0 px-3 sm:px-6">
+      <div className="relative aspect-video w-[min(94vw,148dvh)]">
+        <AnimatePresence>
+          <motion.div
+            key={src}
+            initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+            animate={{ clipPath: 'circle(80% at 50% 50%)' }}
+            exit={{ clipPath: 'circle(0% at 50% 50%)' }}
+            transition={{ duration: 1.05, ease: [0.65, 0, 0.35, 1] }}
+            className="absolute inset-0"
+            style={{ WebkitClipPath: 'circle(0% at 50% 50%)' }}
+          >
+            <img
+              src={src}
+              alt=""
+              loading="lazy"
+              draggable={false}
+              className="w-full h-full object-contain rounded-3xl select-none"
+              style={{ filter: 'drop-shadow(0 25px 80px rgba(16,185,129,0.45))' }}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
@@ -278,7 +248,7 @@ const LandingPage = () => {
         backgroundColor:
           activePage === 0 ? '#f8fafc' :
           activePage === 1 ? '#B2D3C2' :
-          '#f8fafc'
+          '#0f172a'
       }}></div>
 
       {/* Global Navbar */}
@@ -431,27 +401,31 @@ const LandingPage = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.7, ease: 'easeInOut' }}
               className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-20 sm:pt-24 pb-2 sm:pb-4"
+              style={{
+                background: 'radial-gradient(ellipse at 50% 50%, #1e293b 0%, #0f172a 55%, #020617 100%)',
+              }}
             >
-              {/* Ambient gradient orbs */}
-              <div className="pointer-events-none absolute inset-0 z-0">
-                <motion.div
-                  className="absolute -top-24 -left-24 w-[28rem] h-[28rem] rounded-full bg-emerald-300/30 blur-3xl"
-                  animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
-                  transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-                />
-                <motion.div
-                  className="absolute top-1/3 -right-24 w-[32rem] h-[32rem] rounded-full bg-sky-300/25 blur-3xl"
-                  animate={{ x: [0, -25, 0], y: [0, -15, 0] }}
-                  transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-                />
-                <motion.div
-                  className="absolute -bottom-32 left-1/4 w-[26rem] h-[26rem] rounded-full bg-lime-300/25 blur-3xl"
-                  animate={{ x: [0, 20, 0], y: [0, -25, 0] }}
-                  transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-                />
-              </div>
+              {/* Soft emerald ambient light pooled behind the image */}
+              <motion.div
+                className="pointer-events-none absolute inset-0 z-0"
+                animate={{ opacity: [0.55, 0.85, 0.55] }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                  background:
+                    'radial-gradient(ellipse 55% 45% at 50% 50%, rgba(16,185,129,0.22), transparent 70%)',
+                }}
+              />
 
-              {/* Two stacked slots — fixed pairs flip together every 4s */}
+              {/* Cinematic vignette to focus attention on the centered card */}
+              <div
+                className="pointer-events-none absolute inset-0 z-0"
+                style={{
+                  background:
+                    'radial-gradient(ellipse 95% 95% at 50% 50%, transparent 55%, rgba(0,0,0,0.55))',
+                }}
+              />
+
+              {/* One image at a time — iris reveal every 4s */}
               <AwarenessFlipShowcase />
             </motion.div>
           )}
