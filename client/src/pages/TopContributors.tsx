@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, ChevronLeft, ChevronRight, Trophy } from 'lucide-react';
+import modiCloud from '../assets/modi-cloud.png';
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 const PAGE_SIZE = 8;
@@ -60,7 +61,7 @@ const TopContributors = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#dceee2] via-[#c5e0d1] to-[#a9d2bc] text-slate-900">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-12">
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <Link
             to="/"
@@ -75,6 +76,20 @@ const TopContributors = () => {
             <h1 className="text-lg sm:text-2xl font-extrabold uppercase tracking-wider">Top Contributors</h1>
           </div>
           <span className="w-[72px]" />
+        </div>
+
+        <div className="lg:grid lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-8 lg:items-start">
+        <div className="hidden lg:block relative select-none">
+          <img
+            src={modiCloud}
+            alt="Zero hour awareness illustration"
+            className="w-full h-auto drop-shadow-[0_15px_25px_rgba(0,0,0,0.25)]"
+          />
+          <div className="absolute top-[5%] right-[2%] w-[44%] h-[24%] flex items-center justify-center px-3 text-center pointer-events-none">
+            <p className="text-slate-900 font-bold leading-tight text-xs xl:text-sm">
+              Zero hour means turning off AC's and running appliances at 50%
+            </p>
+          </div>
         </div>
 
         <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 shadow-xl overflow-hidden">
@@ -152,6 +167,7 @@ const TopContributors = () => {
               )}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </div>
