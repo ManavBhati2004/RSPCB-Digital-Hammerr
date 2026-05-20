@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const img1 = new URL(
   '../../assets/thankyou/City Palace, Udaipur, is a palace complex situated in the city of Udaipur, Rajasthan_ It was built over a period of nearly 400 years, with contributions from several rulers of the Mewar dynasty.jpg.jpeg',
@@ -42,6 +44,12 @@ export default function FarewellSection() {
 
   return (
     <section ref={ref} className="eco-farewell reveal" aria-label="Farewell">
+      <Link
+        to="/"
+        className="absolute top-6 left-6 z-20 inline-flex items-center gap-2 px-5 py-2.5 bg-white/90 backdrop-blur text-slate-700 font-bold rounded-full shadow-md hover:shadow-lg hover:text-green-600 hover:-translate-y-0.5 transition-all text-sm sm:text-base border border-white/50"
+      >
+        <ArrowLeft size={18} /> Back to Home
+      </Link>
       <div className="eco-farewell__stage" aria-hidden="true">
         {frames.map((src, i) => (
           <img

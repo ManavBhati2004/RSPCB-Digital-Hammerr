@@ -41,6 +41,7 @@ const Calculator = () => {
   const certRef = useRef<HTMLDivElement>(null);
   const [certData, setCertData] = useState({ name: '', co2: '0.0000', unit: '', date: '' });
   const [isGeneratingCert, setIsGeneratingCert] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
 
   const identityLabel = useType === 'Personal' ? 'Personal Use' : (factoryName.trim() || 'Factory Use');
 
@@ -65,6 +66,8 @@ const Calculator = () => {
           filename: `certificate-${safeName.replace(/\s+/g, '_')}.pdf`,
         });
       }
+      setShowThankYou(true);
+      window.scrollTo({ top: 0, behavior: 'auto' });
     } catch (err) {
       console.error('Certificate generation failed:', err);
       alert('Could not generate certificate. Please try again.');
@@ -143,6 +146,7 @@ const Calculator = () => {
 
   return (
     <>
+    {!showThankYou && (
     <div className="min-h-screen bg-slate-50 py-10 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300/30 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
@@ -362,6 +366,7 @@ const Calculator = () => {
         </div>
       </div>
     </div>
+    )}
     <CertificateCanvas
       ref={certRef}
       name={certData.name}
@@ -369,7 +374,7 @@ const Calculator = () => {
       unit={certData.unit}
       date={certData.date}
     />
-    <FarewellSection />
+    {showThankYou && <FarewellSection />}
     </>
   );
 };

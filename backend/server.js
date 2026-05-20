@@ -29,12 +29,14 @@ app.use('/api/', apiLimiter);
 
 import dataRoutes from './routes/data.js';
 import uploadRoutes from './routes/upload.js';
+import chatbotRoutes from './routes/chatbot.js';
 
 // Serve uploads statically
 app.use('/uploads', express.static('uploads'));
 
 app.use('/api/data', dataRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // Default Route
 app.get('/', (req, res) => {
