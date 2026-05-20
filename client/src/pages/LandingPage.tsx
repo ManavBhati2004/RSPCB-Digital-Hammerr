@@ -39,42 +39,28 @@ const AwarenessMarqueeRow = ({ images, direction, duration, delay }: AwarenessRo
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.8, ease: 'easeOut' }}
+      transition={{ delay, duration: 0.9, ease: 'easeOut' }}
       className="group relative overflow-hidden"
     >
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-20 sm:w-36 md:w-48 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent z-20" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-20 sm:w-36 md:w-48 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent z-20" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28 md:w-40 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent z-20" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28 md:w-40 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent z-20" />
 
       <div
-        className="animate-marquee flex w-max gap-4 sm:gap-6 md:gap-8 py-3 sm:py-4"
+        className="animate-marquee flex w-max"
         style={{
           animationDirection: direction === 'right' ? 'reverse' : 'normal',
           animationDuration: `${duration}s`,
         }}
       >
         {track.map((src, i) => (
-          <div
+          <img
             key={i}
-            className="relative shrink-0 w-[240px] sm:w-[360px] md:w-[460px] lg:w-[520px] h-[130px] sm:h-[170px] md:h-[210px] lg:h-[240px] rounded-2xl overflow-hidden shadow-[0_18px_50px_-12px_rgba(15,23,42,0.35)] ring-1 ring-white/50 bg-slate-200 transition-transform duration-500 ease-out hover:scale-[1.04] hover:shadow-[0_25px_60px_-12px_rgba(16,185,129,0.45)]"
-          >
-            <img
-              src={src}
-              alt=""
-              loading="lazy"
-              draggable={false}
-              className="w-full h-full object-cover select-none"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-white/10 pointer-events-none" />
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20 pointer-events-none" />
-            <div className="absolute -inset-px rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{
-                background:
-                  'conic-gradient(from 180deg at 50% 50%, rgba(16,185,129,0.0), rgba(16,185,129,0.35), rgba(59,130,246,0.25), rgba(16,185,129,0.0))',
-                filter: 'blur(14px)',
-                zIndex: -1,
-              }}
-            />
-          </div>
+            src={src}
+            alt=""
+            loading="lazy"
+            draggable={false}
+            className="block shrink-0 h-[170px] sm:h-[220px] md:h-[270px] lg:h-[310px] xl:h-[350px] w-auto select-none"
+          />
         ))}
       </div>
     </motion.div>
@@ -420,7 +406,7 @@ const LandingPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.7, ease: 'easeInOut' }}
-              className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-28 sm:pt-32 pb-16 sm:pb-20"
+              className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-20 sm:pt-24 pb-12 sm:pb-16"
             >
               {/* Ambient gradient orbs */}
               <div className="pointer-events-none absolute inset-0 z-0">
@@ -441,35 +427,15 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* Heading */}
-              <div className="relative z-10 px-4 sm:px-6 text-center mb-4 sm:mb-6 shrink-0">
-                <motion.h2
-                  initial={{ y: 24, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.15, duration: 0.7, ease: 'easeOut' }}
-                  className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight"
-                >
-                  Awareness <span className="text-gradient">in Motion</span>
-                </motion.h2>
-                <motion.p
-                  initial={{ y: 16, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.7, ease: 'easeOut' }}
-                  className="mt-1.5 sm:mt-2 text-xs sm:text-sm md:text-base text-slate-600 font-medium max-w-2xl mx-auto"
-                >
-                  A continuous stream of stories — cleaner air, smarter industry, and a greener Rajasthan.
-                </motion.p>
-              </div>
-
-              {/* 3 marquee rows */}
-              <div className="relative z-10 flex-1 flex flex-col justify-center gap-3 sm:gap-5 md:gap-7 min-h-0">
+              {/* 3 marquee rows — flush, no gaps */}
+              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0">
                 {awarenessRows.map((row, i) => (
                   <AwarenessMarqueeRow
                     key={i}
                     images={row.images}
                     direction={row.direction}
                     duration={row.duration}
-                    delay={0.45 + i * 0.15}
+                    delay={0.2 + i * 0.12}
                   />
                 ))}
               </div>
