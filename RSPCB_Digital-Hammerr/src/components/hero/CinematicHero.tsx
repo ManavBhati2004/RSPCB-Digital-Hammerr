@@ -11,13 +11,32 @@ interface Props {
   onTransform?: () => void;
 }
 
+// Persist the eco-optimized state so returning to Home never reverts to the polluted intro.
+const STORAGE_KEY = 'rspcb-hero-transformed';
+const readPersistedTransform = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
 export const CinematicHero: React.FC<Props> = ({ onInteract, onTransform }) => {
-  const [isTransformed, setIsTransformed] = useState(false);
+  const [isTransformed, setIsTransformed] = useState(readPersistedTransform);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (isTransformed) {
+      onInteract();
+      onTransform?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleTransform = () => {
     if (!isTransformed) {
       setIsTransformed(true);
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch {}
       onInteract(); // Pause the auto-slider
       onTransform?.();
     }

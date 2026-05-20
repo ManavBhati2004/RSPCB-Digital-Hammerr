@@ -11,16 +11,35 @@ interface Props {
   onTransform?: () => void;
 }
 
+// Persist the eco-optimized state so returning to Home (via nav, Back from a subpage,
+// or a later session) never reverts to the polluted/red intro.
+const STORAGE_KEY = 'rspcb-hero-transformed';
+const readPersistedTransform = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
 export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
-  const [isTransformed, setIsTransformed] = useState(false);
+  const [isTransformed, setIsTransformed] = useState(readPersistedTransform);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   // Responsive upward shift applied to the parallax (factory + trees) and central content
   // when entering the eco-optimized state, so they sit cleanly above the bottom slider.
   const [shifts, setShifts] = useState({ parallax: 0, content: 0 });
 
+  // If the user already transformed in a previous visit, notify the parent on mount
+  // so the navbar reveals immediately without waiting for a click.
+  useEffect(() => {
+    if (isTransformed) onTransform?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleTransform = () => {
     if (!isTransformed) {
       setIsTransformed(true);
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch {}
       onTransform?.();
     }
   };
