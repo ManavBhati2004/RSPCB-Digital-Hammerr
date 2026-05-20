@@ -2,18 +2,11 @@
 // intent so the engine can decide whether to calculate, look up knowledge, or
 // fall back to a generic response.
 
+// Order matters when keyword scores tie: formula explanations come BEFORE
+// calculations so "How is electricity carbon saved calculated?" prefers
+// the explanation over asking for missing numbers. Calculations win ties only
+// when actual numeric data is present (handled via the +3 boost below).
 const INTENT_KEYWORDS = {
-  fuel_calculation: [
-    'how much carbon', 'kitna carbon', 'carbon batao', 'emission batao',
-    'calculate emission', 'calculate carbon', 'co2', 'co₂',
-    'travelled', 'travel', 'gaya', 'gayi', 'chalayi', 'chalaya', 'chala',
-    'ride', 'drove', 'driven', 'km bike', 'km car', 'km scooter'
-  ],
-  electricity_calculation: [
-    'electricity carbon', 'bijli carbon', 'unit carbon', 'kwh saved',
-    'carbon saved', 'electricity saving', 'electricity save', 'urja bachat',
-    'zero hour', 'zero hours', 'ghante off', 'non consumption'
-  ],
   fuel_formula_explanation: [
     'fuel formula', 'petrol formula', 'diesel formula', 'how is petrol',
     'how is diesel', 'how is fuel', 'how calculate fuel', 'kaise calculate',
@@ -22,7 +15,19 @@ const INTENT_KEYWORDS = {
   electricity_formula_explanation: [
     'electricity formula', 'unit formula', 'kaise calculate electricity',
     'how is electricity', 'how does electricity calculator work',
-    'meaning of zero hours', 'zero hours meaning', 'what are zero hours'
+    'meaning of zero hours', 'zero hours meaning', 'what are zero hours',
+    'how is electricity carbon', 'electricity carbon saved calculated',
+    'how electricity carbon saved'
+  ],
+  fuel_calculation: [
+    'how much carbon', 'kitna carbon', 'carbon batao', 'emission batao',
+    'calculate emission', 'calculate carbon', 'co2', 'co₂',
+    'travelled', 'travel', 'gaya', 'gayi', 'chalayi', 'chalaya', 'chala',
+    'ride', 'drove', 'driven', 'km bike', 'km car', 'km scooter'
+  ],
+  electricity_calculation: [
+    'electricity carbon', 'bijli carbon', 'unit carbon', 'kwh saved',
+    'carbon saved', 'zero hour', 'zero hours', 'ghante off', 'non consumption'
   ],
   dashboard_explanation: [
     'dashboard', 'chart', 'graph', 'report', 'total emission', 'total submission',
@@ -37,9 +42,10 @@ const INTENT_KEYWORDS = {
     'badge', 'achievement', 'pdf certificate'
   ],
   carbon_reduction_tips: [
-    'reduce carbon', 'reduce footprint', 'carbon kam', 'footprint kam',
-    'how to reduce', 'kaise kam kare', 'carbon footprint kam',
-    'lower emission', 'tips to reduce'
+    'reduce carbon', 'reduce my carbon', 'reduce footprint', 'reduce my footprint',
+    'carbon kam', 'footprint kam', 'how to reduce', 'how can i reduce',
+    'kaise kam kare', 'carbon footprint kam', 'carbon footprint',
+    'lower emission', 'lower my emission', 'tips to reduce'
   ],
   fuel_saving_tips: [
     'save fuel', 'fuel save', 'fuel bachat', 'petrol bachat', 'diesel bachat',
@@ -55,7 +61,8 @@ const INTENT_KEYWORDS = {
   ],
   privacy_explanation: [
     'privacy', 'anonymous', 'session', 'data store', 'personal data',
-    'login required', 'do i need to login', 'safe to use'
+    'login required', 'do i need to login', 'safe to use',
+    'data safe', 'my data', 'data shared', 'is my data', 'delete my'
   ],
   general_environment_awareness: [
     'pollution', 'pradushan', 'paryavaran', 'environment', 'climate',
@@ -97,12 +104,13 @@ export function detectIntent(text, parsed) {
     if (hits > 0) scores[intent] = hits;
   }
 
-  // Boost calculation intents when structured data is already extracted.
-  if (parsed?.distanceKm != null || parsed?.vehicleType || parsed?.fuelType) {
-    scores.fuel_calculation = (scores.fuel_calculation || 0) + 2;
+  // Boost calculation intents only when we have actual numeric data — not just
+  // a topic hint — so "give electricity saving tips" doesn't become a calc ask.
+  if (parsed?.distanceKm != null && (parsed?.vehicleType || parsed?.fuelType)) {
+    scores.fuel_calculation = (scores.fuel_calculation || 0) + 3;
   }
-  if (parsed?.consumption != null || parsed?.nonConsumption != null || parsed?.mentionsElectricity) {
-    scores.electricity_calculation = (scores.electricity_calculation || 0) + 2;
+  if (parsed?.consumption != null || parsed?.nonConsumption != null) {
+    scores.electricity_calculation = (scores.electricity_calculation || 0) + 3;
   }
 
   const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);

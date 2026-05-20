@@ -28,8 +28,17 @@ const ZERO_HOURS_HINTS = [
   'non-consumption', 'nonconsumption', 'shunya ghante'
 ];
 
+// Word-boundary aware contains check. For Latin-only needles (single token or
+// multi-word) we use \b to avoid false positives like "car" inside "carbon".
+// For needles that contain non-Latin characters (e.g. Devanagari) we fall back
+// to plain substring matching since \b is only defined for [A-Za-z0-9_].
 function containsAny(haystack, needles) {
-  return needles.some((n) => haystack.includes(n));
+  return needles.some((n) => {
+    const isLatin = /^[a-z0-9 .'\-]+$/i.test(n);
+    if (!isLatin) return haystack.includes(n);
+    const escaped = n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, 'i').test(haystack);
+  });
 }
 
 function extractDistanceKm(text) {
