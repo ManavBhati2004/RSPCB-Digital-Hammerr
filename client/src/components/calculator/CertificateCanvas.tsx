@@ -17,8 +17,8 @@ const CREAM = '#FBF7EE';
 const Leaf = ({
   cx,
   cy,
-  rx = 14,
-  ry = 6,
+  rx = 12,
+  ry = 5,
   rotate = 0,
   color = '#4A7C4A',
   opacity = 0.85,
@@ -40,7 +40,7 @@ const Leaf = ({
     <path
       d={`M-${rx} 0 L ${rx} 0`}
       stroke="#1F4D2C"
-      strokeWidth="0.6"
+      strokeWidth="0.5"
       opacity={opacity * 0.6}
     />
   </g>
@@ -48,286 +48,255 @@ const Leaf = ({
 
 const LeafyBranch = ({ flip = false }: { flip?: boolean }) => (
   <svg
-    width="380"
-    height="260"
-    viewBox="0 0 380 260"
+    width="240"
+    height="150"
+    viewBox="0 0 240 150"
     style={{ transform: flip ? 'scaleX(-1)' : undefined }}
   >
-    {/* main stem */}
+    {/* main stem - curves from upper-left corner down */}
     <path
-      d="M 5 5 C 80 30, 160 70, 230 140 S 340 220, 370 250"
+      d="M 5 5 C 50 25, 110 55, 160 90 S 220 135, 235 145"
       fill="none"
       stroke="#3D5E2C"
-      strokeWidth="2"
+      strokeWidth="1.6"
       opacity="0.85"
     />
     {/* secondary stem */}
     <path
-      d="M 80 30 q 30 40 70 50"
+      d="M 50 25 q 20 25 40 30"
       fill="none"
       stroke="#3D5E2C"
-      strokeWidth="1.4"
-      opacity="0.7"
-    />
-    <path
-      d="M 200 110 q 40 20 60 60"
-      fill="none"
-      stroke="#3D5E2C"
-      strokeWidth="1.4"
+      strokeWidth="1.2"
       opacity="0.7"
     />
 
-    {/* leaves — layered greens */}
-    <Leaf cx={30} cy={15} rx={26} ry={11} rotate={20} color="#A8C68A" opacity={0.85} />
-    <Leaf cx={60} cy={40} rx={28} ry={12} rotate={-15} color="#4A7C4A" />
-    <Leaf cx={70} cy={70} rx={22} ry={10} rotate={45} color="#2D5A2D" />
-    <Leaf cx={110} cy={50} rx={30} ry={13} rotate={10} color="#5C8B4C" />
-    <Leaf cx={130} cy={85} rx={24} ry={11} rotate={-30} color="#A8C68A" opacity={0.9} />
-    <Leaf cx={160} cy={70} rx={26} ry={12} rotate={20} color="#4A7C4A" />
-    <Leaf cx={170} cy={110} rx={22} ry={10} rotate={60} color="#2D5A2D" />
-    <Leaf cx={200} cy={95} rx={28} ry={12} rotate={-10} color="#5C8B4C" />
-    <Leaf cx={220} cy={130} rx={24} ry={11} rotate={30} color="#A8C68A" opacity={0.85} />
-    <Leaf cx={250} cy={120} rx={26} ry={12} rotate={-25} color="#4A7C4A" />
-    <Leaf cx={260} cy={160} rx={22} ry={10} rotate={70} color="#2D5A2D" />
-    <Leaf cx={280} cy={150} rx={28} ry={12} rotate={5} color="#5C8B4C" />
-    <Leaf cx={300} cy={190} rx={24} ry={11} rotate={-35} color="#A8C68A" opacity={0.9} />
-    <Leaf cx={320} cy={180} rx={26} ry={12} rotate={25} color="#4A7C4A" />
-    <Leaf cx={335} cy={215} rx={22} ry={10} rotate={75} color="#2D5A2D" />
-    <Leaf cx={355} cy={210} rx={26} ry={12} rotate={-15} color="#5C8B4C" />
+    {/* leaves */}
+    <Leaf cx={20} cy={10} rx={18} ry={8} rotate={20} color="#A8C68A" />
+    <Leaf cx={40} cy={28} rx={20} ry={9} rotate={-15} color="#4A7C4A" />
+    <Leaf cx={55} cy={50} rx={16} ry={7} rotate={45} color="#2D5A2D" />
+    <Leaf cx={80} cy={38} rx={22} ry={9} rotate={10} color="#5C8B4C" />
+    <Leaf cx={95} cy={62} rx={17} ry={8} rotate={-30} color="#A8C68A" />
+    <Leaf cx={120} cy={55} rx={20} ry={9} rotate={20} color="#4A7C4A" />
+    <Leaf cx={130} cy={82} rx={16} ry={7} rotate={60} color="#2D5A2D" />
+    <Leaf cx={150} cy={75} rx={20} ry={9} rotate={-10} color="#5C8B4C" />
+    <Leaf cx={170} cy={100} rx={17} ry={8} rotate={30} color="#A8C68A" />
+    <Leaf cx={185} cy={92} rx={20} ry={9} rotate={-25} color="#4A7C4A" />
+    <Leaf cx={200} cy={120} rx={16} ry={7} rotate={70} color="#2D5A2D" />
+    <Leaf cx={215} cy={115} rx={20} ry={9} rotate={5} color="#5C8B4C" />
   </svg>
 );
 
 const Birds = () => (
-  <svg width="140" height="48" viewBox="0 0 140 48">
-    <g fill="none" stroke="#1F4D2C" strokeWidth="2" strokeLinecap="round">
-      <path d="M5 22 q 8 -8 16 0 q 8 -8 16 0" opacity="0.85" />
-      <path d="M50 12 q 6 -6 12 0 q 6 -6 12 0" opacity="0.9" />
-      <path d="M85 28 q 7 -7 14 0 q 7 -7 14 0" opacity="0.8" />
-      <path d="M115 8 q 5 -5 10 0 q 5 -5 10 0" opacity="0.75" />
+  <svg width="110" height="36" viewBox="0 0 110 36">
+    <g fill="none" stroke="#1F4D2C" strokeWidth="1.6" strokeLinecap="round">
+      <path d="M5 18 q 6 -6 12 0 q 6 -6 12 0" opacity="0.85" />
+      <path d="M40 8 q 5 -5 10 0 q 5 -5 10 0" opacity="0.9" />
+      <path d="M65 22 q 5 -5 10 0 q 5 -5 10 0" opacity="0.8" />
+      <path d="M90 6 q 4 -4 8 0 q 4 -4 8 0" opacity="0.75" />
     </g>
   </svg>
 );
 
 const BottomLeftScene = () => (
-  <svg width="460" height="280" viewBox="0 0 460 280">
-    {/* sky-level soft haze */}
-    <ellipse cx="120" cy="80" rx="80" ry="20" fill="#D9E5C2" opacity="0.4" />
-
+  <svg width="380" height="160" viewBox="0 0 380 160">
     {/* distant hill */}
     <path
-      d="M 0 200 Q 80 140 180 170 Q 280 200 460 180 L 460 280 L 0 280 Z"
+      d="M 0 90 Q 70 60 150 75 Q 240 92 380 80 L 380 160 L 0 160 Z"
       fill="#B5D098"
-      opacity="0.55"
+      opacity="0.6"
     />
     {/* mid hill */}
     <path
-      d="M 0 230 Q 100 180 200 210 Q 320 240 460 215 L 460 280 L 0 280 Z"
+      d="M 0 115 Q 90 90 180 105 Q 280 122 380 110 L 380 160 L 0 160 Z"
       fill="#7BA85A"
-      opacity="0.7"
+      opacity="0.75"
     />
     {/* near hill / grass */}
     <path
-      d="M 0 250 Q 120 230 240 245 Q 360 260 460 248 L 460 280 L 0 280 Z"
+      d="M 0 135 Q 100 120 200 130 Q 300 140 380 132 L 380 160 L 0 160 Z"
       fill="#4A7C4A"
-      opacity="0.8"
+      opacity="0.85"
     />
 
     {/* wind turbine 1 */}
-    <g transform="translate(80 150)">
-      <rect x="-1.5" y="0" width="3" height="90" fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.5" />
-      <circle cx="0" cy="0" r="3" fill="#5C6B4C" />
-      {/* 3 blades */}
-      <g fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.5">
-        <path d="M 0 -2 L 28 -6 L 30 0 L 0 2 Z" transform="rotate(20)" />
-        <path d="M 0 -2 L 28 -6 L 30 0 L 0 2 Z" transform="rotate(140)" />
-        <path d="M 0 -2 L 28 -6 L 30 0 L 0 2 Z" transform="rotate(260)" />
+    <g transform="translate(60 70)">
+      <rect x="-1.2" y="0" width="2.4" height="65" fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.4" />
+      <circle cx="0" cy="0" r="2.4" fill="#5C6B4C" />
+      <g fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.4">
+        <path d="M 0 -1.6 L 22 -5 L 24 0 L 0 1.6 Z" transform="rotate(20)" />
+        <path d="M 0 -1.6 L 22 -5 L 24 0 L 0 1.6 Z" transform="rotate(140)" />
+        <path d="M 0 -1.6 L 22 -5 L 24 0 L 0 1.6 Z" transform="rotate(260)" />
       </g>
     </g>
 
-    {/* wind turbine 2 (smaller, further back) */}
-    <g transform="translate(150 175)">
-      <rect x="-1" y="0" width="2" height="65" fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.5" />
-      <circle cx="0" cy="0" r="2.2" fill="#5C6B4C" />
-      <g fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.5">
-        <path d="M 0 -1.5 L 20 -4 L 22 0 L 0 1.5 Z" transform="rotate(60)" />
-        <path d="M 0 -1.5 L 20 -4 L 22 0 L 0 1.5 Z" transform="rotate(180)" />
-        <path d="M 0 -1.5 L 20 -4 L 22 0 L 0 1.5 Z" transform="rotate(300)" />
+    {/* wind turbine 2 */}
+    <g transform="translate(115 88)">
+      <rect x="-1" y="0" width="2" height="48" fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.4" />
+      <circle cx="0" cy="0" r="1.8" fill="#5C6B4C" />
+      <g fill="#F5F5F0" stroke="#7A8B6B" strokeWidth="0.4">
+        <path d="M 0 -1.2 L 17 -3.5 L 18 0 L 0 1.2 Z" transform="rotate(60)" />
+        <path d="M 0 -1.2 L 17 -3.5 L 18 0 L 0 1.2 Z" transform="rotate(180)" />
+        <path d="M 0 -1.2 L 17 -3.5 L 18 0 L 0 1.2 Z" transform="rotate(300)" />
       </g>
     </g>
 
-    {/* tree 1 — large fluffy canopy */}
-    <g transform="translate(250 240)">
-      <rect x="-3" y="-30" width="6" height="32" fill="#6B4423" />
-      <circle cx="0" cy="-55" r="28" fill="#3D7A3D" opacity="0.85" />
-      <circle cx="-18" cy="-45" r="20" fill="#5C8B4C" opacity="0.85" />
-      <circle cx="18" cy="-45" r="22" fill="#4A7C4A" opacity="0.85" />
-      <circle cx="0" cy="-72" r="22" fill="#5C8B4C" opacity="0.85" />
-      <circle cx="-12" cy="-65" r="18" fill="#3D7A3D" opacity="0.8" />
+    {/* tree 1 */}
+    <g transform="translate(195 140)">
+      <rect x="-2.5" y="-22" width="5" height="24" fill="#6B4423" />
+      <circle cx="0" cy="-40" r="20" fill="#3D7A3D" opacity="0.85" />
+      <circle cx="-13" cy="-32" r="14" fill="#5C8B4C" opacity="0.85" />
+      <circle cx="13" cy="-32" r="15" fill="#4A7C4A" opacity="0.85" />
+      <circle cx="0" cy="-52" r="15" fill="#5C8B4C" opacity="0.85" />
     </g>
 
-    {/* tree 2 — taller slimmer */}
-    <g transform="translate(330 245)">
-      <rect x="-3" y="-50" width="6" height="52" fill="#6B4423" />
-      <circle cx="0" cy="-80" r="22" fill="#3D7A3D" opacity="0.85" />
-      <circle cx="-14" cy="-70" r="16" fill="#5C8B4C" opacity="0.85" />
-      <circle cx="14" cy="-70" r="18" fill="#4A7C4A" opacity="0.85" />
-      <circle cx="0" cy="-95" r="16" fill="#5C8B4C" opacity="0.85" />
+    {/* tree 2 */}
+    <g transform="translate(255 142)">
+      <rect x="-2.5" y="-30" width="5" height="32" fill="#6B4423" />
+      <circle cx="0" cy="-50" r="16" fill="#3D7A3D" opacity="0.85" />
+      <circle cx="-10" cy="-42" r="11" fill="#5C8B4C" opacity="0.85" />
+      <circle cx="10" cy="-42" r="13" fill="#4A7C4A" opacity="0.85" />
+      <circle cx="0" cy="-60" r="11" fill="#5C8B4C" opacity="0.85" />
     </g>
 
-    {/* tree 3 — small */}
-    <g transform="translate(395 248)">
-      <rect x="-2" y="-22" width="4" height="24" fill="#6B4423" />
-      <circle cx="0" cy="-38" r="16" fill="#3D7A3D" opacity="0.85" />
-      <circle cx="-10" cy="-32" r="11" fill="#5C8B4C" opacity="0.85" />
-      <circle cx="10" cy="-32" r="12" fill="#4A7C4A" opacity="0.85" />
-    </g>
-
-    {/* foreground grass tufts */}
-    <g fill="#3D5E2C" opacity="0.7">
-      <path d="M 20 270 q 3 -8 6 0 q 3 -8 6 0 z" />
-      <path d="M 200 270 q 3 -8 6 0 q 3 -8 6 0 z" />
-      <path d="M 440 268 q 3 -8 6 0 q 3 -8 6 0 z" />
+    {/* tree 3 small */}
+    <g transform="translate(310 144)">
+      <rect x="-2" y="-16" width="4" height="17" fill="#6B4423" />
+      <circle cx="0" cy="-28" r="12" fill="#3D7A3D" opacity="0.85" />
+      <circle cx="-8" cy="-22" r="8" fill="#5C8B4C" opacity="0.85" />
+      <circle cx="8" cy="-22" r="9" fill="#4A7C4A" opacity="0.85" />
     </g>
   </svg>
 );
 
 const BottomRightScene = () => (
-  <svg width="460" height="280" viewBox="0 0 460 280">
-    {/* soft haze behind city */}
-    <ellipse cx="280" cy="100" rx="180" ry="30" fill="#D9E5C2" opacity="0.35" />
+  <svg width="380" height="160" viewBox="0 0 380 160">
+    {/* soft haze */}
+    <ellipse cx="240" cy="50" rx="140" ry="22" fill="#D9E5C2" opacity="0.4" />
 
-    {/* distant tall building */}
+    {/* tall building back */}
     <g>
-      <rect x="320" y="60" width="40" height="180" fill="#5C8B6C" opacity="0.75" />
-      {/* windows */}
-      <g fill="#FBF7EE" opacity="0.5">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <rect key={`b1-${i}`} x="326" y={70 + i * 16} width="6" height="6" />
+      <rect x="240" y="20" width="34" height="135" fill="#5C8B6C" opacity="0.78" />
+      <g fill="#FBF7EE" opacity="0.55">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <rect key={`b1a-${i}`} x="246" y={28 + i * 14} width="5" height="5" />
         ))}
-        {Array.from({ length: 10 }).map((_, i) => (
-          <rect key={`b1b-${i}`} x="340" y={70 + i * 16} width="6" height="6" />
+        {Array.from({ length: 9 }).map((_, i) => (
+          <rect key={`b1b-${i}`} x="257" y={28 + i * 14} width="5" height="5" />
         ))}
-        {Array.from({ length: 10 }).map((_, i) => (
-          <rect key={`b1c-${i}`} x="352" y={70 + i * 16} width="6" height="6" />
+        {Array.from({ length: 9 }).map((_, i) => (
+          <rect key={`b1c-${i}`} x="266" y={28 + i * 14} width="5" height="5" />
         ))}
       </g>
     </g>
 
-    {/* building 2 - medium */}
+    {/* building 2 medium */}
     <g>
-      <rect x="265" y="120" width="50" height="120" fill="#4A7C5C" opacity="0.85" />
+      <rect x="200" y="60" width="40" height="95" fill="#4A7C5C" opacity="0.85" />
       <g fill="#FBF7EE" opacity="0.55">
-        {Array.from({ length: 6 }).map((_, row) =>
+        {Array.from({ length: 5 }).map((_, row) =>
           Array.from({ length: 3 }).map((_, col) => (
             <rect
               key={`b2-${row}-${col}`}
-              x={273 + col * 14}
-              y={130 + row * 16}
-              width="6"
-              height="6"
+              x={207 + col * 11}
+              y={70 + row * 14}
+              width="5"
+              height="5"
             />
           ))
         )}
       </g>
     </g>
 
-    {/* building 3 - tallest */}
+    {/* building 3 tallest */}
     <g>
-      <rect x="370" y="40" width="32" height="200" fill="#3D6B4A" opacity="0.9" />
+      <rect x="280" y="10" width="28" height="145" fill="#3D6B4A" opacity="0.9" />
       <g fill="#FBF7EE" opacity="0.55">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <rect key={`b3-${i}`} x="376" y={48 + i * 16} width="5" height="6" />
+        {Array.from({ length: 10 }).map((_, i) => (
+          <rect key={`b3a-${i}`} x="286" y={18 + i * 14} width="4" height="5" />
         ))}
-        {Array.from({ length: 12 }).map((_, i) => (
-          <rect key={`b3b-${i}`} x="388" y={48 + i * 16} width="5" height="6" />
+        {Array.from({ length: 10 }).map((_, i) => (
+          <rect key={`b3b-${i}`} x="296" y={18 + i * 14} width="4" height="5" />
         ))}
       </g>
     </g>
 
-    {/* building 4 - rear right */}
+    {/* building 4 right */}
     <g>
-      <rect x="410" y="90" width="40" height="150" fill="#5C8B6C" opacity="0.7" />
+      <rect x="315" y="40" width="36" height="115" fill="#5C8B6C" opacity="0.72" />
       <g fill="#FBF7EE" opacity="0.5">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <rect key={`b4-${i}`} x="416" y={100 + i * 16} width="6" height="6" />
+        {Array.from({ length: 7 }).map((_, i) => (
+          <rect key={`b4a-${i}`} x="322" y={50 + i * 14} width="5" height="5" />
         ))}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <rect key={`b4b-${i}`} x="430" y={100 + i * 16} width="6" height="6" />
+        {Array.from({ length: 7 }).map((_, i) => (
+          <rect key={`b4b-${i}`} x="334" y={50 + i * 14} width="5" height="5" />
         ))}
       </g>
     </g>
 
-    {/* building 5 - left mid */}
+    {/* building 5 left small */}
     <g>
-      <rect x="220" y="150" width="40" height="90" fill="#6B9A7C" opacity="0.8" />
+      <rect x="165" y="95" width="34" height="60" fill="#6B9A7C" opacity="0.8" />
       <g fill="#FBF7EE" opacity="0.55">
-        {Array.from({ length: 5 }).map((_, row) =>
+        {Array.from({ length: 3 }).map((_, row) =>
           Array.from({ length: 2 }).map((_, col) => (
             <rect
               key={`b5-${row}-${col}`}
-              x={228 + col * 14}
-              y={160 + row * 14}
-              width="6"
-              height="6"
+              x={171 + col * 12}
+              y={104 + row * 12}
+              width="5"
+              height="5"
             />
           ))
         )}
       </g>
     </g>
 
-    {/* small low building */}
-    <rect x="180" y="180" width="36" height="60" fill="#7BA88C" opacity="0.7" />
-
-    {/* solar panel 1 — large angled */}
-    <g transform="translate(60 220)">
-      <path d="M 0 0 L 60 -28 L 96 -22 L 36 6 Z" fill="#2C3E50" stroke="#1A2530" strokeWidth="1" />
-      {/* grid lines */}
-      <g stroke="#3F5A6F" strokeWidth="0.6">
-        <path d="M 12 -6 L 70 -25" />
-        <path d="M 24 -12 L 80 -23" />
-        <path d="M 36 -18 L 90 -22" />
-        <path d="M 20 0 L 56 -25" />
-        <path d="M 40 0 L 76 -25" />
-        <path d="M 60 0 L 96 -25" />
-      </g>
-      {/* stand */}
-      <rect x="38" y="2" width="3" height="20" fill="#2C2C2C" />
-      <rect x="80" y="-2" width="3" height="20" fill="#2C2C2C" />
-    </g>
-
-    {/* solar panel 2 — slightly smaller, behind */}
-    <g transform="translate(140 230)">
-      <path d="M 0 0 L 44 -22 L 70 -18 L 26 4 Z" fill="#34495E" stroke="#1A2530" strokeWidth="0.8" />
+    {/* solar panel 1 */}
+    <g transform="translate(40 130)">
+      <path d="M 0 0 L 48 -22 L 78 -18 L 30 5 Z" fill="#2C3E50" stroke="#1A2530" strokeWidth="0.8" />
       <g stroke="#3F5A6F" strokeWidth="0.5">
-        <path d="M 10 -5 L 52 -20" />
-        <path d="M 18 -10 L 60 -19" />
-        <path d="M 14 0 L 40 -20" />
-        <path d="M 30 0 L 56 -20" />
+        <path d="M 10 -5 L 56 -20" />
+        <path d="M 20 -10 L 66 -19" />
+        <path d="M 30 -15 L 74 -18" />
+        <path d="M 16 0 L 46 -20" />
+        <path d="M 32 0 L 62 -20" />
       </g>
-      <rect x="26" y="2" width="2.5" height="14" fill="#2C2C2C" />
-      <rect x="56" y="-2" width="2.5" height="14" fill="#2C2C2C" />
+      <rect x="30" y="2" width="2.5" height="14" fill="#2C2C2C" />
+      <rect x="64" y="-2" width="2.5" height="14" fill="#2C2C2C" />
     </g>
 
-    {/* greenery silhouette at base */}
+    {/* solar panel 2 smaller */}
+    <g transform="translate(100 138)">
+      <path d="M 0 0 L 36 -18 L 56 -14 L 20 4 Z" fill="#34495E" stroke="#1A2530" strokeWidth="0.6" />
+      <g stroke="#3F5A6F" strokeWidth="0.4">
+        <path d="M 8 -4 L 42 -16" />
+        <path d="M 14 -8 L 48 -15" />
+        <path d="M 11 0 L 32 -16" />
+        <path d="M 24 0 L 45 -16" />
+      </g>
+      <rect x="20" y="2" width="2" height="10" fill="#2C2C2C" />
+      <rect x="45" y="-2" width="2" height="10" fill="#2C2C2C" />
+    </g>
+
+    {/* greenery */}
     <g fill="#3D6B4A" opacity="0.85">
-      <circle cx="20" cy="265" r="14" />
-      <circle cx="38" cy="260" r="17" />
-      <circle cx="60" cy="266" r="13" />
-      <circle cx="200" cy="262" r="15" />
-      <circle cx="225" cy="265" r="12" />
-      <circle cx="290" cy="252" r="14" />
-      <circle cx="380" cy="255" r="13" />
-      <circle cx="430" cy="262" r="15" />
+      <circle cx="10" cy="150" r="10" />
+      <circle cx="24" cy="146" r="13" />
+      <circle cx="40" cy="150" r="10" />
+      <circle cx="155" cy="148" r="11" />
+      <circle cx="174" cy="150" r="9" />
+      <circle cx="218" cy="148" r="11" />
+      <circle cx="370" cy="148" r="10" />
     </g>
     {/* ground line */}
-    <rect x="0" y="270" width="460" height="10" fill="#4A7C4A" opacity="0.7" />
+    <rect x="0" y="152" width="380" height="8" fill="#4A7C4A" opacity="0.7" />
   </svg>
 );
 
-// ---------- Existing decorative bits (kept) ----------
+// ---------- Decorative bits ----------
 
 const LeafDivider = () => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, width: '70%', margin: '0 auto' }}>
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, width: '60%', margin: '0 auto' }}>
     <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, transparent, ${GOLD}, ${GOLD})` }} />
     <svg width="44" height="20" viewBox="0 0 44 20">
       <g fill={FOREST}>
@@ -341,10 +310,10 @@ const LeafDivider = () => (
 );
 
 const SideLeaves = ({ flip }: { flip?: boolean }) => (
-  <svg width="60" height="24" viewBox="0 0 60 24" style={{ transform: flip ? 'scaleX(-1)' : undefined }}>
+  <svg width="56" height="22" viewBox="0 0 56 22" style={{ transform: flip ? 'scaleX(-1)' : undefined }}>
     <g fill={FOREST}>
-      <path d="M10 12 q 10 -8 22 -2 q -10 6 -22 2 z" />
-      <path d="M34 12 q 8 -2 16 0 q -6 4 -16 0 z" opacity="0.7" />
+      <path d="M8 11 q 10 -8 22 -2 q -10 6 -22 2 z" />
+      <path d="M32 11 q 8 -2 16 0 q -6 4 -16 0 z" opacity="0.7" />
     </g>
   </svg>
 );
@@ -352,8 +321,8 @@ const SideLeaves = ({ flip }: { flip?: boolean }) => (
 const Co2Badge = () => (
   <div
     style={{
-      width: 60,
-      height: 60,
+      width: 56,
+      height: 56,
       borderRadius: '50%',
       border: `2px solid ${FOREST}`,
       background: `radial-gradient(circle at 30% 30%, #EAF2DB, #C8D9B0)`,
@@ -362,18 +331,47 @@ const Co2Badge = () => (
       justifyContent: 'center',
       fontFamily: '"Playfair Display", serif',
       fontWeight: 700,
-      fontSize: 16,
+      fontSize: 15,
       color: FOREST,
       position: 'relative',
       flexShrink: 0,
     }}
   >
-    <svg width="60" height="60" viewBox="0 0 60 60" style={{ position: 'absolute', top: 0, left: 0 }}>
-      <path d="M10 38 q 10 -18 25 -18 q 3 11 -6 22 q -12 5 -19 -4 z" fill={FOREST} opacity="0.2" />
+    <svg width="56" height="56" viewBox="0 0 56 56" style={{ position: 'absolute', top: 0, left: 0 }}>
+      <path d="M9 35 q 9 -16 23 -16 q 3 10 -5 20 q -11 5 -18 -4 z" fill={FOREST} opacity="0.2" />
     </svg>
     <span style={{ position: 'relative', zIndex: 1 }}>
-      CO<sub style={{ fontSize: 10 }}>2</sub>
+      CO<sub style={{ fontSize: 9 }}>2</sub>
     </span>
+  </div>
+);
+
+const CalendarBadge = () => (
+  <div
+    style={{
+      width: 56,
+      height: 56,
+      borderRadius: '50%',
+      border: `2px solid ${FOREST}`,
+      background: `radial-gradient(circle at 30% 30%, #EAF2DB, #C8D9B0)`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      flexShrink: 0,
+    }}
+  >
+    <svg width="32" height="32" viewBox="0 0 32 32">
+      <rect x="4" y="6" width="24" height="22" rx="2" fill="none" stroke={FOREST} strokeWidth="2" />
+      <line x1="4" y1="12" x2="28" y2="12" stroke={FOREST} strokeWidth="2" />
+      <line x1="10" y1="3" x2="10" y2="9" stroke={FOREST} strokeWidth="2" strokeLinecap="round" />
+      <line x1="22" y1="3" x2="22" y2="9" stroke={FOREST} strokeWidth="2" strokeLinecap="round" />
+      <rect x="9" y="16" width="3" height="3" fill={FOREST} />
+      <rect x="14" y="16" width="3" height="3" fill={FOREST} />
+      <rect x="19" y="16" width="3" height="3" fill={FOREST} />
+      <rect x="9" y="21" width="3" height="3" fill={FOREST} />
+      <rect x="14" y="21" width="3" height="3" fill={FOREST} />
+    </svg>
   </div>
 );
 
@@ -410,26 +408,21 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
         }}
       />
 
-      {/* Scenery layer — watercolor illustrations */}
+      {/* Scenery — corner-only positioning */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-        {/* Top-left branch */}
-        <div style={{ position: 'absolute', top: 0, left: 0 }}>
+        <div style={{ position: 'absolute', top: 34, left: 34 }}>
           <LeafyBranch />
         </div>
-        {/* Top-right branch */}
-        <div style={{ position: 'absolute', top: 0, right: 0 }}>
+        <div style={{ position: 'absolute', top: 34, right: 34 }}>
           <LeafyBranch flip />
         </div>
-        {/* Birds top-right */}
-        <div style={{ position: 'absolute', top: 80, right: 60 }}>
+        <div style={{ position: 'absolute', top: 70, right: 70 }}>
           <Birds />
         </div>
-        {/* Bottom-left scene */}
-        <div style={{ position: 'absolute', bottom: 36, left: 36 }}>
+        <div style={{ position: 'absolute', bottom: 34, left: 34 }}>
           <BottomLeftScene />
         </div>
-        {/* Bottom-right scene */}
-        <div style={{ position: 'absolute', bottom: 36, right: 36 }}>
+        <div style={{ position: 'absolute', bottom: 34, right: 34 }}>
           <BottomRightScene />
         </div>
       </div>
@@ -445,7 +438,6 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
           pointerEvents: 'none',
         }}
       />
-      {/* Inner green border */}
       <div
         style={{
           position: 'absolute',
@@ -457,29 +449,31 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
         }}
       />
 
-      {/* Content */}
+      {/* Content — single flex column, padding reserves space for scenery */}
       <div
         style={{
           position: 'relative',
           zIndex: 4,
-          padding: '60px 110px 50px',
+          padding: '56px 80px 0',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
           textAlign: 'center',
+          boxSizing: 'border-box',
         }}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
           <SideLeaves />
           <h1
             style={{
               fontFamily: '"Playfair Display", serif',
               fontWeight: 900,
-              fontSize: 36,
-              letterSpacing: 6,
+              fontSize: 32,
+              letterSpacing: 5,
               color: FOREST,
               margin: 0,
+              whiteSpace: 'nowrap',
             }}
           >
             ENVIRONMENT DAY CAMPAIGN
@@ -491,9 +485,9 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
           style={{
             fontFamily: '"Cormorant Garamond", serif',
             fontStyle: 'italic',
-            fontSize: 18,
+            fontSize: 17,
             color: OLIVE,
-            margin: '10px 0 16px',
+            margin: '8px 0 12px',
             fontWeight: 500,
           }}
         >
@@ -502,28 +496,29 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
 
         <LeafDivider />
 
-        {/* Main title */}
+        {/* Main title — single line */}
         <h2
           style={{
             fontFamily: '"Playfair Display", serif',
             fontWeight: 900,
-            fontSize: 50,
-            letterSpacing: 4,
+            fontSize: 44,
+            letterSpacing: 3,
             color: FOREST,
-            margin: '20px 0 4px',
+            margin: '18px 0 4px',
+            whiteSpace: 'nowrap',
           }}
         >
           CERTIFICATE OF PARTICIPATION
         </h2>
-        <div style={{ width: '50%', height: 1, background: GOLD, margin: '0 auto 18px' }} />
+        <div style={{ width: '45%', height: 1, background: GOLD, margin: '0 auto 14px' }} />
 
         <p
           style={{
             fontFamily: '"Cormorant Garamond", serif',
             fontStyle: 'italic',
-            fontSize: 20,
+            fontSize: 18,
             color: OLIVE,
-            margin: '0 0 10px',
+            margin: '0 0 8px',
           }}
         >
           This is to certify that
@@ -534,9 +529,9 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
           style={{
             fontFamily: '"Playfair Display", serif',
             fontWeight: 700,
-            fontSize: 60,
+            fontSize: 52,
             color: FOREST,
-            margin: '4px 0 8px',
+            margin: '2px 0 6px',
             lineHeight: 1.1,
             wordBreak: 'break-word',
           }}
@@ -544,30 +539,30 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
           {name || 'Participant'}
         </h3>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, margin: '0 0 14px' }}>
-          <div style={{ width: 90, height: 1, background: FOREST, opacity: 0.5 }} />
-          <svg width="22" height="14" viewBox="0 0 22 14">
-            <path d="M11 2 q -6 2 -8 6 q 5 0 8 -3 z" fill={FOREST} />
-            <path d="M11 2 q 6 2 8 6 q -5 0 -8 -3 z" fill={FOREST} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, margin: '0 0 12px' }}>
+          <div style={{ width: 80, height: 1, background: FOREST, opacity: 0.5 }} />
+          <svg width="20" height="12" viewBox="0 0 20 12">
+            <path d="M10 2 q -5 2 -7 5 q 4 0 7 -2 z" fill={FOREST} />
+            <path d="M10 2 q 5 2 7 5 q -4 0 -7 -2 z" fill={FOREST} />
           </svg>
-          <div style={{ width: 90, height: 1, background: FOREST, opacity: 0.5 }} />
+          <div style={{ width: 80, height: 1, background: FOREST, opacity: 0.5 }} />
         </div>
 
         <p
           style={{
             fontFamily: '"Cormorant Garamond", serif',
-            fontSize: 19,
+            fontSize: 17,
             color: OLIVE,
             margin: '0 auto',
-            maxWidth: 720,
-            lineHeight: 1.5,
+            maxWidth: 600,
+            lineHeight: 1.45,
           }}
         >
           has self certified that he/she has contributed towards environment awareness,
           sustainability, and carbon emission reduction initiative.
         </p>
 
-        <div style={{ margin: '14px 0 8px' }}>
+        <div style={{ margin: '12px 0 8px' }}>
           <LeafDivider />
         </div>
 
@@ -575,15 +570,18 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
           style={{
             fontFamily: '"Cormorant Garamond", serif',
             fontStyle: 'italic',
-            fontSize: 16,
+            fontSize: 15,
             color: OLIVE,
             margin: '0 auto',
-            maxWidth: 680,
+            maxWidth: 560,
             lineHeight: 1.4,
           }}
         >
           Your contribution towards building a greener and cleaner Rajasthan is sincerely appreciated.
         </p>
+
+        {/* Spacer pushes footer block to bottom of content */}
+        <div style={{ flex: 1 }} />
 
         {/* Footer row */}
         <div
@@ -591,8 +589,7 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: 'auto',
-            padding: '20px 0 0',
+            padding: '0 30px 12px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -601,8 +598,8 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
               <div
                 style={{
                   fontFamily: '"Playfair Display", serif',
-                  fontSize: 13,
-                  letterSpacing: 3,
+                  fontSize: 12,
+                  letterSpacing: 2.5,
                   color: OLIVE,
                   fontWeight: 700,
                 }}
@@ -612,42 +609,25 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
               <div
                 style={{
                   fontFamily: '"Playfair Display", serif',
-                  fontSize: 22,
+                  fontSize: 20,
                   color: FOREST,
                   fontWeight: 700,
                   marginTop: 2,
+                  whiteSpace: 'nowrap',
                 }}
               >
-                {co2} <span style={{ fontSize: 15, fontWeight: 500 }}>{unit}</span>
+                {co2} <span style={{ fontSize: 14, fontWeight: 500 }}>{unit}</span>
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: '50%',
-                background: '#D9E5C2',
-                border: `2px solid ${FOREST}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: '"Playfair Display", serif',
-                fontWeight: 700,
-                fontSize: 14,
-                color: FOREST,
-              }}
-            >
-              CAL
-            </div>
-            <div style={{ textAlign: 'left' }}>
+            <div style={{ textAlign: 'right' }}>
               <div
                 style={{
                   fontFamily: '"Playfair Display", serif',
-                  fontSize: 13,
-                  letterSpacing: 3,
+                  fontSize: 12,
+                  letterSpacing: 2.5,
                   color: OLIVE,
                   fontWeight: 700,
                 }}
@@ -657,29 +637,31 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
               <div
                 style={{
                   fontFamily: '"Playfair Display", serif',
-                  fontSize: 22,
+                  fontSize: 20,
                   color: FOREST,
                   fontWeight: 700,
                   marginTop: 2,
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {date}
               </div>
             </div>
+            <CalendarBadge />
           </div>
         </div>
 
-        {/* Disclaimer footer pill */}
+        {/* Disclaimer pill */}
         <div
           style={{
-            margin: '16px auto 0',
             padding: '6px 22px',
             border: `1px solid ${FOREST}`,
             borderRadius: 999,
             display: 'inline-block',
             alignSelf: 'center',
-            background: 'rgba(255,255,255,0.55)',
+            background: 'rgba(255,255,255,0.85)',
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+            marginBottom: 18,
           }}
         >
           <span
