@@ -98,6 +98,24 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
         )}
       </AnimatePresence>
 
+      {/* Mobile-only Modi photo — anchored to the grass band relative to the full hero so it stands
+          on the ground and stays clear of the top navbar. Hidden on md+ where the inline row layout
+          inside Central Content takes over. */}
+      <AnimatePresence>
+        {isTransformed && (
+          <motion.div
+            key="modi-mobile"
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="md:hidden absolute left-1/2 -translate-x-1/2 bottom-[22vh] w-[150px] sm:w-[190px] z-50 pointer-events-auto"
+          >
+            <ModiInteractiveCard />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Central Content — also lifted upward in the eco-optimized state so it stays above the trees */}
       <motion.div
         className="relative z-50 w-full text-center px-4 sm:px-6 pointer-events-none mt-[-6vh] sm:mt-[-12vh] md:mt-[-15vh] max-w-full"
@@ -152,10 +170,10 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               {/* Spacer to keep slogan left and Modi card right */}
               <div className="hidden md:block md:flex-1" />
 
-              {/* Right: Modi photo. On mobile, anchor to just above the grass band so the figure
-                  visually stands on the ground. From md up, restore the inline row layout. */}
+              {/* Right: Modi photo (md+ only — on mobile the photo is rendered separately below,
+                  anchored to the grass band relative to the outer hero, not this text wrapper). */}
               <motion.div
-                className="absolute left-0 right-0 bottom-[26vh] flex justify-center md:static md:bottom-auto md:left-auto md:right-auto md:w-[240px] lg:w-[340px] flex-shrink-0 md:justify-end"
+                className="hidden md:flex md:w-[240px] lg:w-[340px] flex-shrink-0 md:justify-end"
                 initial={{ opacity: 0, x: 50, scale: 0.9 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}

@@ -36,7 +36,7 @@ export const ModiInteractiveCard: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full max-w-[200px] sm:max-w-[360px] md:max-w-[500px] mx-auto aspect-[3/4] z-20 flex items-center justify-center" style={{ perspective: "1200px" }}>
+    <div className="relative w-full max-w-[260px] sm:max-w-[360px] md:max-w-[500px] mx-auto aspect-[3/4] z-20 flex items-center justify-center" style={{ perspective: "1200px" }}>
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
