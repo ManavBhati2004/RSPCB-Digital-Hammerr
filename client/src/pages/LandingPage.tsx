@@ -18,9 +18,9 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
 
 const AWARENESS_DWELL_MS = 4000;
 
-// One image at a time, iris (circular clip-path) reveal between images.
-// Old image shrinks its circle to 0 while the new image expands from 0 → full,
-// in the same DOM slot — visually reads as a single circular wipe.
+// Desktop (md+): one image at a time with a circular iris reveal between images.
+// Mobile (< md): a vertical marquee that streams all six images through a
+// 2-image visible window so something is always moving on small screens.
 const AwarenessFlipShowcase = () => {
   const [index, setIndex] = useState(0);
 
@@ -32,32 +32,63 @@ const AwarenessFlipShowcase = () => {
   }, []);
 
   const src = awarenessImages[index];
+  const doubled = [...awarenessImages, ...awarenessImages];
 
   return (
-    <div className="relative z-10 flex-1 flex items-center justify-center min-h-0 px-3 sm:px-6">
-      <div className="relative aspect-video w-[min(94vw,148dvh)]">
-        <AnimatePresence>
-          <motion.div
-            key={src}
-            initial={{ clipPath: 'circle(0% at 50% 50%)' }}
-            animate={{ clipPath: 'circle(80% at 50% 50%)' }}
-            exit={{ clipPath: 'circle(0% at 50% 50%)' }}
-            transition={{ duration: 1.05, ease: [0.65, 0, 0.35, 1] }}
-            className="absolute inset-0"
-            style={{ WebkitClipPath: 'circle(0% at 50% 50%)' }}
-          >
-            <img
-              src={src}
-              alt=""
-              loading="lazy"
-              draggable={false}
-              className="w-full h-full object-contain rounded-3xl select-none"
-              style={{ filter: 'drop-shadow(0 25px 80px rgba(16,185,129,0.45))' }}
-            />
-          </motion.div>
-        </AnimatePresence>
+    <>
+      {/* Desktop: circular iris reveal, one image at a time */}
+      <div className="hidden md:flex relative z-10 flex-1 items-center justify-center min-h-0 px-3 sm:px-6">
+        <div className="relative aspect-video w-[min(94vw,148dvh)]">
+          <AnimatePresence>
+            <motion.div
+              key={src}
+              initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+              animate={{ clipPath: 'circle(80% at 50% 50%)' }}
+              exit={{ clipPath: 'circle(0% at 50% 50%)' }}
+              transition={{ duration: 1.05, ease: [0.65, 0, 0.35, 1] }}
+              className="absolute inset-0"
+              style={{ WebkitClipPath: 'circle(0% at 50% 50%)' }}
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                draggable={false}
+                className="w-full h-full object-contain rounded-3xl select-none"
+                style={{ filter: 'drop-shadow(0 25px 80px rgba(16,185,129,0.45))' }}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile: vertical marquee, ~2 images visible at any moment */}
+      <div className="md:hidden relative z-10 flex-1 flex justify-center min-h-0 px-3 overflow-hidden">
+        <div className="w-full max-w-md relative overflow-hidden">
+          {/* Top & bottom fades so images glide in/out of view, not snap */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-slate-50 to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-slate-50 to-transparent z-10" />
+
+          <motion.div
+            className="flex flex-col gap-3 w-full will-change-transform"
+            animate={{ y: ['0%', '-50%'] }}
+            transition={{ duration: 28, ease: 'linear', repeat: Infinity }}
+          >
+            {doubled.map((s, i) => (
+              <img
+                key={i}
+                src={s}
+                alt=""
+                loading="lazy"
+                draggable={false}
+                className="w-full aspect-video object-contain rounded-2xl select-none"
+                style={{ filter: 'drop-shadow(0 15px 40px rgba(16,185,129,0.35))' }}
+              />
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </>
   );
 };
 
