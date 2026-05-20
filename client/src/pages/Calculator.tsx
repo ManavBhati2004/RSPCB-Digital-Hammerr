@@ -147,7 +147,7 @@ const Calculator = () => {
   return (
     <>
     {!showThankYou && (
-    <div className="min-h-screen bg-slate-50 py-10 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 py-10 sm:py-16 px-4 sm:px-6 xl:pr-[320px] 2xl:pr-[360px] relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300/30 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
       {/* Sticky FAQ — pinned to the right edge of the viewport, stays in place on scroll */}
@@ -155,7 +155,8 @@ const Calculator = () => {
         initial={{ opacity: 0, x: 40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
-        className="hidden xl:block fixed right-20 2xl:right-24 top-28 w-[260px] 2xl:w-[290px] z-20 pointer-events-auto"
+        style={{ left: 'auto', transform: 'none' }}
+        className="hidden xl:block fixed right-6 top-[120px] w-[260px] 2xl:w-[290px] z-50 pointer-events-auto"
       >
         <div className="relative group">
           {/* animated gradient glow */}
