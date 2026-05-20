@@ -319,8 +319,8 @@ const Calculator = () => {
                         <input type="number" required value={c1} onChange={e => setC1(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 5000" />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Non-Consumption/Grid Saving (kWh)</label>
-                        <input type="number" required value={c2} onChange={e => setC2(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 1200" />
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Zero Hours</label>
+                        <input type="number" required value={c2} onChange={e => setC2(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 3" />
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-semibold text-slate-700 mb-2">Upload Photo of Data/Bill</label>
