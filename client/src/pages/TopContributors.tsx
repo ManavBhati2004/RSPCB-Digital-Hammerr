@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ChevronLeft, ChevronRight, Trophy } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Search, Trophy } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 const PAGE_SIZE = 8;
@@ -24,6 +24,7 @@ const TopContributors = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -48,11 +49,17 @@ const TopContributors = () => {
     };
   }, []);
 
-  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const filteredRows = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((row) => row.username.toLowerCase().includes(term));
+  }, [rows, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
   const visibleRows = useMemo(
-    () => rows.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE),
-    [rows, safePage]
+    () => filteredRows.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE),
+    [filteredRows, safePage]
   );
 
   const isFirst = safePage === 0;
@@ -78,12 +85,26 @@ const TopContributors = () => {
         </div>
 
         <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 shadow-xl overflow-hidden">
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/60 flex items-center justify-between gap-3">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/60 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h3 className="text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wider">Leaderboard</h3>
               <p className="text-[10px] sm:text-xs text-slate-600">Ranked by total CO₂ saved</p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 ml-auto">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(0);
+                  }}
+                  placeholder="Search by name"
+                  aria-label="Search contributors by name"
+                  className="w-36 sm:w-48 pl-8 pr-3 py-1.5 rounded-full bg-white/80 border border-white/60 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:bg-white shadow-sm"
+                />
+              </div>
               <span className="text-[10px] sm:text-xs text-slate-600 font-semibold">
                 Page {safePage + 1} / {totalPages}
               </span>
@@ -129,6 +150,10 @@ const TopContributors = () => {
               ) : rows.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-10 text-center text-slate-500">No contributions yet</td>
+                </tr>
+              ) : filteredRows.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-4 py-10 text-center text-slate-500">No contributors match "{search}"</td>
                 </tr>
               ) : (
                 visibleRows.map((row) => (
