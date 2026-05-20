@@ -16,84 +16,52 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
   .sort()
   .map(key => awarenessImageModules[key]);
 
-type AwarenessRowDef = { pairs: [string, string][]; direction: 'left' | 'right' };
+type AwarenessRowDef = { images: string[]; direction: 'left' | 'right' };
 
 const awarenessRows: AwarenessRowDef[] = [
-  {
-    pairs: [
-      [awarenessImages[0], awarenessImages[1]],
-      [awarenessImages[2], awarenessImages[3]],
-      [awarenessImages[4], awarenessImages[5]],
-    ],
-    direction: 'right',
-  },
-  {
-    pairs: [
-      [awarenessImages[4], awarenessImages[5]],
-      [awarenessImages[0], awarenessImages[1]],
-      [awarenessImages[2], awarenessImages[3]],
-    ],
-    direction: 'left',
-  },
+  { images: [awarenessImages[0], awarenessImages[1], awarenessImages[2]], direction: 'right' },
+  { images: [awarenessImages[3], awarenessImages[4], awarenessImages[5]], direction: 'left'  },
 ];
 
-const AWARENESS_DWELL_MS = 4000;
-
 type AwarenessRowProps = {
-  pairs: [string, string][];
+  images: string[];
   direction: 'left' | 'right';
   delay: number;
 };
 
-const AwarenessFlipRow = ({ pairs, direction, delay }: AwarenessRowProps) => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setIndex(i => (i + 1) % pairs.length);
-    }, AWARENESS_DWELL_MS);
-    return () => window.clearInterval(id);
-  }, [pairs.length]);
-
-  const current = pairs[index];
+const AwarenessFlipRow = ({ images, direction, delay }: AwarenessRowProps) => {
   const flipFrom = direction === 'right' ? -90 : 90;
-  const flipTo   = direction === 'right' ? 90  : -90;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.8, ease: 'easeOut' }}
-      className="flex items-center justify-center gap-6 sm:gap-12 md:gap-16 lg:gap-24"
-    >
-      {current.map((src, slotIdx) => (
-        <div
+    <div className="flex items-center justify-center gap-5 sm:gap-8 md:gap-10 lg:gap-12">
+      {images.map((src, slotIdx) => (
+        <motion.div
           key={slotIdx}
-          className="relative shrink-0 aspect-square w-[min(42vw,38dvh)] sm:w-[min(40vw,40dvh)] md:w-[min(38vw,42dvh)] lg:w-[min(36vw,44dvh)]"
-          style={{ perspective: '1500px' }}
+          initial={{ rotateY: flipFrom, opacity: 0, y: 24 }}
+          animate={{ rotateY: 0, opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.95,
+            ease: [0.4, 0, 0.2, 1],
+            delay: delay + slotIdx * 0.18,
+          }}
+          className="relative shrink-0 aspect-square w-[min(29vw,42dvh)] sm:w-[min(29vw,43dvh)] md:w-[min(29vw,44dvh)] lg:w-[min(29vw,46dvh)]"
+          style={{
+            perspective: '1500px',
+            transformStyle: 'preserve-3d',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+          }}
         >
-          <AnimatePresence>
-            <motion.img
-              key={src}
-              src={src}
-              alt=""
-              loading="lazy"
-              draggable={false}
-              initial={{ rotateY: flipFrom, opacity: 0 }}
-              animate={{ rotateY: 0, opacity: 1 }}
-              exit={{ rotateY: flipTo, opacity: 0 }}
-              transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1], delay: slotIdx * 0.12 }}
-              className="absolute inset-0 w-full h-full object-contain select-none drop-shadow-[0_25px_60px_rgba(15,23,42,0.35)]"
-              style={{
-                transformStyle: 'preserve-3d',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-              }}
-            />
-          </AnimatePresence>
-        </div>
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-contain select-none drop-shadow-[0_25px_60px_rgba(15,23,42,0.35)]"
+          />
+        </motion.div>
       ))}
-    </motion.div>
+    </div>
   );
 };
 
@@ -457,14 +425,14 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* Two flip rows — one image pair each, swap every 4s */}
-              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-6 sm:gap-10 md:gap-14 lg:gap-16">
+              {/* Two rows × three images — all six awareness illustrations visible at once */}
+              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-5 sm:gap-8 md:gap-10 lg:gap-12">
                 {awarenessRows.map((row, i) => (
                   <AwarenessFlipRow
                     key={i}
-                    pairs={row.pairs}
+                    images={row.images}
                     direction={row.direction}
-                    delay={0.2 + i * 0.18}
+                    delay={0.2 + i * 0.35}
                   />
                 ))}
               </div>
