@@ -19,49 +19,6 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
 
 const AWARENESS_DWELL_MS = 8000;
 
-const sloganImageModules = import.meta.glob('../assets/slogan/*.{png,jpg,jpeg,webp}', {
-  eager: true,
-  import: 'default',
-}) as Record<string, string>;
-const sloganImages: string[] = Object.keys(sloganImageModules)
-  .sort()
-  .map(key => sloganImageModules[key]);
-
-const SLOGAN_DWELL_MS = 5000;
-
-const SloganLoop = () => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (sloganImages.length === 0) return;
-    const id = window.setInterval(() => {
-      setIndex(i => (i + 1) % sloganImages.length);
-    }, SLOGAN_DWELL_MS);
-    return () => window.clearInterval(id);
-  }, []);
-
-  if (sloganImages.length === 0) return null;
-
-  return (
-    <div className="pointer-events-none absolute left-0 bottom-0 z-20 w-52 h-52 sm:w-72 sm:h-72 md:w-80 md:h-80">
-      <AnimatePresence mode="wait">
-        <motion.img
-          key={sloganImages[index]}
-          src={sloganImages[index]}
-          alt=""
-          draggable={false}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-          className="absolute inset-0 w-full h-full object-contain select-none"
-          style={{ filter: 'drop-shadow(0 10px 30px rgba(16,185,129,0.35))' }}
-        />
-      </AnimatePresence>
-    </div>
-  );
-};
-
 // Desktop (md+): one image at a time with a circular iris reveal between images.
 // Mobile (< md): a vertical marquee that streams all six images through a
 // 2-image visible window so something is always moving on small screens.
@@ -464,8 +421,6 @@ const LandingPage = () => {
                 >
                 <LiveLog />
               </motion.div>
-
-              <SloganLoop />
             </motion.div>
           )}
 
