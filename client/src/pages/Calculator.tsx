@@ -323,7 +323,7 @@ const Calculator = () => {
                         <input type="number" required value={c2} onChange={e => setC2(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 3" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Upload Photo of Data/Bill</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Upload Photo</label>
                         <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="w-full max-w-full px-3 sm:px-4 py-2.5 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white text-xs sm:text-sm file:mr-3 file:py-2 file:px-3 sm:file:px-4 file:rounded-full file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
                       </div>
                     </div>
