@@ -3,6 +3,7 @@ import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Calculator from './pages/Calculator';
 import Leaderboard from './pages/Leaderboard';
+import TopContributors from './pages/TopContributors';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/top-contributors" element={<TopContributors />} />
         </Routes>
 
         {/* Universal Branding Watermark */}

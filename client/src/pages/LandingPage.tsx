@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Zap, Factory as FactoryIcon, Car } from 'lucide-react';
+import { Wind, Zap, Factory as FactoryIcon, Car, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { CinematicHero } from '../components/hero/CinematicHero';
 import { RspcbLogo } from '../components/RspcbLogo';
-import { AnalyticsLeaderboard } from '../components/analytics/AnalyticsLeaderboard';
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
@@ -61,14 +60,14 @@ const LiveLog = () => {
   const poolRef = useRef<Contributor[]>([]);
 
   // Keep the ref in sync so the long-lived rotate interval always sees the latest pool.
-  // When the pool first becomes non-empty, seed 4 entries so the panel doesn't sit blank.
+  // Seed the panel with as many entries as it can hold so it fills immediately.
   useEffect(() => {
     poolRef.current = pool;
     if (pool.length > 0) {
       setEntries(prev => {
         if (prev.length > 0) return prev;
         const seed: LogEntry[] = [];
-        for (let i = 0; i < Math.min(4, pool.length); i++) {
+        for (let i = 0; i < Math.min(30, pool.length); i++) {
           seed.push(makeEntryFromContributor(pool[Math.floor(Math.random() * pool.length)]));
         }
         return seed;
@@ -101,7 +100,7 @@ const LiveLog = () => {
     const rotate = setInterval(() => {
       if (poolRef.current.length === 0) return;
       const c = poolRef.current[Math.floor(Math.random() * poolRef.current.length)];
-      setEntries(prev => [makeEntryFromContributor(c), ...prev.slice(0, 3)]);
+      setEntries(prev => [makeEntryFromContributor(c), ...prev.slice(0, 29)]);
     }, 3500);
     const tick = setInterval(() => setNow(Date.now()), 1000);
     return () => {
@@ -381,8 +380,14 @@ const LandingPage = () => {
                     ))}
                   </div>
 
-                  <div className="mt-8">
-                    <AnalyticsLeaderboard />
+                  <div className="mt-8 flex justify-center">
+                    <Link
+                      to="/top-contributors"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-600 hover:bg-green-500 text-white font-bold shadow-lg transition-all"
+                    >
+                      <Trophy className="w-5 h-5" />
+                      Top Contributors
+                    </Link>
                   </div>
                 </div>
               </div>
