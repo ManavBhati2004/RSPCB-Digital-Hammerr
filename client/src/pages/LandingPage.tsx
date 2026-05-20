@@ -19,6 +19,49 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
 
 const AWARENESS_DWELL_MS = 8000;
 
+const sloganImageModules = import.meta.glob('../assets/slogan/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>;
+const sloganImages: string[] = Object.keys(sloganImageModules)
+  .sort()
+  .map(key => sloganImageModules[key]);
+
+const SLOGAN_DWELL_MS = 5000;
+
+const SloganLoop = () => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (sloganImages.length === 0) return;
+    const id = window.setInterval(() => {
+      setIndex(i => (i + 1) % sloganImages.length);
+    }, SLOGAN_DWELL_MS);
+    return () => window.clearInterval(id);
+  }, []);
+
+  if (sloganImages.length === 0) return null;
+
+  return (
+    <div className="pointer-events-none absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64">
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={sloganImages[index]}
+          src={sloganImages[index]}
+          alt=""
+          draggable={false}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
+          className="absolute inset-0 w-full h-full object-contain select-none"
+          style={{ filter: 'drop-shadow(0 10px 30px rgba(16,185,129,0.35))' }}
+        />
+      </AnimatePresence>
+    </div>
+  );
+};
+
 // Desktop (md+): one image at a time with a circular iris reveal between images.
 // Mobile (< md): a vertical marquee that streams all six images through a
 // 2-image visible window so something is always moving on small screens.
@@ -379,7 +422,7 @@ const LandingPage = () => {
 
               {/* Main content (header + stat cards), reserves right space for the log on lg+ */}
               <div className="absolute inset-0 px-4 sm:px-6 pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-20 lg:pr-[440px] flex flex-col items-center justify-center">
-                <div className="w-full max-w-3xl mx-auto">
+                <div className="w-full max-w-3xl mx-auto -translate-y-[10%]">
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live State Intelligence</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8">
                     {[
@@ -421,6 +464,8 @@ const LandingPage = () => {
                 >
                 <LiveLog />
               </motion.div>
+
+              <SloganLoop />
             </motion.div>
           )}
 
