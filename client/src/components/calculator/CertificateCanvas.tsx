@@ -454,7 +454,7 @@ const CertificateCanvas = forwardRef<HTMLDivElement, Props>(({ name, co2, unit, 
         style={{
           position: 'relative',
           zIndex: 4,
-          padding: '56px 80px 0',
+          padding: '56px 80px 160px',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
