@@ -1,10 +1,85 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Zap, Factory as FactoryIcon, Car, Trophy } from 'lucide-react';
+import { Wind, Factory as FactoryIcon, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { CinematicHero } from '../components/hero/CinematicHero';
 import { RspcbLogo } from '../components/RspcbLogo';
+
+// Pull every awareness illustration from the assets folder, sorted by filename
+// so the row layout stays deterministic across builds.
+const awarenessImageModules = import.meta.glob('../assets/awareness/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>;
+const awarenessImages: string[] = Object.keys(awarenessImageModules)
+  .sort()
+  .map(key => awarenessImageModules[key]);
+
+const awarenessRows: { images: string[]; direction: 'left' | 'right'; duration: number }[] = [
+  { images: [awarenessImages[0], awarenessImages[1]], direction: 'right', duration: 70 },
+  { images: [awarenessImages[2], awarenessImages[3]], direction: 'left',  duration: 85 },
+  { images: [awarenessImages[4], awarenessImages[5]], direction: 'right', duration: 75 },
+];
+
+type AwarenessRowProps = {
+  images: string[];
+  direction: 'left' | 'right';
+  duration: number;
+  delay: number;
+};
+
+const AwarenessMarqueeRow = ({ images, direction, duration, delay }: AwarenessRowProps) => {
+  // Tile the two images several times so the base set is wider than the viewport;
+  // duplicate that base to give the -50% translate a seamless wrap-around.
+  const base = [...images, ...images, ...images, ...images];
+  const track = [...base, ...base];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.8, ease: 'easeOut' }}
+      className="group relative overflow-hidden"
+    >
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-20 sm:w-36 md:w-48 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent z-20" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-20 sm:w-36 md:w-48 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent z-20" />
+
+      <div
+        className="animate-marquee flex w-max gap-4 sm:gap-6 md:gap-8 py-3 sm:py-4"
+        style={{
+          animationDirection: direction === 'right' ? 'reverse' : 'normal',
+          animationDuration: `${duration}s`,
+        }}
+      >
+        {track.map((src, i) => (
+          <div
+            key={i}
+            className="relative shrink-0 w-[240px] sm:w-[360px] md:w-[460px] lg:w-[520px] h-[130px] sm:h-[170px] md:h-[210px] lg:h-[240px] rounded-2xl overflow-hidden shadow-[0_18px_50px_-12px_rgba(15,23,42,0.35)] ring-1 ring-white/50 bg-slate-200 transition-transform duration-500 ease-out hover:scale-[1.04] hover:shadow-[0_25px_60px_-12px_rgba(16,185,129,0.45)]"
+          >
+            <img
+              src={src}
+              alt=""
+              loading="lazy"
+              draggable={false}
+              className="w-full h-full object-cover select-none"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-white/10 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20 pointer-events-none" />
+            <div className="absolute -inset-px rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background:
+                  'conic-gradient(from 180deg at 50% 50%, rgba(16,185,129,0.0), rgba(16,185,129,0.35), rgba(59,130,246,0.25), rgba(16,185,129,0.0))',
+                filter: 'blur(14px)',
+                zIndex: -1,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
@@ -158,74 +233,10 @@ const LiveLog = () => {
   );
 };
 
-const awarenessSlides = [
-  {
-    title: 'Industrial & Logistics Awareness',
-    body: 'By optimizing factory operations to off-peak hours and transitioning state logistics fleets to electric vehicles, Rajasthan can slash its carbon footprint by over 60%.',
-    points: [
-      'Shift heavy industrial loads to non-peak hours',
-      'Transition short-distance logistics to EV fleets',
-      'Implement IoT automated lighting and HVAC',
-    ],
-    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    imageAlt: 'EV vehicle charging',
-    caption: 'The Future of Green Transit',
-    icon: Car,
-    accent: 'text-blue-600',
-    tint: 'bg-blue-100',
-  },
-  {
-    title: 'Off-Peak Power Planning',
-    body: 'Factories can lower grid stress and emissions by moving heavy electricity consumption to cleaner, lower-demand operating windows.',
-    points: [
-      'Schedule high-load equipment outside peak demand',
-      'Track monthly electricity patterns from submitted bills',
-      'Reward cleaner operating windows with better scores',
-    ],
-    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    imageAlt: 'Power infrastructure at sunset',
-    caption: 'Smarter Energy Scheduling',
-    icon: Zap,
-    accent: 'text-yellow-600',
-    tint: 'bg-yellow-100',
-  },
-  {
-    title: 'Cleaner Factory Operations',
-    body: 'Industrial units can reduce avoidable emissions through efficient machinery, preventive maintenance, and real-time compliance reporting.',
-    points: [
-      'Maintain boilers, motors, compressors, and HVAC systems',
-      'Digitize factory reports for faster review',
-      'Benchmark every unit against cleaner operating targets',
-    ],
-    image: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    imageAlt: 'Modern industrial facility',
-    caption: 'Cleaner Production Lines',
-    icon: FactoryIcon,
-    accent: 'text-green-600',
-    tint: 'bg-green-100',
-  },
-  {
-    title: 'Air Quality Action Loop',
-    body: 'Awareness becomes stronger when citizens, factories, and transport operators can see the same evidence and act on it together.',
-    points: [
-      'Connect emission savings with live public dashboards',
-      'Promote verified reductions from fuel and electricity use',
-      'Turn every report into a measurable climate action',
-    ],
-    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    imageAlt: 'Clean green landscape',
-    caption: 'Evidence-Led Climate Action',
-    icon: Wind,
-    accent: 'text-emerald-600',
-    tint: 'bg-emerald-100',
-  },
-];
-
 const LandingPage = () => {
   const location = useLocation();
   const initialPage = (location.state as { initialPage?: number } | null)?.initialPage ?? 0;
   const [activePage, setActivePage] = useState(initialPage);
-  const [activeAwarenessSlide, setActiveAwarenessSlide] = useState(0);
   const [autoCycle, setAutoCycle] = useState(initialPage === 0);
   const [heroTransformed, setHeroTransformed] = useState(false);
   const showNav = activePage !== 0 || heroTransformed;
@@ -249,11 +260,6 @@ const LandingPage = () => {
     setAutoCycle(false);
     setActivePage(index);
   };
-
-
-
-  const awarenessSlide = awarenessSlides[activeAwarenessSlide];
-  const AwarenessIcon = awarenessSlide.icon;
 
   return (
     <div className="relative w-full h-[100dvh] overflow-hidden bg-slate-900">
@@ -410,102 +416,62 @@ const LandingPage = () => {
           {activePage === 2 && (
             <motion.div
               key="awareness"
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-0 w-full px-4 sm:px-6 max-w-7xl mx-auto max-h-full overflow-y-auto no-scrollbar pt-36 sm:pt-40 lg:pt-32 pb-24 sm:pb-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7, ease: 'easeInOut' }}
+              className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-28 sm:pt-32 pb-16 sm:pb-20"
             >
-              <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12 lg:gap-16 pb-6">
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 sm:gap-5 mb-5 sm:mb-8">
-                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shrink-0">
-                      <motion.div
-                        key={`ring-${activeAwarenessSlide}`}
-                        className="absolute inset-0 rounded-full border-4 border-slate-200 border-t-green-500 border-r-blue-500"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 3, ease: 'linear', repeat: Infinity }}
-                      />
-                      <motion.div
-                        key={`icon-${activeAwarenessSlide}`}
-                        initial={{ scale: 0.75, opacity: 0, rotate: -20 }}
-                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                        exit={{ scale: 0.85, opacity: 0, rotate: 20 }}
-                        transition={{ duration: 0.45, ease: 'easeOut' }}
-                        className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-full ${awarenessSlide.tint} flex items-center justify-center shadow-lg`}
-                      >
-                        <AwarenessIcon className={`w-6 h-6 sm:w-8 sm:h-8 ${awarenessSlide.accent}`} />
-                      </motion.div>
-                    </div>
-                    <div className="flex gap-2">
-                      {awarenessSlides.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setActiveAwarenessSlide(i)}
-                          aria-label={`Awareness slide ${i + 1}`}
-                          className={`h-2.5 rounded-full transition-all ${activeAwarenessSlide === i ? 'w-8 bg-green-500' : 'w-2.5 bg-slate-300 hover:bg-slate-400'}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
+              {/* Ambient gradient orbs */}
+              <div className="pointer-events-none absolute inset-0 z-0">
+                <motion.div
+                  className="absolute -top-24 -left-24 w-[28rem] h-[28rem] rounded-full bg-emerald-300/30 blur-3xl"
+                  animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
+                  transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <motion.div
+                  className="absolute top-1/3 -right-24 w-[32rem] h-[32rem] rounded-full bg-sky-300/25 blur-3xl"
+                  animate={{ x: [0, -25, 0], y: [0, -15, 0] }}
+                  transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <motion.div
+                  className="absolute -bottom-32 left-1/4 w-[26rem] h-[26rem] rounded-full bg-lime-300/25 blur-3xl"
+                  animate={{ x: [0, 20, 0], y: [0, -25, 0] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
 
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={awarenessSlide.title}
-                      initial={{ opacity: 0, y: 24 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -24 }}
-                      transition={{ duration: 0.45, ease: 'easeOut' }}
-                    >
-                      <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-3 sm:mb-6 leading-tight">{awarenessSlide.title}</h2>
-                      <p className="text-sm sm:text-lg md:text-xl text-slate-600 font-medium mb-4 sm:mb-8 leading-relaxed">
-                        {awarenessSlide.body}
-                      </p>
-                      <ul className="space-y-2.5 sm:space-y-4 text-slate-800 font-bold text-sm sm:text-base md:text-lg">
-                        {awarenessSlide.points.map((point, i) => (
-                          <li key={point} className="flex items-center gap-3 sm:gap-4">
-                            <motion.div
-                              className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)] shrink-0"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ delay: i * 0.08, duration: 0.25 }}
-                            />
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-                <div className="flex-1 w-full h-[220px] sm:h-[360px] md:h-[400px] lg:h-[500px] bg-slate-200 rounded-3xl overflow-hidden relative shadow-2xl group">
-                  <AnimatePresence mode="wait">
-                    <motion.img
-                      key={awarenessSlide.image}
-                      src={awarenessSlide.image}
-                      alt={awarenessSlide.imageAlt}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                      initial={{ opacity: 0, scale: 1.08, rotate: 1 }}
-                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                      exit={{ opacity: 0, scale: 0.96, rotate: -1 }}
-                      transition={{ duration: 0.65, ease: 'easeOut' }}
-                    />
-                  </AnimatePresence>
+              {/* Heading */}
+              <div className="relative z-10 px-4 sm:px-6 text-center mb-4 sm:mb-6 shrink-0">
+                <motion.h2
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.15, duration: 0.7, ease: 'easeOut' }}
+                  className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight"
+                >
+                  Awareness <span className="text-gradient">in Motion</span>
+                </motion.h2>
+                <motion.p
+                  initial={{ y: 16, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.7, ease: 'easeOut' }}
+                  className="mt-1.5 sm:mt-2 text-xs sm:text-sm md:text-base text-slate-600 font-medium max-w-2xl mx-auto"
+                >
+                  A continuous stream of stories — cleaner air, smarter industry, and a greener Rajasthan.
+                </motion.p>
+              </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/85 via-slate-900/20 to-transparent flex items-end p-5 sm:p-8">
-                    <AnimatePresence mode="wait">
-                      <motion.p
-                        key={awarenessSlide.caption}
-                        className="text-white text-xl sm:text-2xl md:text-3xl font-extrabold"
-                        initial={{ opacity: 0, x: -24 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 24 }}
-                        transition={{ duration: 0.4 }}
-                      >
-                        {awarenessSlide.caption}
-                      </motion.p>
-                    </AnimatePresence>
-                  </div>
-                </div>
+              {/* 3 marquee rows */}
+              <div className="relative z-10 flex-1 flex flex-col justify-center gap-3 sm:gap-5 md:gap-7 min-h-0">
+                {awarenessRows.map((row, i) => (
+                  <AwarenessMarqueeRow
+                    key={i}
+                    images={row.images}
+                    direction={row.direction}
+                    duration={row.duration}
+                    delay={0.45 + i * 0.15}
+                  />
+                ))}
               </div>
             </motion.div>
           )}
