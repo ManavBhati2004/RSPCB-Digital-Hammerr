@@ -17,7 +17,7 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
   .sort()
   .map(key => awarenessImageModules[key]);
 
-const AWARENESS_DWELL_MS = 4000;
+const AWARENESS_DWELL_MS = 8000;
 
 // Desktop (md+): one image at a time with a circular iris reveal between images.
 // Mobile (< md): a vertical marquee that streams all six images through a
@@ -453,7 +453,7 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* One image at a time — iris reveal every 4s */}
+              {/* One image at a time — iris reveal every 8s */}
               <AwarenessFlipShowcase />
 
               {/* Premium edge/corner leaf animation — awareness page only */}
