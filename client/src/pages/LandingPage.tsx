@@ -23,6 +23,8 @@ const awarenessRows: AwarenessRowDef[] = [
   { images: [awarenessImages[3], awarenessImages[4], awarenessImages[5]], direction: 'left'  },
 ];
 
+const AWARENESS_DWELL_MS = 4000;
+
 type AwarenessRowProps = {
   images: string[];
   direction: 'left' | 'right';
@@ -30,38 +32,51 @@ type AwarenessRowProps = {
 };
 
 const AwarenessFlipRow = ({ images, direction, delay }: AwarenessRowProps) => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setIndex(i => (i + 1) % images.length);
+    }, AWARENESS_DWELL_MS);
+    return () => window.clearInterval(id);
+  }, [images.length]);
+
+  const src = images[index];
   const flipFrom = direction === 'right' ? -90 : 90;
+  const flipTo   = direction === 'right' ? 90  : -90;
 
   return (
-    <div className="flex items-center justify-center gap-5 sm:gap-8 md:gap-10 lg:gap-12">
-      {images.map((src, slotIdx) => (
-        <motion.div
-          key={slotIdx}
-          initial={{ rotateY: flipFrom, opacity: 0, y: 24 }}
-          animate={{ rotateY: 0, opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.95,
-            ease: [0.4, 0, 0.2, 1],
-            delay: delay + slotIdx * 0.18,
-          }}
-          className="relative shrink-0 aspect-square w-[min(29vw,42dvh)] sm:w-[min(29vw,43dvh)] md:w-[min(29vw,44dvh)] lg:w-[min(29vw,46dvh)]"
-          style={{
-            perspective: '1500px',
-            transformStyle: 'preserve-3d',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-          }}
-        >
-          <img
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.8, ease: 'easeOut' }}
+      className="flex items-center justify-center"
+    >
+      <div
+        className="relative aspect-video w-[min(92vw,72dvh)] sm:w-[min(90vw,74dvh)] md:w-[min(88vw,76dvh)] lg:w-[min(84vw,78dvh)] rounded-2xl"
+        style={{ perspective: '1500px' }}
+      >
+        <AnimatePresence>
+          <motion.img
+            key={src}
             src={src}
             alt=""
             loading="lazy"
             draggable={false}
-            className="absolute inset-0 w-full h-full object-contain select-none drop-shadow-[0_25px_60px_rgba(15,23,42,0.35)]"
+            initial={{ rotateY: flipFrom, opacity: 0 }}
+            animate={{ rotateY: 0, opacity: 1 }}
+            exit={{ rotateY: flipTo, opacity: 0 }}
+            transition={{ duration: 0.95, ease: [0.4, 0, 0.2, 1] }}
+            className="absolute inset-0 w-full h-full object-cover rounded-2xl select-none shadow-[0_30px_80px_-20px_rgba(15,23,42,0.45)] ring-1 ring-white/40"
+            style={{
+              transformStyle: 'preserve-3d',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+            }}
           />
-        </motion.div>
-      ))}
-    </div>
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 };
 
@@ -425,8 +440,8 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* Two rows × three images — all six awareness illustrations visible at once */}
-              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-5 sm:gap-8 md:gap-10 lg:gap-12">
+              {/* Two rows × one image — each row flips to the next illustration every 4s */}
+              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-4 sm:gap-6 md:gap-8">
                 {awarenessRows.map((row, i) => (
                   <AwarenessFlipRow
                     key={i}
