@@ -86,11 +86,11 @@ const TopContributors = () => {
 
         <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 shadow-xl overflow-hidden">
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/60 flex flex-wrap items-center gap-3">
-            <div className="shrink-0">
+            <div className="flex-1 min-w-0">
               <h3 className="text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wider">Leaderboard</h3>
               <p className="text-[10px] sm:text-xs text-slate-600">Ranked by total CO₂ saved</p>
             </div>
-            <div className="relative flex-1 min-w-[160px] max-w-xs">
+            <div className="relative w-full sm:w-64 order-3 sm:order-none shrink-0">
               <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
@@ -104,7 +104,7 @@ const TopContributors = () => {
                 className="w-full pl-9 pr-3 py-2 rounded-full bg-white border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent shadow-sm"
               />
             </div>
-            <div className="flex items-center gap-2 shrink-0 ml-auto">
+            <div className="flex-1 flex items-center justify-end gap-2 min-w-0">
               <span className="text-[10px] sm:text-xs text-slate-600 font-semibold">
                 Page {safePage + 1} / {totalPages}
               </span>
