@@ -15,18 +15,30 @@ const OUT_OF_SCOPE_KEYWORDS = [
 ];
 
 const RELEVANCE_KEYWORDS = [
-  'carbon', 'emission', 'co2', 'co₂', 'petrol', 'diesel', 'fuel', 'vehicle', 'bike',
-  'scooter', 'car', 'gaadi', 'gadi', 'mileage', 'distance', 'km', 'kilometer',
-  'electricity', 'unit', 'kwh', 'bijli', 'energy', 'urja', 'light',
-  'dashboard', 'chart', 'graph', 'report', 'analytics',
-  'leaderboard', 'rank', 'top user', 'score', 'performance',
+  'carbon', 'emission', 'co2', 'co₂', 'footprint', 'petrol', 'diesel', 'fuel',
+  'vehicle', 'bike', 'scooter', 'car', 'gaadi', 'gadi', 'mileage', 'distance',
+  'km', 'kilometer', 'kilometre',
+  'electricity', 'unit', 'kwh', 'bijli', 'energy', 'urja', 'light', 'power',
+  'consumption', 'non-consumption', 'zero hour',
+  'dashboard', 'chart', 'graph', 'report', 'analytics', 'stats', 'submission',
+  'leaderboard', 'rank', 'top user', 'top contributor', 'score', 'performance',
   'certificate', 'badge', 'reward', 'achievement',
   'pollution', 'environment', 'paryavaran', 'pradushan',
-  'sustainability', 'sustainable', 'eco', 'green', 'tree', 'plantation',
+  'sustainability', 'sustainable', 'eco', 'green', 'tree', 'plantation', 'khejri',
   'reduce', 'save', 'bachat', 'kam', 'tip', 'guide',
-  'rajasthan', 'rspcb', 'website', 'app', 'calculator', 'submission',
+  'rajasthan', 'jaipur', 'jodhpur', 'udaipur', 'jaisalmer', 'barmer',
+  'rspcb', 'website', 'app', 'calculator', 'factory',
   'privacy', 'anonymous', 'session', 'login',
-  'namaste', 'hello', 'hi', 'hey', 'help', 'thanks', 'thank you'
+  'climate', 'global warming', 'greenhouse', 'jalvayu',
+  'solar', 'wind', 'renewable', 'biomass', 'pv ', 'photovoltaic',
+  'ev', 'electric vehicle', 'electric car', 'electric bike',
+  'public transport', 'bus', 'metro', 'train', 'carpool', 'car pool',
+  'air quality', 'aqi', 'pm 2.5', 'pm2.5', 'pm10', 'smog',
+  'water', 'rainwater', 'drip', 'pani',
+  'waste', 'compost', 'recycle', 'plastic',
+  'subsidy', 'yojana', 'scheme', 'fame', 'surya ghar',
+  'namaste', 'hello', 'hi ', ' hi', 'hey', 'help', 'thanks', 'thank you',
+  'green mitra', 'who are you', 'what are you'
 ];
 
 const REDIRECT_REPLY =

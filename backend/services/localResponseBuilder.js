@@ -8,10 +8,44 @@ import {
 
 const DEFAULT_SUGGESTIONS = [
   'How is petrol emission calculated?',
-  'How is electricity carbon saved calculated?',
+  'What is carbon footprint?',
   'How can I reduce my carbon footprint?',
   'What does the dashboard show?'
 ];
+
+// Intents that map 1:1 to a knowledge-base entry.
+const KB_INTENT_MAP = {
+  dashboard_explanation: 'dashboard_explanation',
+  leaderboard_explanation: 'leaderboard_explanation',
+  certificate_explanation: 'certificate_explanation',
+  submission_flow: 'submission_flow',
+  factory_vs_personal: 'factory_vs_personal',
+  upload_help: 'upload_help',
+  consumption_meaning: 'consumption_meaning',
+  accuracy_question: 'accuracy_question',
+  about_website: 'about_website',
+  website_guide: 'website_guide',
+  privacy_explanation: 'privacy_explanation',
+  carbon_reduction_tips: 'carbon_reduction_tips',
+  fuel_saving_tips: 'fuel_saving_tips',
+  electricity_saving_tips: 'electricity_saving_tips',
+  carbon_footprint_definition: 'carbon_footprint_definition',
+  climate_change_basics: 'climate_change_basics',
+  renewable_energy: 'renewable_energy',
+  solar_power: 'solar_power',
+  electric_vehicle: 'electric_vehicle',
+  public_transport: 'public_transport',
+  air_quality: 'air_quality',
+  tree_plantation: 'tree_plantation',
+  water_conservation: 'water_conservation',
+  waste_management: 'waste_management',
+  carpooling_benefits: 'carpooling_benefits',
+  petrol_vs_diesel: 'petrol_vs_diesel',
+  bike_vs_car: 'bike_vs_car',
+  rajasthan_specific: 'rajasthan_specific',
+  government_schemes: 'government_schemes',
+  general_environment_awareness: 'general_environment_awareness'
+};
 
 function fuelReply({ language, distanceKm, vehicleType, fuelType, value, formula }) {
   if (language === 'hindi') {
@@ -148,7 +182,43 @@ function missingElectricityDataReply(parsed, language) {
     : 'Units mil gaye. Zero hours (non-consumption) kitne lene hain?';
 }
 
+function shortReply(intent, language) {
+  if (intent === 'greeting') {
+    if (language === 'hindi') {
+      return 'Namaste! Main Green Mitra hoon. Aap mujhse carbon emission, electricity saving, fuel emission, dashboard, leaderboard, certificate ya pollution awareness ke baare me kuch bhi puch sakte hain.';
+    }
+    if (language === 'hinglish') {
+      return 'Namaste! Main Green Mitra hoon — aapka local carbon assistant. Aap fuel emission, electricity saving, dashboard, leaderboard, certificate ya carbon reduction tips ke baare me puch sakte hain.';
+    }
+    return 'Hello! I am Green Mitra, your local carbon assistant for Rajasthan. Ask me anything about fuel emissions, electricity savings, the dashboard, leaderboard, certificates, or how to reduce your carbon footprint.';
+  }
+  if (intent === 'thanks') {
+    if (language === 'hindi' || language === 'hinglish') {
+      return 'Aapka swagat hai! Aur kuch puchna ho to bataiye — main yahan hi hoon.';
+    }
+    return 'You\'re welcome! Ask me anything else about emissions, electricity, dashboard, certificates, or the environment.';
+  }
+  if (intent === 'bot_identity') {
+    return 'I am **Green Mitra** — a local, no-paid-API carbon assistant built for the Rajasthan State Pollution Control Board Carbon Emission Calculator. I run fully on this server and help you understand fuel emissions, electricity savings, the dashboard, leaderboard, certificates, and broader environment topics like climate change, solar power, and EVs.';
+  }
+  return null;
+}
+
 export function buildReply({ intent, parsed, language, message }) {
+  // 0. Short conversational replies
+  const short = shortReply(intent, language);
+  if (short) {
+    return {
+      reply: short,
+      suggestedQuestions: [
+        'What is carbon footprint?',
+        'How is petrol emission calculated?',
+        'What does the dashboard show?',
+        'How can I reduce my carbon footprint?'
+      ]
+    };
+  }
+
   // 1. Direct calculations
   if (intent === 'fuel_calculation') {
     const reply = buildFuelCalculation(parsed, language);
@@ -191,18 +261,7 @@ export function buildReply({ intent, parsed, language, message }) {
   }
 
   // 3. Knowledge-base topics
-  const knowledgeKey = {
-    dashboard_explanation: 'dashboard_explanation',
-    leaderboard_explanation: 'leaderboard_explanation',
-    certificate_explanation: 'certificate_explanation',
-    carbon_reduction_tips: 'carbon_reduction_tips',
-    fuel_saving_tips: 'fuel_saving_tips',
-    electricity_saving_tips: 'electricity_saving_tips',
-    website_guide: 'website_guide',
-    privacy_explanation: 'privacy_explanation',
-    general_environment_awareness: 'general_environment_awareness'
-  }[intent];
-
+  const knowledgeKey = KB_INTENT_MAP[intent];
   if (knowledgeKey) {
     return {
       reply: buildKnowledgeReply(knowledgeKey, language),
@@ -213,8 +272,8 @@ export function buildReply({ intent, parsed, language, message }) {
   // 4. Unknown but relevant — give a friendly orientation answer.
   const fallback =
     language === 'english'
-      ? `I can help you with carbon emission for fuel travel and electricity savings, plus dashboard, leaderboard, and certificate explanations. Try asking, for example: "100 km bike carbon batao", "What does the dashboard show?", or "How can I reduce my carbon footprint?"`
-      : `Main aapki madad kar sakta hoon fuel emission, electricity carbon saving, dashboard, leaderboard aur certificate ke baare me. Try karein: "100 km bike carbon batao", "Dashboard kya dikhata hai?", ya "Carbon footprint kaise kam karein?"`;
+      ? `I can help with carbon emission for fuel travel and electricity savings, dashboard / leaderboard / certificate explanations, and broader topics like climate change, solar power, EVs, public transport, tree plantation, and Rajasthan-specific environment.\n\nTry: "100 km bike carbon batao", "What does the dashboard show?", "What is carbon footprint?", or "Tell me about solar power".`
+      : `Main aapki madad kar sakta hoon fuel emission, electricity carbon saving, dashboard / leaderboard / certificate ke baare me, aur saath hi climate change, solar power, EV, tree plantation jaisi topics par bhi.\n\nTry karein: "100 km bike carbon batao", "Dashboard kya dikhata hai?", "Carbon footprint kya hai?", ya "Solar power ke baare me batao".`;
 
   return {
     reply: fallback,

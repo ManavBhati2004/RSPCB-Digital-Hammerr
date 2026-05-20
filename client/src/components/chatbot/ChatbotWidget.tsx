@@ -17,10 +17,12 @@ const WELCOME_MESSAGE =
   'Namaste! I am Green Mitra, your local carbon assistant. I can help you understand fuel emissions, electricity carbon savings, dashboard results, leaderboard ranking, certificates, and simple ways to reduce your carbon footprint in Rajasthan. What would you like to know?';
 
 const INITIAL_SUGGESTIONS = [
-  'How is petrol emission calculated?',
+  'What is carbon footprint?',
   'Calculate 100 km bike emission',
   'What does the dashboard show?',
-  'How can I reduce my carbon footprint?'
+  'How can I reduce my carbon footprint?',
+  'Tell me about solar power',
+  'How is petrol emission calculated?'
 ];
 
 function pathToPageContext(pathname: string): PageContext {
