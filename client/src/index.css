@@ -18,6 +18,9 @@
 }
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+  }
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
     font-family: 'Inter', sans-serif;

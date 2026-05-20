@@ -373,13 +373,15 @@ const LandingPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -100 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 w-full h-full text-slate-900 overflow-hidden"
+              className="absolute inset-0 w-full h-full text-slate-900 overflow-y-auto lg:overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-white/20 rounded-full blur-3xl pointer-events-none"></div>
 
-              {/* Main content (header + stat cards), reserves right space for the log on lg+ */}
-              <div className="absolute inset-0 px-4 sm:px-6 pt-32 sm:pt-36 lg:pt-32 pb-24 sm:pb-20 lg:pr-[440px] flex flex-col items-center justify-center">
-                <div className="w-full max-w-3xl mx-auto -translate-y-[20%]">
+              {/* Main content (header + stat cards). On mobile this flows in normal block layout
+                  so the live log can stack below; on lg+ it's absolutely centered with the log
+                  pinned to the right edge as before. */}
+              <div className="relative min-h-full px-4 sm:px-6 pt-32 sm:pt-36 lg:pt-32 pb-32 sm:pb-28 lg:pb-20 flex flex-col items-center lg:absolute lg:inset-0 lg:pr-[440px] lg:justify-center">
+                <div className="w-full max-w-3xl mx-auto">
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live State Intelligence</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8">
                     {[
@@ -400,6 +402,17 @@ const LandingPage = () => {
                     ))}
                   </div>
 
+                  {/* Live log — inline below the stat cards on mobile/tablet, absolute right
+                      sidebar on lg+. Single instance so the leaderboard endpoint is polled once. */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                    className="relative w-full max-w-md mx-auto mt-6 h-[60vh] lg:absolute lg:top-32 lg:bottom-20 lg:right-4 xl:right-6 lg:w-[360px] xl:w-[400px] lg:mt-0 lg:h-auto lg:max-w-none lg:mx-0 z-20 flex"
+                  >
+                    <LiveLog />
+                  </motion.div>
+
                   <div className="mt-8 flex justify-center">
                     <Link
                       to="/top-contributors"
@@ -411,16 +424,6 @@ const LandingPage = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Live log — stuck to the right edge of the screen (lg+ only) */}
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="hidden lg:flex absolute top-32 bottom-20 right-4 xl:right-6 w-[360px] xl:w-[400px] z-20"
-                >
-                <LiveLog />
-              </motion.div>
             </motion.div>
           )}
 

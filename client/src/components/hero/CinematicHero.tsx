@@ -152,9 +152,10 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               {/* Spacer to keep slogan left and Modi card right */}
               <div className="hidden md:block md:flex-1" />
 
-              {/* Right: Modi photo (anchored far right on md+) */}
+              {/* Right: Modi photo. On mobile, anchor to just above the grass band so the figure
+                  visually stands on the ground. From md up, restore the inline row layout. */}
               <motion.div
-                className="w-full md:w-[240px] lg:w-[340px] flex-shrink-0 flex justify-center md:justify-end"
+                className="absolute left-0 right-0 bottom-[26vh] flex justify-center md:static md:bottom-auto md:left-auto md:right-auto md:w-[240px] lg:w-[340px] flex-shrink-0 md:justify-end"
                 initial={{ opacity: 0, x: 50, scale: 0.9 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}

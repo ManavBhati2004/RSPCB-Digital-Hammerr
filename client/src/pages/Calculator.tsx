@@ -15,6 +15,45 @@ type UseType = 'Personal' | 'Factory';
 axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
+const ZeroHourFaqCard = () => (
+  <div className="relative group">
+    <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl border border-emerald-100/80 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.35)] overflow-hidden">
+      <div className="absolute -top-14 -right-10 w-36 h-36 bg-gradient-to-br from-emerald-300/50 to-teal-300/50 rounded-full blur-2xl pointer-events-none"></div>
+      <div className="absolute -bottom-12 -left-10 w-28 h-28 bg-gradient-to-tr from-cyan-300/40 to-emerald-300/40 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div className="relative p-5">
+        <div className="flex items-center gap-2.5 mb-3">
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/30">
+            <HelpCircle size={18} className="text-white" strokeWidth={2.5} />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[9px] font-extrabold uppercase tracking-[0.25em] text-slate-400">FAQ</span>
+            <span className="text-[11px] font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-1">
+              <Sparkles size={10} className="text-emerald-500" /> Did You Know?
+            </span>
+          </div>
+        </div>
+
+        <h3 className="text-[15px] font-extrabold text-slate-900 mb-2 leading-snug">
+          What is <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">Zero Hour</span>?
+        </h3>
+
+        <p className="text-[12px] text-slate-600 leading-relaxed">
+          Zero Hour is a government-led initiative focused on reducing CO<sub>2</sub> emissions and saving energy. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
+        </p>
+
+        <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-[9px] font-extrabold tracking-[0.18em] uppercase text-emerald-600">Govt. Awareness Initiative</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const Calculator = () => {
   const [activeTab, setActiveTab] = useState<'electricity' | 'vehicle'>('electricity');
 
@@ -150,7 +189,8 @@ const Calculator = () => {
     <div className="min-h-screen bg-slate-50 py-10 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300/30 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-      {/* Sticky FAQ — pinned to the right edge of the viewport, stays in place on scroll */}
+      {/* Sticky FAQ — pinned to the right edge of the viewport on xl+, stays in place on scroll.
+          Below xl, the same card is rendered inline below the calculator form (see end of section). */}
       <motion.aside
         initial={{ opacity: 0, x: 40 }}
         animate={{ opacity: 1, x: 0 }}
@@ -158,44 +198,7 @@ const Calculator = () => {
         style={{ left: 'auto', transform: 'none' }}
         className="hidden xl:block fixed right-6 top-[120px] w-[170px] 2xl:w-[210px] z-50 pointer-events-auto"
       >
-        <div className="relative group">
-          {/* card */}
-          <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl border border-emerald-100/80 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.35)] overflow-hidden">
-            {/* decorative blobs */}
-            <div className="absolute -top-14 -right-10 w-36 h-36 bg-gradient-to-br from-emerald-300/50 to-teal-300/50 rounded-full blur-2xl pointer-events-none"></div>
-            <div className="absolute -bottom-12 -left-10 w-28 h-28 bg-gradient-to-tr from-cyan-300/40 to-emerald-300/40 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div className="relative p-5">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/30">
-                  <HelpCircle size={18} className="text-white" strokeWidth={2.5} />
-                </div>
-                <div className="flex flex-col leading-tight">
-                  <span className="text-[9px] font-extrabold uppercase tracking-[0.25em] text-slate-400">FAQ</span>
-                  <span className="text-[11px] font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-1">
-                    <Sparkles size={10} className="text-emerald-500" /> Did You Know?
-                  </span>
-                </div>
-              </div>
-
-              <h3 className="text-[15px] font-extrabold text-slate-900 mb-2 leading-snug">
-                What is <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">Zero Hour</span>?
-              </h3>
-
-              <p className="text-[12px] text-slate-600 leading-relaxed">
-                Zero Hour is a government-led initiative focused on reducing CO<sub>2</sub> emissions and saving energy. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
-              </p>
-
-              <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[9px] font-extrabold tracking-[0.18em] uppercase text-emerald-600">Govt. Awareness Initiative</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ZeroHourFaqCard />
       </motion.aside>
 
       <div className="max-w-4xl mx-auto relative z-10">
@@ -408,6 +411,11 @@ const Calculator = () => {
               )}
             </AnimatePresence>
           </div>
+        </div>
+
+        {/* Inline FAQ — shown on <xl where the fixed sidebar variant is hidden. */}
+        <div className="xl:hidden mt-8 sm:mt-10">
+          <ZeroHourFaqCard />
         </div>
       </div>
     </div>
