@@ -117,14 +117,14 @@ const Calculator = () => {
         </Link>
 
         <div className="lg:grid lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-8 lg:items-start">
-        <div className="hidden lg:block relative select-none">
+        <div className="hidden lg:block relative select-none bg-slate-50">
           <img
             src={modiCloud}
             alt="Zero hour awareness illustration"
-            className="w-full h-auto mix-blend-multiply"
+            className="w-full h-auto block"
           />
-          <div className="absolute top-[5%] right-[2%] w-[44%] h-[24%] flex items-center justify-center px-2 text-center pointer-events-none">
-            <p className="text-slate-800 leading-snug text-[clamp(9px,1vw,13px)]">
+          <div className="absolute top-[8%] right-[5%] w-[38%] h-[18%] flex items-center justify-center px-2 text-center pointer-events-none">
+            <p className="text-slate-800 leading-snug text-[clamp(10px,1.1vw,15px)]">
               Zero hour means turning off AC's and running appliances at 50%
             </p>
           </div>
