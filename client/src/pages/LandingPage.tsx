@@ -17,9 +17,8 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
   .map(key => awarenessImageModules[key]);
 
 const awarenessRows: { images: string[]; direction: 'left' | 'right'; duration: number }[] = [
-  { images: [awarenessImages[0], awarenessImages[1]], direction: 'right', duration: 70 },
-  { images: [awarenessImages[2], awarenessImages[3]], direction: 'left',  duration: 85 },
-  { images: [awarenessImages[4], awarenessImages[5]], direction: 'right', duration: 75 },
+  { images: [awarenessImages[0], awarenessImages[1], awarenessImages[2]], direction: 'right', duration: 80 },
+  { images: [awarenessImages[3], awarenessImages[4], awarenessImages[5]], direction: 'left',  duration: 95 },
 ];
 
 type AwarenessRowProps = {
@@ -30,9 +29,9 @@ type AwarenessRowProps = {
 };
 
 const AwarenessMarqueeRow = ({ images, direction, duration, delay }: AwarenessRowProps) => {
-  // Tile the two images several times so the base set is wider than the viewport;
+  // Tile the source images several times so the base set is wider than the viewport;
   // duplicate that base to give the -50% translate a seamless wrap-around.
-  const base = [...images, ...images, ...images, ...images];
+  const base = [...images, ...images, ...images];
   const track = [...base, ...base];
 
   return (
@@ -59,7 +58,7 @@ const AwarenessMarqueeRow = ({ images, direction, duration, delay }: AwarenessRo
             alt=""
             loading="lazy"
             draggable={false}
-            className="block shrink-0 h-[170px] sm:h-[220px] md:h-[270px] lg:h-[310px] xl:h-[350px] w-auto select-none"
+            className="block shrink-0 h-[240px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[480px] w-auto select-none"
           />
         ))}
       </div>
