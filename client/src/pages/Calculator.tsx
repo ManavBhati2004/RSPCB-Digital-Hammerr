@@ -155,7 +155,7 @@ const Calculator = () => {
         initial={{ opacity: 0, x: 40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
-        className="hidden xl:block fixed right-4 2xl:right-8 top-24 w-[280px] 2xl:w-[300px] z-20 pointer-events-auto"
+        className="hidden xl:block fixed right-20 2xl:right-24 top-28 w-[260px] 2xl:w-[290px] z-20 pointer-events-auto"
       >
         <div className="relative group">
           {/* animated gradient glow */}
