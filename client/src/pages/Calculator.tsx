@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Car, ChevronDown, User, Factory as FactoryIcon, ArrowLeft, Users, Bike } from 'lucide-react';
+import { Zap, Car, ChevronDown, User, Factory as FactoryIcon, ArrowLeft, Users, Bike, Award } from 'lucide-react';
 import axios from 'axios';
 import DrivingCarHeader from '../components/calculator/DrivingCarHeader';
 import PowerTowerHeader from '../components/calculator/PowerTowerHeader';
 import GrowingTreeHeader from '../components/calculator/GrowingTreeHeader';
 import FarewellSection from '../components/calculator/FarewellSection';
+import CertificateCanvas from '../components/calculator/CertificateCanvas';
+import { generateCertificatePdf } from '../utils/generateCertificate';
 
 type UseType = 'Personal' | 'Factory';
 
@@ -45,7 +47,42 @@ const Calculator = () => {
   const [poolingResult, setPoolingResult] = useState<number | null>(null);
   const [isPoolingSubmitting, setIsPoolingSubmitting] = useState(false);
 
+  // Certificate state
+  const certRef = useRef<HTMLDivElement>(null);
+  const [certData, setCertData] = useState({ name: '', co2: '0.0000', unit: '', date: '' });
+  const [isGeneratingCert, setIsGeneratingCert] = useState(false);
+
   const identityLabel = useType === 'Personal' ? 'Personal Use' : (factoryName.trim() || 'Factory Use');
+
+  const handleGenerateCertificate = async (tab: 'electricity' | 'vehicle' | 'pooling') => {
+    const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+    let co2 = 0;
+    let unit = '';
+    if (tab === 'electricity') { co2 = electricityResult ?? 0; unit = 'Tons'; }
+    if (tab === 'vehicle')     { co2 = vehicleResult ?? 0;     unit = 'Kg'; }
+    if (tab === 'pooling')     { co2 = poolingResult ?? 0;     unit = 'Kg (per person)'; }
+
+    const safeName = factoryName.trim() || 'Participant';
+    setCertData({ name: safeName, co2: co2.toFixed(4), unit, date: today });
+
+    setIsGeneratingCert(true);
+    // wait two frames so the hidden CertificateCanvas re-renders with new props before capture
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+
+    try {
+      if (certRef.current) {
+        await generateCertificatePdf({
+          element: certRef.current,
+          filename: `certificate-${safeName.replace(/\s+/g, '_')}.pdf`,
+        });
+      }
+    } catch (err) {
+      console.error('Certificate generation failed:', err);
+      alert('Could not generate certificate. Please try again.');
+    } finally {
+      setIsGeneratingCert(false);
+    }
+  };
 
   const calculateElectricity = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -295,9 +332,20 @@ const Calculator = () => {
                         <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="w-full max-w-full px-3 sm:px-4 py-2.5 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white text-xs sm:text-sm file:mr-3 file:py-2 file:px-3 sm:file:px-4 file:rounded-full file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
                       </div>
                     </div>
-                    <button type="submit" disabled={isSubmitting} className="w-full py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
-                      {isSubmitting ? 'Uploading & Calculating...' : 'Calculate & Submit'}
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button type="submit" disabled={isSubmitting} className="flex-1 py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
+                        {isSubmitting ? 'Uploading & Calculating...' : 'Calculate & Submit'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateCertificate('electricity')}
+                        disabled={!factoryName.trim() || electricityResult === null || isGeneratingCert}
+                        className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
+                      >
+                        <Award size={18} />
+                        {isGeneratingCert ? 'Generating...' : 'Generate Certificate'}
+                      </button>
+                    </div>
                   </form>
                   {electricityResult !== null && (
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-green-50 rounded-xl border border-green-200 text-center overflow-hidden">
@@ -342,9 +390,20 @@ const Calculator = () => {
                         <input type="number" required value={distance} onChange={e => setDistance(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 50" />
                       </div>
                     </div>
-                    <button type="submit" disabled={isVehicleSubmitting} className="w-full py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
-                      {isVehicleSubmitting ? 'Saving...' : 'Calculate & Submit'}
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button type="submit" disabled={isVehicleSubmitting} className="flex-1 py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
+                        {isVehicleSubmitting ? 'Saving...' : 'Calculate & Submit'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateCertificate('vehicle')}
+                        disabled={!factoryName.trim() || vehicleResult === null || isGeneratingCert}
+                        className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
+                      >
+                        <Award size={18} />
+                        {isGeneratingCert ? 'Generating...' : 'Generate Certificate'}
+                      </button>
+                    </div>
                   </form>
                   {vehicleResult !== null && (
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-blue-50 rounded-xl border border-blue-200 text-center overflow-hidden">
@@ -415,9 +474,20 @@ const Calculator = () => {
                       </div>
                     )}
 
-                    <button type="submit" disabled={isPoolingSubmitting} className="w-full py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
-                      {isPoolingSubmitting ? 'Saving...' : 'Calculate & Submit'}
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button type="submit" disabled={isPoolingSubmitting} className="flex-1 py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
+                        {isPoolingSubmitting ? 'Saving...' : 'Calculate & Submit'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateCertificate('pooling')}
+                        disabled={!factoryName.trim() || poolingResult === null || isGeneratingCert}
+                        className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
+                      >
+                        <Award size={18} />
+                        {isGeneratingCert ? 'Generating...' : 'Generate Certificate'}
+                      </button>
+                    </div>
                   </form>
                   {poolingResult !== null && (
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-purple-50 rounded-xl border border-purple-200 text-center overflow-hidden">
@@ -433,6 +503,13 @@ const Calculator = () => {
         </div>
       </div>
     </div>
+    <CertificateCanvas
+      ref={certRef}
+      name={certData.name}
+      co2={certData.co2}
+      unit={certData.unit}
+      date={certData.date}
+    />
     <FarewellSection />
     </>
   );
