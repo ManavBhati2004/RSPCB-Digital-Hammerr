@@ -43,7 +43,7 @@ const SloganLoop = () => {
   if (sloganImages.length === 0) return null;
 
   return (
-    <div className="pointer-events-none absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64">
+    <div className="pointer-events-none absolute left-0 bottom-0 z-20 w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64">
       <AnimatePresence mode="wait">
         <motion.img
           key={sloganImages[index]}
