@@ -121,10 +121,10 @@ const Calculator = () => {
           <img
             src={modiCloud}
             alt="Zero hour awareness illustration"
-            className="w-full h-auto drop-shadow-[0_15px_25px_rgba(0,0,0,0.25)]"
+            className="w-full h-auto mix-blend-multiply"
           />
-          <div className="absolute top-[5%] right-[2%] w-[44%] h-[24%] flex items-center justify-center px-3 text-center pointer-events-none">
-            <p className="text-slate-900 font-bold leading-tight text-xs xl:text-sm">
+          <div className="absolute top-[5%] right-[2%] w-[44%] h-[24%] flex items-center justify-center px-2 text-center pointer-events-none">
+            <p className="text-slate-800 leading-snug text-[clamp(9px,1vw,13px)]">
               Zero hour means turning off AC's and running appliances at 50%
             </p>
           </div>
