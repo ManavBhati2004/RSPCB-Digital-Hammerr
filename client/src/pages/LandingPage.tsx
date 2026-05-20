@@ -248,7 +248,7 @@ const LandingPage = () => {
         backgroundColor:
           activePage === 0 ? '#f8fafc' :
           activePage === 1 ? '#B2D3C2' :
-          '#0f172a'
+          '#f8fafc'
       }}></div>
 
       {/* Global Navbar */}
@@ -401,29 +401,25 @@ const LandingPage = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.7, ease: 'easeInOut' }}
               className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-20 sm:pt-24 pb-2 sm:pb-4"
-              style={{
-                background: 'radial-gradient(ellipse at 50% 50%, #1e293b 0%, #0f172a 55%, #020617 100%)',
-              }}
             >
-              {/* Soft emerald ambient light pooled behind the image */}
-              <motion.div
-                className="pointer-events-none absolute inset-0 z-0"
-                animate={{ opacity: [0.55, 0.85, 0.55] }}
-                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                style={{
-                  background:
-                    'radial-gradient(ellipse 55% 45% at 50% 50%, rgba(16,185,129,0.22), transparent 70%)',
-                }}
-              />
-
-              {/* Cinematic vignette to focus attention on the centered card */}
-              <div
-                className="pointer-events-none absolute inset-0 z-0"
-                style={{
-                  background:
-                    'radial-gradient(ellipse 95% 95% at 50% 50%, transparent 55%, rgba(0,0,0,0.55))',
-                }}
-              />
+              {/* Ambient gradient orbs — same palette as Home/Analytics so the page reads as part of the same UI */}
+              <div className="pointer-events-none absolute inset-0 z-0">
+                <motion.div
+                  className="absolute -top-24 -left-24 w-[28rem] h-[28rem] rounded-full bg-emerald-300/35 blur-3xl"
+                  animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
+                  transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <motion.div
+                  className="absolute top-1/3 -right-24 w-[32rem] h-[32rem] rounded-full bg-sky-300/30 blur-3xl"
+                  animate={{ x: [0, -25, 0], y: [0, -15, 0] }}
+                  transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <motion.div
+                  className="absolute -bottom-32 left-1/4 w-[26rem] h-[26rem] rounded-full bg-lime-300/30 blur-3xl"
+                  animate={{ x: [0, 20, 0], y: [0, -25, 0] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
 
               {/* One image at a time — iris reveal every 4s */}
               <AwarenessFlipShowcase />
