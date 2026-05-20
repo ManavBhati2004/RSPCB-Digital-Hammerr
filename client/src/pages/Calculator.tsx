@@ -166,36 +166,36 @@ const Calculator = () => {
             <div className="absolute -top-14 -right-10 w-36 h-36 bg-gradient-to-br from-emerald-300/50 to-teal-300/50 rounded-full blur-2xl pointer-events-none"></div>
             <div className="absolute -bottom-12 -left-10 w-28 h-28 bg-gradient-to-tr from-cyan-300/40 to-emerald-300/40 rounded-full blur-2xl pointer-events-none"></div>
 
-            <div className="relative p-6">
-              <div className="flex items-center gap-2.5 mb-4">
+            <div className="relative p-5">
+              <div className="flex items-center gap-2.5 mb-3">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-emerald-400 rounded-xl blur-md opacity-50"></div>
-                  <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/40">
-                    <HelpCircle size={22} className="text-white" strokeWidth={2.5} />
+                  <div className="absolute inset-0 bg-emerald-400 rounded-lg blur-md opacity-50"></div>
+                  <div className="relative w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                    <HelpCircle size={18} className="text-white" strokeWidth={2.5} />
                   </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-slate-400">FAQ</span>
-                  <span className="text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-1">
-                    <Sparkles size={11} className="text-emerald-500" /> Did You Know?
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[9px] font-extrabold uppercase tracking-[0.25em] text-slate-400">FAQ</span>
+                  <span className="text-[11px] font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-1">
+                    <Sparkles size={10} className="text-emerald-500" /> Did You Know?
                   </span>
                 </div>
               </div>
 
-              <h3 className="text-[17px] font-extrabold text-slate-900 mb-3 leading-snug">
+              <h3 className="text-[15px] font-extrabold text-slate-900 mb-2 leading-snug">
                 What is <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">Zero Hour</span>?
               </h3>
 
-              <p className="text-[13px] text-slate-600 leading-relaxed">
+              <p className="text-[12px] text-slate-600 leading-relaxed">
                 Zero Hour is a government-led initiative focused on reducing CO<sub>2</sub> emissions and saving energy. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
               </p>
 
-              <div className="mt-5 pt-4 border-t border-emerald-100/80 flex items-center gap-2">
+              <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-emerald-600">Govt. Awareness Initiative</span>
+                <span className="text-[9px] font-extrabold tracking-[0.18em] uppercase text-emerald-600">Govt. Awareness Initiative</span>
               </div>
             </div>
           </div>
