@@ -49,7 +49,7 @@ const Calculator = () => {
 
   const calculateElectricity = async (e: React.FormEvent) => {
     e.preventDefault();
-    const val = parseFloat(c1) * parseFloat(c2) * 0.001134;
+    const val = parseFloat(c1) * parseFloat(c2) * 0.0008541;
     setElectricityResult(val);
 
     try {
