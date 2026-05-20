@@ -16,34 +16,23 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
   .sort()
   .map(key => awarenessImageModules[key]);
 
-type AwarenessRowDef = { images: string[]; direction: 'left' | 'right' };
-
-const awarenessRows: AwarenessRowDef[] = [
-  { images: [awarenessImages[0], awarenessImages[1], awarenessImages[2]], direction: 'right' },
-  { images: [awarenessImages[3], awarenessImages[4], awarenessImages[5]], direction: 'left'  },
+const awarenessPairs: [string, string][] = [
+  [awarenessImages[0], awarenessImages[1]],
+  [awarenessImages[2], awarenessImages[3]],
+  [awarenessImages[4], awarenessImages[5]],
 ];
 
 const AWARENESS_DWELL_MS = 4000;
 
 type AwarenessRowProps = {
-  images: string[];
+  src: string;
   direction: 'left' | 'right';
   delay: number;
 };
 
-const AwarenessFlipRow = ({ images, direction, delay }: AwarenessRowProps) => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setIndex(i => (i + 1) % images.length);
-    }, AWARENESS_DWELL_MS);
-    return () => window.clearInterval(id);
-  }, [images.length]);
-
-  const src = images[index];
+const AwarenessFlipRow = ({ src, direction, delay }: AwarenessRowProps) => {
   const flipFrom = direction === 'right' ? -90 : 90;
-  const flipTo   = direction === 'right' ? 90  : -90;
+  const flipTo   = direction === 'right' ?  90 : -90;
 
   return (
     <motion.div
@@ -77,6 +66,28 @@ const AwarenessFlipRow = ({ images, direction, delay }: AwarenessRowProps) => {
         </AnimatePresence>
       </div>
     </motion.div>
+  );
+};
+
+// Shared timer drives both rows so the pair flips in lockstep. Mounted only
+// while the user is on the awareness page, so the interval stops on exit.
+const AwarenessFlipShowcase = () => {
+  const [pairIndex, setPairIndex] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setPairIndex(i => (i + 1) % awarenessPairs.length);
+    }, AWARENESS_DWELL_MS);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const [topSrc, bottomSrc] = awarenessPairs[pairIndex];
+
+  return (
+    <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-4 sm:gap-6 md:gap-8">
+      <AwarenessFlipRow src={topSrc}    direction="right" delay={0.2}  />
+      <AwarenessFlipRow src={bottomSrc} direction="left"  delay={0.55} />
+    </div>
   );
 };
 
@@ -440,17 +451,8 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* Two rows × one image — each row flips to the next illustration every 4s */}
-              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-4 sm:gap-6 md:gap-8">
-                {awarenessRows.map((row, i) => (
-                  <AwarenessFlipRow
-                    key={i}
-                    images={row.images}
-                    direction={row.direction}
-                    delay={0.2 + i * 0.35}
-                  />
-                ))}
-              </div>
+              {/* Two stacked slots — fixed pairs flip together every 4s */}
+              <AwarenessFlipShowcase />
             </motion.div>
           )}
 
