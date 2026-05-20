@@ -339,7 +339,7 @@ const Calculator = () => {
                       <button
                         type="button"
                         onClick={() => handleGenerateCertificate('electricity')}
-                        disabled={!factoryName.trim() || electricityResult === null || isGeneratingCert}
+                        disabled={isGeneratingCert}
                         className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
                       >
                         <Award size={18} />
@@ -397,7 +397,7 @@ const Calculator = () => {
                       <button
                         type="button"
                         onClick={() => handleGenerateCertificate('vehicle')}
-                        disabled={!factoryName.trim() || vehicleResult === null || isGeneratingCert}
+                        disabled={isGeneratingCert}
                         className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
                       >
                         <Award size={18} />
@@ -481,7 +481,7 @@ const Calculator = () => {
                       <button
                         type="button"
                         onClick={() => handleGenerateCertificate('pooling')}
-                        disabled={!factoryName.trim() || poolingResult === null || isGeneratingCert}
+                        disabled={isGeneratingCert}
                         className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
                       >
                         <Award size={18} />
