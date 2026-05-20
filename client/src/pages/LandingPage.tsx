@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wind, Zap, Factory as FactoryIcon, Car, Trophy } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { CinematicHero } from '../components/hero/CinematicHero';
 import { RspcbLogo } from '../components/RspcbLogo';
@@ -222,9 +222,11 @@ const awarenessSlides = [
 ];
 
 const LandingPage = () => {
-  const [activePage, setActivePage] = useState(0);
+  const location = useLocation();
+  const initialPage = (location.state as { initialPage?: number } | null)?.initialPage ?? 0;
+  const [activePage, setActivePage] = useState(initialPage);
   const [activeAwarenessSlide, setActiveAwarenessSlide] = useState(0);
-  const [autoCycle, setAutoCycle] = useState(true);
+  const [autoCycle, setAutoCycle] = useState(initialPage === 0);
   const [heroTransformed, setHeroTransformed] = useState(false);
   const showNav = activePage !== 0 || heroTransformed;
 

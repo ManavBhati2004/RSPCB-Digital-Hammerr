@@ -64,6 +64,7 @@ const TopContributors = () => {
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <Link
             to="/"
+            state={{ initialPage: 1 }}
             className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white/60 text-slate-700 hover:bg-white transition-colors text-sm font-semibold shadow"
           >
             <ArrowLeft className="w-4 h-4" />
