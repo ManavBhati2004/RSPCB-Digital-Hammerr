@@ -113,6 +113,9 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               exit={{ opacity: 0, y: -20 }}
               className="pointer-events-auto flex flex-col items-center"
             >
+              <p className="whitespace-nowrap text-center text-sm sm:text-lg md:text-2xl font-bold tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-5 bg-gradient-to-r from-emerald-300 via-amber-200 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(251,191,36,0.45)]">
+                YOU CAN HELP SAVE THE WORLD
+              </p>
               <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold text-white mb-3 sm:mb-6 drop-shadow-lg leading-tight">
                 Rajasthan State <br className="hidden sm:block" /><span className="text-orange-500"> Pollution Control Board</span>
               </h1>
