@@ -13,7 +13,7 @@ interface Props {
 
 // Persist the eco-optimized state so returning to Home (via nav, Back from a subpage,
 // or a later session) never reverts to the polluted/red intro.
-const STORAGE_KEY = 'rspcb-hero-transformed';
+const STORAGE_KEY = 'rspcb-hero-transformed-v2';
 const readPersistedTransform = () => {
   try {
     return localStorage.getItem(STORAGE_KEY) === '1';
