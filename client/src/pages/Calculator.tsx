@@ -368,7 +368,6 @@ const Calculator = () => {
                         <select value={vType} onChange={e => setVType(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white">
                           <option>2 Wheeler</option>
                           <option>4 Wheeler</option>
-                          <option>Cycle</option>
                         </select>
                       </div>
                       <div>
@@ -376,12 +375,10 @@ const Calculator = () => {
                         <select value={fuel} onChange={e => setFuel(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white">
                           <option>Petrol</option>
                           <option>Diesel</option>
-                          <option>Electric</option>
-                          <option>None (Cycle)</option>
                         </select>
                       </div>
                       <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Distance (KM)</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Distance travelled by cycling/carpooling (KM)</label>
                         <input type="number" required value={distance} onChange={e => setDistance(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 50" />
                       </div>
                     </div>
