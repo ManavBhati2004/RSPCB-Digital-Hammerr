@@ -391,7 +391,7 @@
 .chatbot-launcher {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  bottom: 88px; /* sits above the Digital Hammerr watermark in the corner */
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -418,10 +418,10 @@
 .chatbot-panel {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  bottom: 88px; /* aligns with launcher position above the watermark */
   width: 400px;
   height: 580px;
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 112px);
   background: #FAFAF1;
   border: 1px solid rgba(11, 61, 46, 0.14);
   border-radius: 24px;
@@ -631,15 +631,15 @@
   .chatbot-panel {
     right: 12px;
     left: 12px;
-    bottom: 12px;
+    bottom: 76px; /* stay above the corner watermark on mobile */
     width: auto;
-    height: 76vh;
-    max-height: calc(100dvh - 24px);
+    height: 72vh;
+    max-height: calc(100dvh - 92px);
     border-radius: 22px;
   }
   .chatbot-launcher {
     right: 16px;
-    bottom: 16px;
+    bottom: 76px; /* above the mobile watermark (bottom-3 + ~40px content + gap) */
     width: 54px;
     height: 54px;
   }

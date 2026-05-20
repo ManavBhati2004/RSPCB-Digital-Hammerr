@@ -21,8 +21,8 @@ function App() {
         {/* Green Mitra floating chatbot — appears on every route */}
         <ChatbotWidget />
 
-        {/* Universal Branding Watermark — shifted up so it doesn't overlap chatbot launcher */}
-        <div className="fixed bottom-24 right-3 sm:bottom-24 sm:right-6 z-[9999] pointer-events-none flex items-center gap-2 sm:gap-3 opacity-90">
+        {/* Universal Branding Watermark */}
+        <div className="fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-[9999] pointer-events-none flex items-center gap-2 sm:gap-3 opacity-90">
           {/* Custom Digital Hammerr Logo */}
           <div className="w-8 h-8 sm:w-10 sm:h-12 flex items-center justify-center drop-shadow-xl">
             <img src="/dh-logo.png" alt="Digital Hammerr" className="w-full h-full object-contain" />
