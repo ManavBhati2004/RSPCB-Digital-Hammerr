@@ -16,52 +16,83 @@ const awarenessImages: string[] = Object.keys(awarenessImageModules)
   .sort()
   .map(key => awarenessImageModules[key]);
 
-const awarenessRows: { images: string[]; direction: 'left' | 'right'; duration: number }[] = [
-  { images: [awarenessImages[0], awarenessImages[1], awarenessImages[2]], direction: 'right', duration: 80 },
-  { images: [awarenessImages[3], awarenessImages[4], awarenessImages[5]], direction: 'left',  duration: 95 },
+type AwarenessRowDef = { pairs: [string, string][]; direction: 'left' | 'right' };
+
+const awarenessRows: AwarenessRowDef[] = [
+  {
+    pairs: [
+      [awarenessImages[0], awarenessImages[1]],
+      [awarenessImages[2], awarenessImages[3]],
+      [awarenessImages[4], awarenessImages[5]],
+    ],
+    direction: 'right',
+  },
+  {
+    pairs: [
+      [awarenessImages[4], awarenessImages[5]],
+      [awarenessImages[0], awarenessImages[1]],
+      [awarenessImages[2], awarenessImages[3]],
+    ],
+    direction: 'left',
+  },
 ];
 
+const AWARENESS_DWELL_MS = 4000;
+
 type AwarenessRowProps = {
-  images: string[];
+  pairs: [string, string][];
   direction: 'left' | 'right';
-  duration: number;
   delay: number;
 };
 
-const AwarenessMarqueeRow = ({ images, direction, duration, delay }: AwarenessRowProps) => {
-  // Tile the source images several times so the base set is wider than the viewport;
-  // duplicate that base to give the -50% translate a seamless wrap-around.
-  const base = [...images, ...images, ...images];
-  const track = [...base, ...base];
+const AwarenessFlipRow = ({ pairs, direction, delay }: AwarenessRowProps) => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setIndex(i => (i + 1) % pairs.length);
+    }, AWARENESS_DWELL_MS);
+    return () => window.clearInterval(id);
+  }, [pairs.length]);
+
+  const current = pairs[index];
+  const flipFrom = direction === 'right' ? -90 : 90;
+  const flipTo   = direction === 'right' ? 90  : -90;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.9, ease: 'easeOut' }}
-      className="group relative overflow-hidden"
+      transition={{ delay, duration: 0.8, ease: 'easeOut' }}
+      className="flex items-center justify-center gap-6 sm:gap-12 md:gap-16 lg:gap-24"
     >
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28 md:w-40 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent z-20" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28 md:w-40 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent z-20" />
-
-      <div
-        className="animate-marquee flex w-max"
-        style={{
-          animationDirection: direction === 'right' ? 'reverse' : 'normal',
-          animationDuration: `${duration}s`,
-        }}
-      >
-        {track.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt=""
-            loading="lazy"
-            draggable={false}
-            className="block shrink-0 h-[240px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[480px] w-auto select-none"
-          />
-        ))}
-      </div>
+      {current.map((src, slotIdx) => (
+        <div
+          key={slotIdx}
+          className="relative shrink-0 aspect-square w-[min(42vw,38dvh)] sm:w-[min(40vw,40dvh)] md:w-[min(38vw,42dvh)] lg:w-[min(36vw,44dvh)]"
+          style={{ perspective: '1500px' }}
+        >
+          <AnimatePresence>
+            <motion.img
+              key={src}
+              src={src}
+              alt=""
+              loading="lazy"
+              draggable={false}
+              initial={{ rotateY: flipFrom, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: flipTo, opacity: 0 }}
+              transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1], delay: slotIdx * 0.12 }}
+              className="absolute inset-0 w-full h-full object-contain select-none drop-shadow-[0_25px_60px_rgba(15,23,42,0.35)]"
+              style={{
+                transformStyle: 'preserve-3d',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+              }}
+            />
+          </AnimatePresence>
+        </div>
+      ))}
     </motion.div>
   );
 };
@@ -405,7 +436,7 @@ const LandingPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.7, ease: 'easeInOut' }}
-              className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-20 sm:pt-24 pb-12 sm:pb-16"
+              className="absolute inset-0 w-full h-full overflow-hidden flex flex-col pt-20 sm:pt-24 pb-2 sm:pb-4"
             >
               {/* Ambient gradient orbs */}
               <div className="pointer-events-none absolute inset-0 z-0">
@@ -426,15 +457,14 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* 3 marquee rows — flush, no gaps */}
-              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0">
+              {/* Two flip rows — one image pair each, swap every 4s */}
+              <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0 gap-6 sm:gap-10 md:gap-14 lg:gap-16">
                 {awarenessRows.map((row, i) => (
-                  <AwarenessMarqueeRow
+                  <AwarenessFlipRow
                     key={i}
-                    images={row.images}
+                    pairs={row.pairs}
                     direction={row.direction}
-                    duration={row.duration}
-                    delay={0.2 + i * 0.12}
+                    delay={0.2 + i * 0.18}
                   />
                 ))}
               </div>
@@ -444,12 +474,14 @@ const LandingPage = () => {
         </AnimatePresence>
       </div>
 
-      {/* Play/Pause Indicator Overlay */}
-      <div className="flex absolute bottom-4 sm:bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 items-center gap-1.5 sm:gap-2 z-40 pointer-events-none">
-        {pages.map((_, i) => (
-          <div key={i} className={`h-1.5 rounded-full transition-all duration-700 ${activePage === i ? 'w-12 bg-slate-500' : 'w-4 bg-slate-300'}`}></div>
-        ))}
-      </div>
+      {/* Play/Pause Indicator Overlay — hidden on the awareness page so the flip rows can use the full bottom space */}
+      {activePage !== 2 && (
+        <div className="flex absolute bottom-4 sm:bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 items-center gap-1.5 sm:gap-2 z-40 pointer-events-none">
+          {pages.map((_, i) => (
+            <div key={i} className={`h-1.5 rounded-full transition-all duration-700 ${activePage === i ? 'w-12 bg-slate-500' : 'w-4 bg-slate-300'}`}></div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
