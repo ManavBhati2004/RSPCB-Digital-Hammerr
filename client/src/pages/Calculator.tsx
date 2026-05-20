@@ -159,8 +159,6 @@ const Calculator = () => {
         className="hidden xl:block fixed right-6 top-[120px] w-[170px] 2xl:w-[210px] z-50 pointer-events-auto"
       >
         <div className="relative group">
-          {/* animated gradient glow */}
-          <div className="absolute -inset-[2px] bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 rounded-[22px] blur-md opacity-60 group-hover:opacity-90 transition-opacity duration-500"></div>
           {/* card */}
           <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl border border-emerald-100/80 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.35)] overflow-hidden">
             {/* decorative blobs */}
@@ -169,11 +167,8 @@ const Calculator = () => {
 
             <div className="relative p-5">
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-emerald-400 rounded-lg blur-md opacity-50"></div>
-                  <div className="relative w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/40">
-                    <HelpCircle size={18} className="text-white" strokeWidth={2.5} />
-                  </div>
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/30">
+                  <HelpCircle size={18} className="text-white" strokeWidth={2.5} />
                 </div>
                 <div className="flex flex-col leading-tight">
                   <span className="text-[9px] font-extrabold uppercase tracking-[0.25em] text-slate-400">FAQ</span>
