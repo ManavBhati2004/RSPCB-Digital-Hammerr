@@ -1,6 +1,7 @@
 import express from 'express';
 import ElectricityRecord from '../models/ElectricityRecord.js';
 import VehicleRecord from '../models/VehicleRecord.js';
+import PoolingRecord from '../models/PoolingRecord.js';
 import Factory from '../models/Factory.js';
 
 const router = express.Router();
@@ -129,6 +130,31 @@ router.post('/vehicle', async (req, res) => {
       fuelType: fuelType || 'None',
       distance: Number(distance) || 0,
       co2Saved: Number(co2Saved) || 0
+    });
+    const populated = await record.populate('factory');
+    res.json(populated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/pooling', async (req, res) => {
+  try {
+    const { vehicleType, individualDistanceSum, sharedDistance, peopleCount, co2ReducedPerPerson, factoryName, individualName, useType } = req.body;
+    const factory = await resolveFactory({ useType, factoryName });
+
+    const record = await PoolingRecord.create({
+      factory: factory._id,
+      factoryName: factoryName || '',
+      individualName: individualName || '',
+      useType: useType === 'Personal' ? 'Personal' : 'Factory',
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      vehicleType: vehicleType === 'Bike' ? 'Bike' : 'Car',
+      individualDistanceSum: Number(individualDistanceSum) || 0,
+      sharedDistance: Number(sharedDistance) || 0,
+      peopleCount: Number(peopleCount) || 0,
+      co2ReducedPerPerson: Number(co2ReducedPerPerson) || 0
     });
     const populated = await record.populate('factory');
     res.json(populated);

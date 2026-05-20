@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Car, ChevronDown, User, Factory as FactoryIcon, ArrowLeft } from 'lucide-react';
+import { Zap, Car, ChevronDown, User, Factory as FactoryIcon, ArrowLeft, Users, Bike } from 'lucide-react';
 import axios from 'axios';
 import DrivingCarHeader from '../components/calculator/DrivingCarHeader';
 import PowerTowerHeader from '../components/calculator/PowerTowerHeader';
@@ -14,7 +14,7 @@ axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
 const Calculator = () => {
-  const [activeTab, setActiveTab] = useState<'electricity' | 'vehicle'>('electricity');
+  const [activeTab, setActiveTab] = useState<'electricity' | 'vehicle' | 'pooling'>('electricity');
 
   // Shared identity
   const [useType, setUseType] = useState<UseType>('Factory');
@@ -34,6 +34,16 @@ const Calculator = () => {
   const [distance, setDistance] = useState('');
   const [vehicleResult, setVehicleResult] = useState<number | null>(null);
   const [isVehicleSubmitting, setIsVehicleSubmitting] = useState(false);
+
+  // Pooling State
+  const [poolType, setPoolType] = useState<'Car' | 'Bike'>('Car');
+  const [x1, setX1] = useState(''); // bike: individual distance sum
+  const [y1, setY1] = useState(''); // bike: shared distance
+  const [x2, setX2] = useState(''); // car: individual distance sum
+  const [y2, setY2] = useState(''); // car: shared distance
+  const [z2, setZ2] = useState(''); // car: number of people
+  const [poolingResult, setPoolingResult] = useState<number | null>(null);
+  const [isPoolingSubmitting, setIsPoolingSubmitting] = useState(false);
 
   const identityLabel = useType === 'Personal' ? 'Personal Use' : (factoryName.trim() || 'Factory Use');
 
@@ -102,6 +112,44 @@ const Calculator = () => {
       console.error('Error submitting vehicle data:', error);
     } finally {
       setIsVehicleSubmitting(false);
+    }
+  };
+
+  const calculatePooling = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let val = 0;
+    let indivSum = 0;
+    let shared = 0;
+    let people = 0;
+    if (poolType === 'Bike') {
+      indivSum = parseFloat(x1);
+      shared = parseFloat(y1);
+      people = 2;
+      val = ((indivSum - shared) / 2) * (2.31 / 35);
+    } else {
+      indivSum = parseFloat(x2);
+      shared = parseFloat(y2);
+      people = parseFloat(z2);
+      val = ((indivSum - shared) / people) * 0.1782;
+    }
+    if (!isFinite(val) || val < 0) val = 0;
+    setPoolingResult(val);
+
+    try {
+      setIsPoolingSubmitting(true);
+      await axios.post(`${API}/api/data/pooling`, {
+        vehicleType: poolType,
+        individualDistanceSum: indivSum,
+        sharedDistance: shared,
+        peopleCount: people,
+        co2ReducedPerPerson: val,
+        factoryName: factoryName.trim(),
+        useType
+      });
+    } catch (error) {
+      console.error('Error submitting pooling data:', error);
+    } finally {
+      setIsPoolingSubmitting(false);
     }
   };
 
@@ -210,11 +258,19 @@ const Calculator = () => {
               <span>Vehicle</span>
               <span className="hidden sm:inline"> Savings</span>
             </button>
+            <button
+              onClick={() => setActiveTab('pooling')}
+              className={`flex-1 py-3 sm:py-4 px-2 flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base transition-all ${activeTab === 'pooling' ? 'text-green-600 border-b-2 border-green-500 bg-white' : 'text-slate-500 hover:bg-white/80'}`}
+            >
+              <Users size={18} className="shrink-0" />
+              <span>Pooling</span>
+              <span className="hidden sm:inline"> Sharing</span>
+            </button>
           </div>
 
           <div className="p-5 sm:p-8 md:p-12">
             <AnimatePresence mode="wait">
-              {activeTab === 'electricity' ? (
+              {activeTab === 'electricity' && (
                 <motion.div
                   key="electricity"
                   initial={{ opacity: 0, x: -20 }}
@@ -251,7 +307,8 @@ const Calculator = () => {
                     </motion.div>
                   )}
                 </motion.div>
-              ) : (
+              )}
+              {activeTab === 'vehicle' && (
                 <motion.div
                   key="vehicle"
                   initial={{ opacity: 0, x: -20 }}
@@ -294,6 +351,79 @@ const Calculator = () => {
                       <GrowingTreeHeader variant="saved" />
                       <h3 className="text-blue-800 font-semibold mb-2 text-sm sm:text-base">Total CO2 Saved</h3>
                       <div className="text-3xl sm:text-5xl font-extrabold text-blue-600 break-words">{vehicleResult.toFixed(4)} <span className="text-base sm:text-xl">Kg</span></div>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+              {activeTab === 'pooling' && (
+                <motion.div
+                  key="pooling"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <DrivingCarHeader vehicleType={poolType === 'Bike' ? 'twoWheeler' : 'fourWheeler'} />
+                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Pooling CO2 Contribution</h2>
+                  <form onSubmit={calculatePooling} className="space-y-5 sm:space-y-6">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Sharing Vehicle</label>
+                      <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
+                        <button
+                          type="button"
+                          onClick={() => setPoolType('Car')}
+                          className={`py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${poolType === 'Car' ? 'bg-white text-purple-600 shadow' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                          <Car size={16} /> Car
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPoolType('Bike')}
+                          className={`py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${poolType === 'Bike' ? 'bg-white text-purple-600 shadow' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                          <Bike size={16} /> Bike
+                        </button>
+                      </div>
+                    </div>
+
+                    {poolType === 'Bike' ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-2">Sum of Individual Distances (KM)</label>
+                          <input type="number" required value={x1} onChange={e => setX1(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 60" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-2">Shared Bike Distance (KM)</label>
+                          <input type="number" required value={y1} onChange={e => setY1(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 30" />
+                        </div>
+                        <p className="sm:col-span-2 text-[11px] sm:text-xs text-slate-500 -mt-2">Assumes 2 riders (rider + 1 passenger).</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-2">Sum of Individual Distances (KM)</label>
+                          <input type="number" required value={x2} onChange={e => setX2(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 100" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-2">Shared Car Distance (KM)</label>
+                          <input type="number" required value={y2} onChange={e => setY2(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 40" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-700 mb-2">Number of People Pooled</label>
+                          <input type="number" min="1" required value={z2} onChange={e => setZ2(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 4" />
+                        </div>
+                      </div>
+                    )}
+
+                    <button type="submit" disabled={isPoolingSubmitting} className="w-full py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg transition-all">
+                      {isPoolingSubmitting ? 'Saving...' : 'Calculate & Submit'}
+                    </button>
+                  </form>
+                  {poolingResult !== null && (
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-purple-50 rounded-xl border border-purple-200 text-center overflow-hidden">
+                      <GrowingTreeHeader variant="saved" />
+                      <h3 className="text-purple-800 font-semibold mb-2 text-sm sm:text-base">CO2 Reduced Per Person</h3>
+                      <div className="text-3xl sm:text-5xl font-extrabold text-purple-600 break-words">{poolingResult.toFixed(4)} <span className="text-base sm:text-xl">Kg</span></div>
                     </motion.div>
                   )}
                 </motion.div>
