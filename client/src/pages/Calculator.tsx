@@ -283,7 +283,7 @@ const Calculator = () => {
                         type="button"
                         onClick={() => handleGenerateCertificate('electricity')}
                         disabled={isGeneratingCert}
-                        className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
+                        className="flex-1 py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
                       >
                         <Award size={18} />
                         {isGeneratingCert ? 'Generating...' : 'Generate Certificate'}
@@ -341,7 +341,7 @@ const Calculator = () => {
                         type="button"
                         onClick={() => handleGenerateCertificate('vehicle')}
                         disabled={isGeneratingCert}
-                        className="flex-1 py-3.5 sm:py-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
+                        className="flex-1 py-3.5 sm:py-4 bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all inline-flex items-center justify-center gap-2"
                       >
                         <Award size={18} />
                         {isGeneratingCert ? 'Generating...' : 'Generate Certificate'}
