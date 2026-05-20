@@ -7,6 +7,7 @@ import DrivingCarHeader from '../components/calculator/DrivingCarHeader';
 import PowerTowerHeader from '../components/calculator/PowerTowerHeader';
 import GrowingTreeHeader from '../components/calculator/GrowingTreeHeader';
 import FarewellSection from '../components/calculator/FarewellSection';
+import modiCloud from '../assets/modi-cloud.png';
 
 type UseType = 'Personal' | 'Factory';
 
@@ -110,11 +111,26 @@ const Calculator = () => {
     <div className="min-h-screen bg-slate-50 py-10 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300/30 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         <Link to="/" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-700 font-bold rounded-full shadow-md hover:shadow-lg hover:text-green-600 hover:-translate-y-0.5 transition-all mb-6 sm:mb-8 text-sm sm:text-base border border-slate-200">
           <ArrowLeft size={18} /> Back to Home
         </Link>
 
+        <div className="lg:grid lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-8 lg:items-start">
+        <div className="hidden lg:block relative select-none">
+          <img
+            src={modiCloud}
+            alt="Zero hour awareness illustration"
+            className="w-full h-auto drop-shadow-[0_15px_25px_rgba(0,0,0,0.25)]"
+          />
+          <div className="absolute top-[5%] right-[2%] w-[44%] h-[24%] flex items-center justify-center px-3 text-center pointer-events-none">
+            <p className="text-slate-900 font-bold leading-tight text-xs xl:text-sm">
+              Zero hour means turning off AC's and running appliances at 50%
+            </p>
+          </div>
+        </div>
+
+        <div>
         {/* Identity / Use Type slide-down bar */}
         <div className="glass-card mb-5 sm:mb-6 overflow-hidden">
           <button
@@ -300,6 +316,8 @@ const Calculator = () => {
               )}
             </AnimatePresence>
           </div>
+        </div>
+        </div>
         </div>
       </div>
     </div>
