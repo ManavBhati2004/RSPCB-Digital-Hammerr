@@ -1,0 +1,111 @@
+/* LeafAnimation — premium green leaves around page edges & corners.
+   Pure CSS keyframes. No GSAP, no canvas. Pointer-events disabled. */
+
+.leaf-animation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 15;
+}
+
+.leaf-animation .leaf {
+  position: absolute;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(20, 83, 45, 0.18));
+  opacity: 0.78;
+  will-change: transform;
+}
+
+/* ---------- Corner / edge leaves: gentle sway + bob ---------- */
+
+@keyframes sway-tl {
+  0%   { transform: translate(0, 0) rotate(-8deg); }
+  50%  { transform: translate(14px, 10px) rotate(10deg); }
+  100% { transform: translate(0, 0) rotate(-8deg); }
+}
+@keyframes sway-tr {
+  0%   { transform: translate(0, 0) rotate(8deg); }
+  50%  { transform: translate(-14px, 10px) rotate(-10deg); }
+  100% { transform: translate(0, 0) rotate(8deg); }
+}
+@keyframes sway-bl {
+  0%   { transform: translate(0, 0) rotate(6deg); }
+  50%  { transform: translate(12px, -12px) rotate(-12deg); }
+  100% { transform: translate(0, 0) rotate(6deg); }
+}
+@keyframes sway-br {
+  0%   { transform: translate(0, 0) rotate(-6deg); }
+  50%  { transform: translate(-12px, -12px) rotate(12deg); }
+  100% { transform: translate(0, 0) rotate(-6deg); }
+}
+
+/* Top-left corner cluster */
+.leaf--tl-1 { top: 18px;  left: 22px;  animation: sway-tl 9s ease-in-out infinite; }
+.leaf--tl-2 { top: 70px;  left: 56px;  animation: sway-tl 11s ease-in-out infinite; }
+
+/* Top-right corner cluster */
+.leaf--tr-1 { top: 24px;  right: 28px; animation: sway-tr 10s ease-in-out infinite; }
+.leaf--tr-2 { top: 78px;  right: 64px; animation: sway-tr 12s ease-in-out infinite; }
+
+/* Bottom-left corner cluster */
+.leaf--bl-1 { bottom: 24px; left: 24px;  animation: sway-bl 13s ease-in-out infinite; }
+.leaf--bl-2 { bottom: 72px; left: 60px;  animation: sway-bl 10s ease-in-out infinite; }
+
+/* Bottom-right corner cluster */
+.leaf--br-1 { bottom: 28px; right: 26px; animation: sway-br 12s ease-in-out infinite; }
+.leaf--br-2 { bottom: 78px; right: 62px; animation: sway-br 9s  ease-in-out infinite; }
+
+/* ---------- Slow-falling leaves from the top corners ---------- */
+
+@keyframes fall-left {
+  0% {
+    transform: translate(0, -40px) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.85; }
+  50% {
+    transform: translate(40px, 45vh) rotate(180deg);
+  }
+  90% { opacity: 0.6; }
+  100% {
+    transform: translate(-10px, 96vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fall-right {
+  0% {
+    transform: translate(0, -40px) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.85; }
+  50% {
+    transform: translate(-40px, 45vh) rotate(-180deg);
+  }
+  90% { opacity: 0.6; }
+  100% {
+    transform: translate(10px, 96vh) rotate(-360deg);
+    opacity: 0;
+  }
+}
+
+.leaf--fall-l-1 { top: 0; left: 6%;  animation: fall-left  18s linear infinite; }
+.leaf--fall-l-2 { top: 0; left: 14%; animation: fall-left  22s linear infinite; }
+.leaf--fall-r-1 { top: 0; right: 7%; animation: fall-right 20s linear infinite; }
+.leaf--fall-r-2 { top: 0; right: 15%; animation: fall-right 24s linear infinite; }
+
+/* ---------- Responsive: tone things down on small screens ---------- */
+@media (max-width: 640px) {
+  .leaf-animation .leaf { opacity: 0.55; }
+  .leaf--tl-2,
+  .leaf--tr-2,
+  .leaf--bl-2,
+  .leaf--br-2,
+  .leaf--fall-l-2,
+  .leaf--fall-r-2 { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leaf-animation .leaf { animation: none; }
+}

@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { CinematicHero } from '../components/hero/CinematicHero';
 import { RspcbLogo } from '../components/RspcbLogo';
+import { LeafAnimation } from '../components/awareness/LeafAnimation';
 
 // Pull every awareness illustration from the assets folder, sorted by filename
 // so the row layout stays deterministic across builds.
@@ -454,6 +455,9 @@ const LandingPage = () => {
 
               {/* One image at a time — iris reveal every 4s */}
               <AwarenessFlipShowcase />
+
+              {/* Premium edge/corner leaf animation — awareness page only */}
+              <LeafAnimation />
             </motion.div>
           )}
 
