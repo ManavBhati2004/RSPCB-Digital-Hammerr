@@ -288,9 +288,10 @@ const Calculator = () => {
           </AnimatePresence>
         </div>
 
-        <p className="mb-5 sm:mb-6 text-center text-sm sm:text-base text-slate-600 font-medium">
+        <div className="glass-card mb-5 sm:mb-6 px-4 sm:px-6 py-4 text-center text-sm sm:text-base text-slate-600 font-medium">
+          <span className="mr-2">🔴</span>
           You can contribute through saving in electricity consumption and saving in fuel consumption
-        </p>
+        </div>
 
         <div className="glass-card overflow-hidden">
           <div className="flex border-b border-slate-200 bg-white/50">
