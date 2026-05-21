@@ -88,8 +88,9 @@ const Calculator = () => {
     const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
     let co2 = 0;
     let unit = '';
-    if (tab === 'electricity') { co2 = electricityResult ?? 0; unit = 'kg'; }
-    if (tab === 'vehicle')     { co2 = vehicleResult ?? 0;     unit = 'Kg'; }
+    if (tab === 'electricity') { co2 = electricityResult ?? 0; unit = useType === 'Factory' ? 'tonnes' : 'kg'; }
+    if (tab === 'vehicle')     { co2 = vehicleResult ?? 0;     unit = useType === 'Factory' ? 'tonnes' : 'kg'; }
+    if (useType === 'Factory') co2 = co2 / 1000;
 
     const safeName = factoryName.trim() || 'Participant';
     setCertData({ name: safeName, co2: co2.toFixed(4), unit, date: today });
@@ -359,7 +360,7 @@ const Calculator = () => {
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-green-50 rounded-xl border border-green-200 text-center overflow-hidden">
                       <GrowingTreeHeader variant="saved" />
                       <h3 className="text-green-800 font-semibold mb-2 text-sm sm:text-base">Total CO2 Saved</h3>
-                      <div className="text-3xl sm:text-5xl font-extrabold text-green-600 break-words">{electricityResult.toFixed(4)} <span className="text-base sm:text-xl">kg</span></div>
+                      <div className="text-3xl sm:text-5xl font-extrabold text-green-600 break-words">{(useType === 'Factory' ? electricityResult / 1000 : electricityResult).toFixed(4)} <span className="text-base sm:text-xl">{useType === 'Factory' ? 'tonnes' : 'kg'}</span></div>
                     </motion.div>
                   )}
                 </motion.div>
@@ -414,7 +415,7 @@ const Calculator = () => {
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-blue-50 rounded-xl border border-blue-200 text-center overflow-hidden">
                       <GrowingTreeHeader variant="saved" />
                       <h3 className="text-blue-800 font-semibold mb-2 text-sm sm:text-base">Total CO2 Saved</h3>
-                      <div className="text-3xl sm:text-5xl font-extrabold text-blue-600 break-words">{vehicleResult.toFixed(4)} <span className="text-base sm:text-xl">Kg</span></div>
+                      <div className="text-3xl sm:text-5xl font-extrabold text-blue-600 break-words">{(useType === 'Factory' ? vehicleResult / 1000 : vehicleResult).toFixed(4)} <span className="text-base sm:text-xl">{useType === 'Factory' ? 'tonnes' : 'kg'}</span></div>
                     </motion.div>
                   )}
                 </motion.div>
