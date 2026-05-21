@@ -382,7 +382,7 @@ const LandingPage = () => {
                   pinned to the right edge as before. */}
               <div className="relative min-h-full px-4 sm:px-6 pt-32 sm:pt-36 lg:pt-32 pb-32 sm:pb-28 lg:pb-20 flex flex-col items-center lg:absolute lg:inset-0 lg:pr-[440px] lg:justify-center">
                 <div className="w-full max-w-3xl mx-auto">
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live State Intelligence</h2>
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live Intelligence</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8">
                     {[
                       { label: 'CO2 Saved', value: '1,245,892', icon: Wind, color: 'text-green-600' },
