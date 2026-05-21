@@ -39,7 +39,7 @@ const ZeroHourFaqCard = () => (
         </h3>
 
         <p className="text-[12px] text-slate-600 leading-relaxed">
-          Zero Hour is a government-led initiative focused on reducing CO<sub>2</sub> emissions and saving energy. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
+          Zero Hour is an initiative focused on reducing CO<sub>2</sub> emissions and saving energy. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
         </p>
 
         <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center gap-2">
@@ -47,7 +47,7 @@ const ZeroHourFaqCard = () => (
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-[9px] font-extrabold tracking-[0.18em] uppercase text-emerald-600">Govt. Awareness Initiative</span>
+          <span className="text-[9px] font-extrabold tracking-[0.18em] uppercase text-emerald-600">Environment Awareness Initiative</span>
         </div>
       </div>
     </div>
