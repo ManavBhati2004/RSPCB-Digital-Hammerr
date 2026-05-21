@@ -162,9 +162,12 @@ const useAnalyticsTotals = () => {
     };
     fetchAll();
     const id = setInterval(fetchAll, 5000);
+    const onRefresh = () => fetchAll();
+    window.addEventListener('rspcb:stats-refresh', onRefresh);
     return () => {
       cancelled = true;
       clearInterval(id);
+      window.removeEventListener('rspcb:stats-refresh', onRefresh);
     };
   }, []);
 
@@ -189,10 +192,13 @@ const LiveLog = () => {
     fetchRecent();
     const poll = setInterval(fetchRecent, 5000);
     const tick = setInterval(() => setNow(Date.now()), 1000);
+    const onRefresh = () => fetchRecent();
+    window.addEventListener('rspcb:stats-refresh', onRefresh);
     return () => {
       cancelled = true;
       clearInterval(poll);
       clearInterval(tick);
+      window.removeEventListener('rspcb:stats-refresh', onRefresh);
     };
   }, []);
 

@@ -150,6 +150,7 @@ const Calculator = () => {
         factoryName: factoryName.trim(),
         useType
       });
+      window.dispatchEvent(new CustomEvent('rspcb:stats-refresh'));
       alert('Saved! Your entry will appear on the dashboard.');
     } catch (error) {
       console.error('Error submitting data:', error);
@@ -184,6 +185,7 @@ const Calculator = () => {
         factoryName: factoryName.trim(),
         useType
       });
+      window.dispatchEvent(new CustomEvent('rspcb:stats-refresh'));
     } catch (error) {
       console.error('Error submitting vehicle data:', error);
     } finally {
