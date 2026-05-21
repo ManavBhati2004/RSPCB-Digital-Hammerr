@@ -18,11 +18,11 @@ const WELCOME_MESSAGE =
 
 const INITIAL_SUGGESTIONS = [
   'What is carbon footprint?',
-  'Calculate 100 km bike emission',
+  'How is petrol emission calculated?',
+  'How is electricity carbon saved calculated?',
   'What does the dashboard show?',
   'How can I reduce my carbon footprint?',
-  'Tell me about solar power',
-  'How is petrol emission calculated?'
+  'Tell me about solar power'
 ];
 
 function pathToPageContext(pathname: string): PageContext {

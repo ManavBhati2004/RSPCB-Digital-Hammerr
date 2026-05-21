@@ -3,6 +3,7 @@ import {
   calculateTwoWheelerEmission,
   calculateFourWheelerPetrolEmission,
   calculateFourWheelerDieselEmission,
+  calculateCycleOrElectricEmission,
   calculateElectricityCarbonSaved
 } from '../utils/carbonFormulaUtils.js';
 
@@ -47,69 +48,45 @@ const KB_INTENT_MAP = {
   general_environment_awareness: 'general_environment_awareness'
 };
 
-function fuelReply({ language, distanceKm, vehicleType, fuelType, value, formula }) {
-  const vehicleLabel =
-    vehicleType === '4 Wheeler' ? `4-wheeler ${fuelType.toLowerCase()}` : '2-wheeler petrol';
-  if (language !== 'english') {
-    return `${distanceKm} km ${vehicleLabel} = **${value.result.toFixed(2)} kg CO₂**\n(${formula} → ${value.calc.split('=')[1].trim()})`;
-  }
-  return `${distanceKm} km on a ${vehicleLabel} = **${value.result.toFixed(2)} kg CO₂**\n(${formula} → ${value.calc.split('=')[1].trim()})`;
+function fuelReply({ distanceKm, vehicleLabel, result }) {
+  const article = /^[aeiou]/i.test(vehicleLabel) ? 'an' : 'a';
+  return `${distanceKm} km on ${article} ${vehicleLabel} = **${result.toFixed(2)} kg CO₂**`;
 }
 
-function buildFuelCalculation(parsed, language) {
+function buildFuelCalculation(parsed, _language) {
   const { distanceKm, vehicleType, fuelType } = parsed;
 
-  if (distanceKm == null || vehicleType == null || (vehicleType === '4 Wheeler' && fuelType == null)) {
-    return null;
+  if (distanceKm == null || vehicleType == null) return null;
+
+  if (vehicleType === 'Cycle' || fuelType === 'Electric') {
+    const result = calculateCycleOrElectricEmission(distanceKm);
+    const label = vehicleType === 'Cycle' ? 'cycle' : 'electric vehicle';
+    return fuelReply({ distanceKm, vehicleLabel: label, result });
   }
+
+  if (vehicleType === '4 Wheeler' && fuelType == null) return null;
 
   if (vehicleType === '2 Wheeler') {
     const result = calculateTwoWheelerEmission(distanceKm);
-    return fuelReply({
-      language,
-      distanceKm,
-      vehicleType,
-      fuelType: 'Petrol',
-      formula: '(km / 35) × 2.31',
-      value: { result, calc: `(${distanceKm} / 35) × 2.31 = ${result} kg CO₂` }
-    });
+    return fuelReply({ distanceKm, vehicleLabel: '2-wheeler petrol', result });
   }
   if (vehicleType === '4 Wheeler' && fuelType === 'Petrol') {
     const result = calculateFourWheelerPetrolEmission(distanceKm);
-    return fuelReply({
-      language,
-      distanceKm,
-      vehicleType,
-      fuelType: 'Petrol',
-      formula: '(km / 13) × 2.31',
-      value: { result, calc: `(${distanceKm} / 13) × 2.31 = ${result} kg CO₂` }
-    });
+    return fuelReply({ distanceKm, vehicleLabel: '4-wheeler petrol', result });
   }
   if (vehicleType === '4 Wheeler' && fuelType === 'Diesel') {
     const result = calculateFourWheelerDieselEmission(distanceKm);
-    return fuelReply({
-      language,
-      distanceKm,
-      vehicleType,
-      fuelType: 'Diesel',
-      formula: '(km / 15) × 2.31',
-      value: { result, calc: `(${distanceKm} / 15) × 2.31 = ${result} kg CO₂` }
-    });
+    return fuelReply({ distanceKm, vehicleLabel: '4-wheeler diesel', result });
   }
   return null;
 }
 
-function buildElectricityCalculation(parsed, language) {
+function buildElectricityCalculation(parsed, _language) {
   const { consumption, nonConsumption } = parsed;
   if (consumption == null || nonConsumption == null) return null;
 
   const result = calculateElectricityCarbonSaved(consumption, nonConsumption);
-  const calc = `${consumption} × ${nonConsumption} × 0.0008541 = ${result}`;
-
-  if (language !== 'english') {
-    return `${consumption} units × ${nonConsumption} zero hours = **${result} Tons CO₂ saved**\n(${calc})`;
-  }
-  return `${consumption} units × ${nonConsumption} zero hours = **${result} Tons CO₂ saved**\n(${calc})`;
+  return `${consumption} units × ${nonConsumption} zero hours = **${result} Tons CO₂ saved**`;
 }
 
 // Intents where the user is explicitly asking for a list / steps / tips.
@@ -148,10 +125,15 @@ function followUpsFor(intentKey) {
 }
 
 function fuelFormulaExplanation(language) {
+  const body =
+    '2-wheeler petrol: (km / 35) × 2.31\n' +
+    '4-wheeler petrol: (km / 13) × 2.31\n' +
+    '4-wheeler diesel: (km / 15) × 2.31\n' +
+    'Cycle / Electric: km × 0.15';
   if (language !== 'english') {
-    return '2-wheeler petrol: (km / 35) × 2.31 kg\n4-wheeler petrol: (km / 13) × 2.31 kg\n4-wheeler diesel: (km / 15) × 2.31 kg\n\nResult kg CO₂ me, 2 decimals tak round.';
+    return `${body}\n\nResult kg CO₂ me, 2 decimals tak round.`;
   }
-  return '2-wheeler petrol: (km / 35) × 2.31 kg\n4-wheeler petrol: (km / 13) × 2.31 kg\n4-wheeler diesel: (km / 15) × 2.31 kg\n\nResults are in kg of CO₂, rounded to 2 decimals.';
+  return `${body}\n\nResults are in kg of CO₂, rounded to 2 decimals.`;
 }
 
 function electricityFormulaExplanation(language) {
@@ -231,7 +213,6 @@ export function buildReply({ intent, parsed, language, message }) {
     return {
       reply: missingFuelDataReply(parsed, language),
       suggestedQuestions: [
-        'Calculate 100 km bike emission',
         'How is petrol emission calculated?',
         'How is diesel emission calculated?'
       ]
@@ -244,7 +225,6 @@ export function buildReply({ intent, parsed, language, message }) {
     return {
       reply: missingElectricityDataReply(parsed, language),
       suggestedQuestions: [
-        'Calculate 600 units and 10 zero hours',
         'What does zero hours mean?',
         'How is electricity carbon saved calculated?'
       ]
@@ -277,8 +257,8 @@ export function buildReply({ intent, parsed, language, message }) {
   // 4. Unknown but relevant — short orientation, not a feature dump.
   const fallback =
     language === 'english'
-      ? `I'm not sure what you mean. Try a specific question like "What is carbon footprint?", "100 km bike emission", "How do I submit a calculation?", or "Tell me about solar power".`
-      : `Mujhe samajh nahi aaya. Try karein: "Carbon footprint kya hai?", "100 km bike emission", "Calculation kaise submit karein?", ya "Solar power ke baare me batao".`;
+      ? `I'm not sure what you mean. Try a specific question like "What is carbon footprint?", "How is petrol emission calculated?", "How do I submit a calculation?", or "Tell me about solar power".`
+      : `Mujhe samajh nahi aaya. Try karein: "Carbon footprint kya hai?", "Petrol emission kaise calculate hota hai?", "Calculation kaise submit karein?", ya "Solar power ke baare me batao".`;
 
   return {
     reply: fallback,

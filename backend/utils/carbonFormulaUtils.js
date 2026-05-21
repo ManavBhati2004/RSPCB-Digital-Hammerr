@@ -13,6 +13,11 @@ export function calculateFourWheelerDieselEmission(km) {
   return Number(((km / 15) * 2.31).toFixed(2));
 }
 
+// Cycle / Electric vehicle — matches Calculator.tsx where val = dist * 0.15.
+export function calculateCycleOrElectricEmission(km) {
+  return Number((km * 0.15).toFixed(2));
+}
+
 // Electricity result is in Tons (matches Calculator.tsx line 78).
 export function calculateElectricityCarbonSaved(consumption, nonConsumption) {
   return Number((consumption * nonConsumption * 0.0008541).toFixed(4));

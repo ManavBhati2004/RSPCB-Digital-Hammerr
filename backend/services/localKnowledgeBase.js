@@ -132,8 +132,7 @@ const knowledgeBase = {
     ],
     followUps: [
       'How is electricity carbon saved calculated?',
-      'Give electricity saving tips',
-      'Calculate 600 units and 10 zero hours'
+      'Give electricity saving tips'
     ]
   },
 
@@ -183,8 +182,7 @@ const knowledgeBase = {
     ],
     followUps: [
       'How is petrol emission calculated?',
-      'How is diesel emission calculated?',
-      'Calculate 100 km bike emission'
+      'How is diesel emission calculated?'
     ]
   },
 
@@ -199,15 +197,14 @@ const knowledgeBase = {
     ],
     followUps: [
       'How is electricity carbon saved calculated?',
-      'What does zero hours mean?',
-      'Calculate carbon saved for 600 units and 10 zero hours'
+      'What does zero hours mean?'
     ]
   },
 
   // ───────── Related fields and ideas ─────────
   carbon_footprint_definition: {
     summary:
-      'A carbon footprint is the total greenhouse gas emissions caused by your activities — usually measured as kilograms or tonnes of CO₂.',
+      'Your carbon footprint is the total amount of CO₂ your daily activities release. It is measured in kilograms or tonnes of CO₂.',
     points: [
       'Direct emissions come from things you burn yourself: petrol/diesel in a vehicle, LPG at home.',
       'Indirect emissions come from electricity you use, food you eat, and goods you buy.',
@@ -223,7 +220,7 @@ const knowledgeBase = {
 
   climate_change_basics: {
     summary:
-      'Climate change is the long-term shift in temperature and weather caused mainly by CO₂ and other greenhouse gases trapping heat in the atmosphere.',
+      'Climate change is the long-term rise in the Earth\'s temperature. It happens because gases like CO₂ trap extra heat in the atmosphere when we burn fuel.',
     points: [
       'Burning petrol, diesel, coal, and gas releases CO₂ that stays in the atmosphere for decades.',
       'India is among the most climate-vulnerable countries — heat waves, droughts, and erratic monsoons are getting worse.',
@@ -255,7 +252,7 @@ const knowledgeBase = {
 
   solar_power: {
     summary:
-      'Solar power converts sunlight into electricity using photovoltaic (PV) panels — it is the lowest-emission electricity source available in Rajasthan.',
+      'Solar power turns sunlight into electricity using solar panels. It is the cleanest and lowest-cost source of electricity in Rajasthan.',
     points: [
       'A 1 kW rooftop system can generate ~1,400-1,600 units per year in Rajasthan.',
       'Households can avail subsidies under the PM Surya Ghar / state rooftop solar schemes.',
@@ -271,7 +268,7 @@ const knowledgeBase = {
 
   electric_vehicle: {
     summary:
-      'Electric vehicles (EVs) emit zero CO₂ at the tailpipe — their lifecycle emissions are still much lower than petrol/diesel even on India\'s grid.',
+      'Electric vehicles (EVs) run on a battery and have no exhaust. They produce much less CO₂ than petrol or diesel cars, even when the electricity comes from the normal grid.',
     points: [
       'A typical petrol car emits ~178 g CO₂/km; an EV on the Indian grid emits ~80-100 g CO₂/km — and falls as the grid greens.',
       'EVs cut local air pollution dramatically, which matters in dense cities like Jaipur and Jodhpur.',
@@ -303,7 +300,7 @@ const knowledgeBase = {
 
   air_quality: {
     summary:
-      'Air quality measures harmful pollutants like PM2.5, PM10, NOx, SO₂ — mostly from burning fossil fuels, biomass, and dust.',
+      'Air quality tells you how much harmful smoke and tiny dust particles are in the air. The main causes are vehicle exhaust, factory smoke, and burning of fuel or waste.',
     points: [
       'Vehicle exhaust and industrial emissions are the biggest contributors in Rajasthan cities.',
       'PM2.5 (very fine particles) is the most dangerous — it enters the bloodstream and harms lungs and the heart.',
@@ -383,12 +380,12 @@ const knowledgeBase = {
 
   petrol_vs_diesel: {
     summary:
-      'Per litre, diesel emits more CO₂ than petrol (2.68 kg vs 2.31 kg) — but diesel engines are usually more efficient, so per kilometre the gap is smaller.',
+      'On this calculator, diesel and petrol use the same 2.31 kg CO₂ per litre factor, but diesel cars get better mileage (15 km/L vs 13 km/L) so diesel ends up lower per kilometre.',
     points: [
-      'This calculator uses 2.31 kg CO₂/L for both fuels — a simplified factor.',
-      'Diesel cars typically deliver better mileage (~15 km/L) than petrol cars (~13 km/L).',
-      'For shorter city trips, petrol or CNG is usually cleaner; diesel suits long-haul.',
-      'Both fuels emit local pollutants (NOx, PM) — EVs and public transport are cleaner alternatives.'
+      'Both fuels use 2.31 kg CO₂/L in this calculator.',
+      'Diesel cars: ~15 km/L assumed. Petrol cars: ~13 km/L assumed.',
+      'Per 100 km: petrol car ≈ 17.77 kg, diesel car ≈ 15.40 kg.',
+      'Both fuels emit local pollutants too — electric vehicles and public transport are cleaner.'
     ],
     followUps: [
       'How is petrol emission calculated?',

@@ -39,13 +39,19 @@ const INTENT_KEYWORDS = {
   // ───────── Calculations ─────────
   fuel_calculation: [
     'how much carbon', 'kitna carbon', 'carbon batao', 'emission batao',
-    'calculate emission', 'calculate carbon', 'co2', 'co₂',
+    'calculate emission', 'calculate carbon',
+    'calculate my bike', 'calculate my car', 'calculate my vehicle',
+    'calculate my scooter', 'calculate my fuel',
+    'bike emission', 'car emission', 'vehicle emission', 'scooter emission',
+    'fuel emission', 'co2', 'co₂',
     'travelled', 'travel', 'gaya', 'gayi', 'chalayi', 'chalaya', 'chala',
     'ride', 'drove', 'driven', 'km bike', 'km car', 'km scooter'
   ],
   electricity_calculation: [
     'electricity carbon', 'bijli carbon', 'unit carbon', 'kwh saved',
-    'carbon saved', 'zero hour', 'zero hours', 'ghante off', 'non consumption'
+    'carbon saved', 'electricity emission', 'unit emission',
+    'calculate my electricity', 'calculate my unit', 'calculate my bijli',
+    'zero hour', 'zero hours', 'ghante off', 'non consumption'
   ],
 
   // ───────── Comparisons ─────────

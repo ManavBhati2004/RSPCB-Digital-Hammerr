@@ -16,6 +16,8 @@ const FOUR_WHEELER_WORDS = [
 
 const PETROL_WORDS = ['petrol', 'gasoline', 'पेट्रोल'];
 const DIESEL_WORDS = ['diesel', 'डीजल', 'डीज़ल'];
+const ELECTRIC_WORDS = ['electric vehicle', 'electric car', 'electric bike', 'electric scooter', 'ev', 'evs'];
+const CYCLE_WORDS = ['cycle', 'bicycle', 'cycling', 'साइकिल'];
 
 const ELECTRICITY_HINTS = [
   'electricity', 'unit', 'units', 'kwh', 'bijli', 'light', 'energy',
@@ -57,6 +59,7 @@ function extractDistanceKm(text) {
 
 function extractVehicleType(text) {
   const t = text.toLowerCase();
+  if (containsAny(t, CYCLE_WORDS)) return 'Cycle';
   if (containsAny(t, TWO_WHEELER_WORDS)) return '2 Wheeler';
   if (containsAny(t, FOUR_WHEELER_WORDS)) return '4 Wheeler';
   return null;
@@ -64,6 +67,7 @@ function extractVehicleType(text) {
 
 function extractFuelType(text) {
   const t = text.toLowerCase();
+  if (containsAny(t, ELECTRIC_WORDS)) return 'Electric';
   if (containsAny(t, DIESEL_WORDS)) return 'Diesel';
   if (containsAny(t, PETROL_WORDS)) return 'Petrol';
   return null;
