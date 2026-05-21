@@ -135,7 +135,7 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-5 mb-3 sm:mb-6 w-full px-2 sm:px-0">
                 <RspcbLogo className="h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 shadow-md" />
                 <h1 className="text-lg sm:text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-tight sm:whitespace-nowrap">
-                  Rajasthan State<span className="text-orange-500"> Pollution Control Board</span>
+                  Rajasthan State<span className="text-orange-500"> Pollution Control Board, Udaipur</span>
                 </h1>
               </div>
               <p className="whitespace-nowrap text-center text-sm sm:text-lg md:text-2xl font-bold tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-5 bg-gradient-to-r from-emerald-300 via-amber-200 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(251,191,36,0.45)]">
@@ -150,6 +150,22 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               >
                 Reduce Emission Now
               </button>
+              <motion.button
+                onClick={handleTransform}
+                className="mt-3 sm:mt-5 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-bold tracking-[0.15em] sm:tracking-[0.2em] uppercase bg-gradient-to-r from-emerald-300 via-amber-200 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(251,191,36,0.45)] hover:scale-105 transition-transform cursor-pointer"
+                animate={{ opacity: [0.65, 1, 0.65], y: [0, -3, 0] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <span>Click here to know more</span>
+                <motion.span
+                  aria-hidden
+                  className="text-orange-400"
+                  animate={{ y: [0, 4, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  ↓
+                </motion.span>
+              </motion.button>
             </motion.div>
           ) : (
             <motion.div
