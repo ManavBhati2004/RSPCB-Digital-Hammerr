@@ -106,13 +106,6 @@ const Calculator = () => {
           filename: `certificate-${safeName.replace(/\s+/g, '_')}.pdf`,
         });
       }
-      axios.post(`${API}/api/data/certificate`, {
-        name: safeName,
-        co2: Number(Number(co2).toFixed(4)),
-        unit,
-        source: tab,
-        useType,
-      }).catch(() => {});
       setShowThankYou(true);
       window.scrollTo({ top: 0, behavior: 'auto' });
     } catch (err) {
