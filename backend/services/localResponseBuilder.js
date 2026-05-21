@@ -128,8 +128,7 @@ function fuelFormulaExplanation(language) {
   const body =
     '2-wheeler petrol: (km / 35) × 2.31\n' +
     '4-wheeler petrol: (km / 13) × 2.31\n' +
-    '4-wheeler diesel: (km / 15) × 2.31\n' +
-    'Cycle / Electric: km × 0.15';
+    '4-wheeler diesel: (km / 15) × 2.68';
   if (language !== 'english') {
     return `${body}\n\nResult kg CO₂ me, 2 decimals tak round.`;
   }
