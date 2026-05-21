@@ -252,6 +252,33 @@ const LandingPage = () => {
   const [autoCycle, setAutoCycle] = useState(initialPage === 0);
   const [heroTransformed, setHeroTransformed] = useState(false);
   const showNav = activePage !== 0 || heroTransformed;
+  const contributionMobileRef = useRef<HTMLAnchorElement | null>(null);
+  const [contribAnchor, setContribAnchor] = useState<{ centerX: number; bottom: number } | null>(null);
+
+  useEffect(() => {
+    if (activePage !== 2 || !showNav) {
+      setContribAnchor(null);
+      return;
+    }
+    const measure = () => {
+      const el = contributionMobileRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0) return;
+      setContribAnchor({ centerX: rect.left + rect.width / 2, bottom: rect.bottom });
+    };
+    measure();
+    const t1 = window.setTimeout(measure, 200);
+    const t2 = window.setTimeout(measure, 700);
+    window.addEventListener('resize', measure);
+    window.addEventListener('orientationchange', measure);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('orientationchange', measure);
+    };
+  }, [activePage, showNav]);
 
 
   const pages = [
@@ -371,6 +398,7 @@ const LandingPage = () => {
             </button>
           ))}
           <Link
+            ref={contributionMobileRef}
             to="/calculator"
             className="px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-white/10"
           >
@@ -379,25 +407,33 @@ const LandingPage = () => {
         </div>
       </motion.div>
 
-      {/* Mobile-only contribution hint — floats just below the nav so it's never clipped by the nav's horizontal scroll */}
+      {/* Mobile-only contribution hint — measured against the actual Contribution link so the arrow lands directly under it */}
       <AnimatePresence>
-        {activePage === 2 && (
+        {activePage === 2 && contribAnchor && (
           <motion.div
             key="contrib-hint-mobile-floating"
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.35, delay: 0.45 }}
-            className="lg:hidden fixed top-[58px] sm:top-[68px] right-3 sm:right-4 z-50 pointer-events-none"
+            transition={{ duration: 0.35, delay: 0.35 }}
+            className="lg:hidden fixed z-50 pointer-events-none"
+            style={{
+              top: contribAnchor.bottom + 8,
+              left: Math.min(
+                Math.max(contribAnchor.centerX, 70),
+                (typeof window !== 'undefined' ? window.innerWidth : 360) - 70
+              ),
+              transform: 'translateX(-50%)',
+            }}
           >
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold uppercase tracking-wide whitespace-nowrap shadow-lg shadow-orange-500/40 ring-1 ring-orange-300/50">
+            <span className="relative inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold uppercase tracking-wide whitespace-nowrap shadow-lg shadow-orange-500/40 ring-1 ring-orange-300/50">
               <motion.span
                 aria-hidden
+                className="absolute left-1/2 -top-1.5 -translate-x-1/2 text-amber-500 text-base leading-none drop-shadow-[0_-1px_2px_rgba(0,0,0,0.25)]"
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-                className="inline-block"
               >
-                ↑
+                ▲
               </motion.span>
               Click here now
             </span>
