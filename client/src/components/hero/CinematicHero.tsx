@@ -6,6 +6,7 @@ import { TreeGrowth } from './TreeGrowth';
 import { EcoTransition } from './EcoTransition';
 import { ModiInteractiveCard } from '../aim/ModiInteractiveCard';
 import { InfiniteImageSlider } from '../home/InfiniteImageSlider';
+import { RspcbLogo } from '../RspcbLogo';
 
 interface Props {
   onTransform?: () => void;
@@ -131,6 +132,12 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               exit={{ opacity: 0, y: -20 }}
               className="pointer-events-auto flex flex-col items-center"
             >
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 whitespace-nowrap">
+                <RspcbLogo className="h-7 w-7 sm:h-9 sm:w-9 md:h-10 md:w-10 shadow-md" />
+                <span className="text-xs sm:text-base md:text-lg font-semibold text-white drop-shadow-md">
+                  Rajasthan State Pollution Control Board
+                </span>
+              </div>
               <p className="whitespace-nowrap text-center text-sm sm:text-lg md:text-2xl font-bold tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-5 bg-gradient-to-r from-emerald-300 via-amber-200 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(251,191,36,0.45)]">
                 YOU CAN HELP SAVE THE WORLD
               </p>
