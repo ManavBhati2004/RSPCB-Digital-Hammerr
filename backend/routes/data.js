@@ -71,9 +71,10 @@ router.get('/stats', async (req, res) => {
     const personalNames = new Set();
     const pickPersonalName = (r) => {
       if (r.useType !== 'Personal') return null;
-      const n = ((r.individualName && r.individualName.trim()) ||
-                 (r.factoryName && r.factoryName.trim()) || '').toLowerCase();
-      return n || null;
+      const n = (r.individualName && r.individualName.trim()) ||
+                (r.factoryName && r.factoryName.trim()) ||
+                'anonymous';
+      return n.toLowerCase();
     };
     for (const r of electricity) { const n = pickPersonalName(r); if (n) personalNames.add(n); }
     for (const r of vehicles)    { const n = pickPersonalName(r); if (n) personalNames.add(n); }
