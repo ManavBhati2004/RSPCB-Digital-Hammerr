@@ -39,7 +39,7 @@ const ZeroHourFaqCard = () => (
         </h3>
 
         <p className="text-[12px] text-slate-600 leading-relaxed">
-          Zero Hour is an initiative focused on reducing CO<sub>2</sub> emissions and saving energy. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
+          Zero Hour is a Rajasthan State Pollution Control Board Udaipur initiative for environmental awareness. During this period, people are encouraged to switch off heavy electricity-consuming appliances like ACs, TVs, and other devices. The goal is to lower overall power consumption by promoting responsible and sustainable energy usage.
         </p>
 
         <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center gap-2">
