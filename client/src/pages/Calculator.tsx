@@ -88,7 +88,7 @@ const Calculator = () => {
     const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
     let co2 = 0;
     let unit = '';
-    if (tab === 'electricity') { co2 = electricityResult ?? 0; unit = 'Tons'; }
+    if (tab === 'electricity') { co2 = electricityResult ?? 0; unit = 'kWh'; }
     if (tab === 'vehicle')     { co2 = vehicleResult ?? 0;     unit = 'Kg'; }
 
     const safeName = factoryName.trim() || 'Participant';
@@ -349,7 +349,7 @@ const Calculator = () => {
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 sm:mt-8 p-5 sm:p-6 bg-green-50 rounded-xl border border-green-200 text-center overflow-hidden">
                       <GrowingTreeHeader variant="saved" />
                       <h3 className="text-green-800 font-semibold mb-2 text-sm sm:text-base">Total CO2 Saved</h3>
-                      <div className="text-3xl sm:text-5xl font-extrabold text-green-600 break-words">{electricityResult.toFixed(4)} <span className="text-base sm:text-xl">Tons</span></div>
+                      <div className="text-3xl sm:text-5xl font-extrabold text-green-600 break-words">{electricityResult.toFixed(4)} <span className="text-base sm:text-xl">kWh</span></div>
                     </motion.div>
                   )}
                 </motion.div>
