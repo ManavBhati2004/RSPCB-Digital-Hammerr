@@ -370,37 +370,40 @@ const LandingPage = () => {
               {page.name}
             </button>
           ))}
-          <div className="relative flex items-center">
-            <Link
-              to="/calculator"
-              className="px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-white/10"
-            >
-              Contribution
-            </Link>
-            <AnimatePresence>
-              {activePage === 2 && (
-                <motion.span
-                  key="contrib-hint-mobile"
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -6 }}
-                  transition={{ duration: 0.35, delay: 0.25 }}
-                  className="ml-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[9px] font-bold uppercase tracking-wide whitespace-nowrap shadow-md shadow-orange-500/40"
-                >
-                  <motion.span
-                    aria-hidden
-                    animate={{ x: [0, -2, 0] }}
-                    transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    ←
-                  </motion.span>
-                  Click here
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </div>
+          <Link
+            to="/calculator"
+            className="px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-white/10"
+          >
+            Contribution
+          </Link>
         </div>
       </motion.div>
+
+      {/* Mobile-only contribution hint — floats just below the nav so it's never clipped by the nav's horizontal scroll */}
+      <AnimatePresence>
+        {activePage === 2 && (
+          <motion.div
+            key="contrib-hint-mobile-floating"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.35, delay: 0.45 }}
+            className="lg:hidden fixed top-[58px] sm:top-[68px] right-3 sm:right-4 z-50 pointer-events-none"
+          >
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold uppercase tracking-wide whitespace-nowrap shadow-lg shadow-orange-500/40 ring-1 ring-orange-300/50">
+              <motion.span
+                aria-hidden
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-block"
+              >
+                ↑
+              </motion.span>
+              Click here now
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content Area (Full Screen Slider) */}
       <div className="relative w-full h-full z-10 flex items-center justify-center pt-14 sm:pt-16">
