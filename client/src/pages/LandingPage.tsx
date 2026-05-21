@@ -385,7 +385,7 @@ const LandingPage = () => {
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live Intelligence</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8">
                     {[
-                      { label: 'CO2 Saved', value: '1,245,892', icon: Wind, color: 'text-green-600' },
+                      { label: 'CO2 Saved (In tonnes)', value: '1,245,892', icon: Wind, color: 'text-green-600' },
                       { label: 'Registered Units', value: '8,420', icon: FactoryIcon, color: 'text-blue-600' },
                     ].map((stat, i) => (
                       <motion.div
