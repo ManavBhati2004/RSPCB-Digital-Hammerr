@@ -140,21 +140,22 @@ const useAnimatedNumber = (target: number, durationMs = 1600) => {
 
 const useAnalyticsTotals = () => {
   const [co2Tonnes, setCo2Tonnes] = useState(0);
-  const [certCount, setCertCount] = useState(0);
+  const [unitCount, setUnitCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     const fetchAll = async () => {
       try {
-        const [statsRes, certRes] = await Promise.all([
-          axios.get<{ totalCO2Saved: number; totalVehicleCO2: number }>(`${API}/api/data/stats`),
-          axios.get<{ count: number }>(`${API}/api/data/certificate/count`),
-        ]);
+        const statsRes = await axios.get<{
+          totalCO2Saved: number;
+          totalVehicleCO2: number;
+          registeredUnits: number;
+        }>(`${API}/api/data/stats`);
         if (cancelled) return;
         const elec = Number(statsRes.data.totalCO2Saved) || 0;
         const veh = Number(statsRes.data.totalVehicleCO2) || 0;
         setCo2Tonnes(elec + veh / 1000);
-        setCertCount(Number(certRes.data.count) || 0);
+        setUnitCount(Number(statsRes.data.registeredUnits) || 0);
       } catch (err) {
         console.error('Analytics totals fetch failed:', err);
       }
@@ -167,7 +168,7 @@ const useAnalyticsTotals = () => {
     };
   }, []);
 
-  return { co2Tonnes, certCount };
+  return { co2Tonnes, unitCount };
 };
 
 const LiveLog = () => {
@@ -251,9 +252,9 @@ const LandingPage = () => {
   const [autoCycle, setAutoCycle] = useState(initialPage === 0);
   const [heroTransformed, setHeroTransformed] = useState(false);
   const showNav = activePage !== 0 || heroTransformed;
-  const { co2Tonnes, certCount } = useAnalyticsTotals();
+  const { co2Tonnes, unitCount } = useAnalyticsTotals();
   const animatedCo2 = useAnimatedNumber(co2Tonnes);
-  const animatedCert = useAnimatedNumber(certCount);
+  const animatedUnits = useAnimatedNumber(unitCount);
   const contributionMobileRef = useRef<HTMLAnchorElement | null>(null);
   const hintRef = useRef<HTMLDivElement | null>(null);
   const [contribAnchor, setContribAnchor] = useState<{ centerX: number; bottom: number } | null>(null);
@@ -502,8 +503,8 @@ const LandingPage = () => {
                         color: 'text-green-600',
                       },
                       {
-                        label: 'Certificates Generated',
-                        value: Math.round(animatedCert).toLocaleString(),
+                        label: 'Registered Units',
+                        value: Math.round(animatedUnits).toLocaleString(),
                         icon: Award,
                         color: 'text-blue-600',
                       },

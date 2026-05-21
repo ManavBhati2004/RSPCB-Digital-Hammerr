@@ -67,6 +67,18 @@ router.get('/stats', async (req, res) => {
 
     const trendData = Object.values(trendMap);
 
+    const factoryUnits = factories.filter(f => f.registrationNumber !== PERSONAL_REG).length;
+    const personalNames = new Set();
+    const pickPersonalName = (r) => {
+      if (r.useType !== 'Personal') return null;
+      const n = ((r.individualName && r.individualName.trim()) ||
+                 (r.factoryName && r.factoryName.trim()) || '').toLowerCase();
+      return n || null;
+    };
+    for (const r of electricity) { const n = pickPersonalName(r); if (n) personalNames.add(n); }
+    for (const r of vehicles)    { const n = pickPersonalName(r); if (n) personalNames.add(n); }
+    const registeredUnits = factoryUnits + personalNames.size;
+
     res.json({
       factories,
       electricity,
@@ -75,7 +87,8 @@ router.get('/stats', async (req, res) => {
       totalCO2Saved,
       totalEnergyOffset,
       totalVehicleCO2,
-      factoryCount: factories.length
+      factoryCount: factories.length,
+      registeredUnits
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
