@@ -3,6 +3,7 @@ import ElectricityRecord from '../models/ElectricityRecord.js';
 import VehicleRecord from '../models/VehicleRecord.js';
 import PoolingRecord from '../models/PoolingRecord.js';
 import Factory from '../models/Factory.js';
+import CertificateRecord from '../models/CertificateRecord.js';
 
 const router = express.Router();
 
@@ -326,6 +327,73 @@ router.get('/leaderboard/combined', async (req, res) => {
       .map((e, i) => ({ rank: i + 1, ...e }));
 
     res.json(combined);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/certificate', async (req, res) => {
+  try {
+    const { name, co2, unit, source, useType } = req.body;
+    if (source !== 'electricity' && source !== 'vehicle') {
+      return res.status(400).json({ error: 'source must be "electricity" or "vehicle"' });
+    }
+    await CertificateRecord.create({
+      name: (name || '').toString().trim() || 'Participant',
+      co2: Number(co2) || 0,
+      unit: unit || 'tonnes',
+      source,
+      useType: useType === 'Factory' ? 'Factory' : 'Personal',
+    });
+    const total = await CertificateRecord.countDocuments();
+    res.json({ ok: true, total });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/certificate/count', async (_req, res) => {
+  try {
+    const count = await CertificateRecord.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/recent', async (req, res) => {
+  try {
+    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 30));
+    const [elec, veh] = await Promise.all([
+      ElectricityRecord.find().sort({ createdAt: -1 }).limit(limit).lean(),
+      VehicleRecord.find().sort({ createdAt: -1 }).limit(limit).lean(),
+    ]);
+
+    const pickName = (r) =>
+      (r.individualName && r.individualName.trim()) ||
+      (r.factoryName && r.factoryName.trim()) ||
+      'Anonymous';
+
+    const merged = [
+      ...elec.map((r) => ({
+        id: String(r._id),
+        name: pickName(r),
+        co2: (Number(r.co2Saved) || 0) * 1000, // electricity co2Saved is tonnes → kg
+        source: 'electricity',
+        createdAt: r.createdAt,
+      })),
+      ...veh.map((r) => ({
+        id: String(r._id),
+        name: pickName(r),
+        co2: Number(r.co2Saved) || 0, // vehicle co2Saved is already kg
+        source: 'vehicle',
+        createdAt: r.createdAt,
+      })),
+    ]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, limit);
+
+    res.json(merged);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

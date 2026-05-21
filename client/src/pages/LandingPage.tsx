@@ -1,8 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Factory as FactoryIcon, Trophy } from 'lucide-react';
+import { Wind, Award, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import CountUp from 'react-countup';
 import { CinematicHero } from '../components/hero/CinematicHero';
 import { RspcbLogo } from '../components/RspcbLogo';
 import { LeafAnimation } from '../components/awareness/LeafAnimation';
@@ -95,43 +96,7 @@ const AwarenessFlipShowcase = () => {
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
-type LogEntry = { id: number; name: string; co2: number; createdAt: number };
-type Contributor = { name: string; co2: number };
-
-type LeaderboardBucket = { name?: string; co2Saved?: number }[];
-type LeaderboardResponse = {
-  electricity?: { factories?: LeaderboardBucket; individuals?: LeaderboardBucket };
-  fuel?: { factories?: LeaderboardBucket; individuals?: LeaderboardBucket };
-};
-
-const flattenLeaderboard = (data: LeaderboardResponse | undefined): Contributor[] => {
-  if (!data) return [];
-  const result: Contributor[] = [];
-  const pushBucket = (bucket: LeaderboardBucket | undefined) => {
-    if (!Array.isArray(bucket)) return;
-    for (const entry of bucket) {
-      if (entry?.name && typeof entry.co2Saved === 'number') {
-        result.push({
-          name: entry.name,
-          co2: Math.max(0, Math.round(entry.co2Saved)),
-        });
-      }
-    }
-  };
-  pushBucket(data.electricity?.factories);
-  pushBucket(data.electricity?.individuals);
-  pushBucket(data.fuel?.factories);
-  pushBucket(data.fuel?.individuals);
-  return result;
-};
-
-let liveLogIdCounter = 0;
-const makeEntryFromContributor = (c: Contributor): LogEntry => ({
-  id: liveLogIdCounter++,
-  name: c.name,
-  co2: c.co2,
-  createdAt: Date.now(),
-});
+type RecentEntry = { id: string; name: string; co2: number; source: 'electricity' | 'vehicle'; createdAt: string };
 
 const formatAgo = (createdAt: number, now: number) => {
   const s = Math.max(0, Math.floor((now - createdAt) / 1000));
@@ -140,58 +105,59 @@ const formatAgo = (createdAt: number, now: number) => {
   return `${Math.floor(s / 60)}m ago`;
 };
 
-const LiveLog = () => {
-  const [pool, setPool] = useState<Contributor[]>([]);
-  const [entries, setEntries] = useState<LogEntry[]>([]);
-  const [now, setNow] = useState(Date.now());
-  const poolRef = useRef<Contributor[]>([]);
+const useAnalyticsTotals = () => {
+  const [co2Tonnes, setCo2Tonnes] = useState(0);
+  const [certCount, setCertCount] = useState(0);
 
-  // Keep the ref in sync so the long-lived rotate interval always sees the latest pool.
-  // Seed the panel with as many entries as it can hold so it fills immediately.
-  useEffect(() => {
-    poolRef.current = pool;
-    if (pool.length > 0) {
-      setEntries(prev => {
-        if (prev.length > 0) return prev;
-        const seed: LogEntry[] = [];
-        for (let i = 0; i < Math.min(30, pool.length); i++) {
-          seed.push(makeEntryFromContributor(pool[Math.floor(Math.random() * pool.length)]));
-        }
-        return seed;
-      });
-    }
-  }, [pool]);
-
-  // Fetch the leaderboard on mount, refresh every 10 s.
   useEffect(() => {
     let cancelled = false;
-    const fetchPool = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await axios.get<LeaderboardResponse>(`${API}/api/data/leaderboard`);
+        const [statsRes, certRes] = await Promise.all([
+          axios.get<{ totalCO2Saved: number; totalVehicleCO2: number }>(`${API}/api/data/stats`),
+          axios.get<{ count: number }>(`${API}/api/data/certificate/count`),
+        ]);
         if (cancelled) return;
-        setPool(flattenLeaderboard(res.data));
+        const elec = Number(statsRes.data.totalCO2Saved) || 0;
+        const veh = Number(statsRes.data.totalVehicleCO2) || 0;
+        setCo2Tonnes(elec + veh / 1000);
+        setCertCount(Number(certRes.data.count) || 0);
       } catch (err) {
-        console.error('LiveLog leaderboard fetch failed:', err);
+        console.error('Analytics totals fetch failed:', err);
       }
     };
-    fetchPool();
-    const poolInterval = setInterval(fetchPool, 10000);
+    fetchAll();
+    const id = setInterval(fetchAll, 5000);
     return () => {
       cancelled = true;
-      clearInterval(poolInterval);
+      clearInterval(id);
     };
   }, []);
 
-  // Rotate one new entry in every 3.5 s; tick the relative timestamps every second.
+  return { co2Tonnes, certCount };
+};
+
+const LiveLog = () => {
+  const [entries, setEntries] = useState<RecentEntry[]>([]);
+  const [now, setNow] = useState(Date.now());
+
   useEffect(() => {
-    const rotate = setInterval(() => {
-      if (poolRef.current.length === 0) return;
-      const c = poolRef.current[Math.floor(Math.random() * poolRef.current.length)];
-      setEntries(prev => [makeEntryFromContributor(c), ...prev.slice(0, 29)]);
-    }, 3500);
+    let cancelled = false;
+    const fetchRecent = async () => {
+      try {
+        const res = await axios.get<RecentEntry[]>(`${API}/api/data/recent?limit=30`);
+        if (cancelled) return;
+        setEntries(Array.isArray(res.data) ? res.data : []);
+      } catch (err) {
+        console.error('LiveLog recent fetch failed:', err);
+      }
+    };
+    fetchRecent();
+    const poll = setInterval(fetchRecent, 5000);
     const tick = setInterval(() => setNow(Date.now()), 1000);
     return () => {
-      clearInterval(rotate);
+      cancelled = true;
+      clearInterval(poll);
       clearInterval(tick);
     };
   }, []);
@@ -234,7 +200,7 @@ const LiveLog = () => {
                   </p>
                 </div>
                 <span className="text-[10px] sm:text-xs text-slate-500 font-medium shrink-0 ml-2">
-                  {formatAgo(entry.createdAt, now)}
+                  {formatAgo(new Date(entry.createdAt).getTime(), now)}
                 </span>
               </motion.div>
             ))}
@@ -252,6 +218,7 @@ const LandingPage = () => {
   const [autoCycle, setAutoCycle] = useState(initialPage === 0);
   const [heroTransformed, setHeroTransformed] = useState(false);
   const showNav = activePage !== 0 || heroTransformed;
+  const { co2Tonnes, certCount } = useAnalyticsTotals();
   const contributionMobileRef = useRef<HTMLAnchorElement | null>(null);
   const hintRef = useRef<HTMLDivElement | null>(null);
   const [contribAnchor, setContribAnchor] = useState<{ centerX: number; bottom: number } | null>(null);
@@ -493,8 +460,20 @@ const LandingPage = () => {
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-10 text-center">Live Intelligence</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8">
                     {[
-                      { label: 'CO2 Saved (In tonnes)', value: '1,245,892', icon: Wind, color: 'text-green-600' },
-                      { label: 'Registered Units', value: '8,420', icon: FactoryIcon, color: 'text-blue-600' },
+                      {
+                        label: 'CO2 Saved (in tonnes)',
+                        end: co2Tonnes,
+                        decimals: 2,
+                        icon: Wind,
+                        color: 'text-green-600',
+                      },
+                      {
+                        label: 'Certificates Generated',
+                        end: certCount,
+                        decimals: 0,
+                        icon: Award,
+                        color: 'text-blue-600',
+                      },
                     ].map((stat, i) => (
                       <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -504,7 +483,15 @@ const LandingPage = () => {
                         className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-3 sm:p-6 md:p-8 shadow-xl hover:bg-white/80 transition-all cursor-default"
                       >
                         <stat.icon className={`w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-6 ${stat.color}`} />
-                        <div className="text-lg sm:text-2xl md:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 break-words leading-tight">{stat.value}</div>
+                        <div className="text-lg sm:text-2xl md:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 break-words leading-tight">
+                          <CountUp
+                            end={stat.end}
+                            duration={1.6}
+                            separator=","
+                            decimals={stat.decimals}
+                            preserveValue
+                          />
+                        </div>
                         <div className="text-[9px] sm:text-xs md:text-sm text-slate-600 uppercase tracking-wider sm:tracking-widest font-bold leading-tight">{stat.label}</div>
                       </motion.div>
                     ))}
