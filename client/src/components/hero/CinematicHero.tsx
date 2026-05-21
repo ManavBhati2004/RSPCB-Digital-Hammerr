@@ -132,18 +132,15 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               exit={{ opacity: 0, y: -20 }}
               className="pointer-events-auto flex flex-col items-center"
             >
-              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 whitespace-nowrap">
-                <RspcbLogo className="h-7 w-7 sm:h-9 sm:w-9 md:h-10 md:w-10 shadow-md" />
-                <span className="text-xs sm:text-base md:text-lg font-semibold text-white drop-shadow-md">
-                  Rajasthan State Pollution Control Board
-                </span>
+              <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-3 sm:mb-6 w-full">
+                <RspcbLogo className="h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 shadow-md" />
+                <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-tight whitespace-nowrap">
+                  Rajasthan State<span className="text-orange-500"> Pollution Control Board</span>
+                </h1>
               </div>
               <p className="whitespace-nowrap text-center text-sm sm:text-lg md:text-2xl font-bold tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-5 bg-gradient-to-r from-emerald-300 via-amber-200 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(251,191,36,0.45)]">
                 YOU CAN HELP SAVE THE WORLD
               </p>
-              <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold text-white mb-3 sm:mb-6 drop-shadow-lg leading-tight">
-                Rajasthan State <br className="hidden sm:block" /><span className="text-orange-500"> Pollution Control Board</span>
-              </h1>
               <p className="text-xs sm:text-base md:text-lg text-slate-300 max-w-xl mx-auto mb-4 sm:mb-10 drop-shadow-md px-2 leading-relaxed">
                 Our activities are leaving a heavy carbon footprint. Click  the button below to initiate District-wide optimization.
               </p>
