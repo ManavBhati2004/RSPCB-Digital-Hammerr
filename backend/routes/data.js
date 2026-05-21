@@ -64,24 +64,17 @@ router.get('/stats', async (req, res) => {
       totalVehicleCO2 += record.co2Saved || 0;
     });
 
-    let trendData = Object.values(trendMap);
-    if (trendData.length === 0) {
-       trendData = [
-         { name: 'Jan', co2: 40, energy: 24 },
-         { name: 'Feb', co2: 30, energy: 13 },
-         { name: 'Mar', co2: 20, energy: 98 }
-       ];
-    }
+    const trendData = Object.values(trendMap);
 
     res.json({
       factories,
       electricity,
       vehicles,
       trendData,
-      totalCO2Saved: totalCO2Saved || 1200000,
-      totalEnergyOffset: totalEnergyOffset || 450000,
-      totalVehicleCO2: totalVehicleCO2 || 0,
-      factoryCount: factories.length || 8420
+      totalCO2Saved,
+      totalEnergyOffset,
+      totalVehicleCO2,
+      factoryCount: factories.length
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

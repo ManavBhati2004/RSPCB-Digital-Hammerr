@@ -56,17 +56,13 @@ const Dashboard = () => {
     totalVehicleCO2: number;
     factoryCount: number;
   }>({
-    trendData: [
-      { name: 'Jan', co2: 40, energy: 24 },
-      { name: 'Feb', co2: 30, energy: 13 },
-      { name: 'Mar', co2: 20, energy: 98 }
-    ],
+    trendData: [],
     electricity: [],
     vehicles: [],
-    totalCO2Saved: 1200000,
-    totalEnergyOffset: 450000,
+    totalCO2Saved: 0,
+    totalEnergyOffset: 0,
     totalVehicleCO2: 0,
-    factoryCount: 8420
+    factoryCount: 0
   });
 
   useEffect(() => {
