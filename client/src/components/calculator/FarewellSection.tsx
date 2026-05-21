@@ -62,14 +62,9 @@ export default function FarewellSection() {
       </div>
       <div className="eco-farewell__content">
         <div className="eco-farewell__glass">
-          <p className="eco-farewell__eyebrow">A shared promise · सहभागिता</p>
           <h2 className="eco-farewell__title">
             Together we can <span className="eco-farewell__title-accent">make a change</span>
           </h2>
-          <span className="eco-farewell__divider" aria-hidden="true" />
-          <p className="eco-farewell__subtitle">
-            Every mindful choice today plants the seed of a cleaner, greener tomorrow.
-          </p>
         </div>
         <p className="eco-farewell__signature">
           <span className="eco-farewell__signature-dot" aria-hidden="true" />
