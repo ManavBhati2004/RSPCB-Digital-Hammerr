@@ -230,7 +230,7 @@ const LiveLog = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-slate-900 font-bold leading-tight truncate">{entry.name}</p>
                   <p className="text-xs sm:text-sm text-emerald-700 font-extrabold leading-tight mt-0.5">
-                    saved {entry.co2.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })} kg CO₂
+                    saved {entry.co2.toLocaleString(undefined, { maximumFractionDigits: 20, useGrouping: true })} kg CO₂
                   </p>
                 </div>
                 <span className="text-[10px] sm:text-xs text-slate-500 font-medium shrink-0 ml-2">
