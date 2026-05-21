@@ -144,45 +144,59 @@
 
 .eco-farewell {
   position: relative;
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100vh;
-  max-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: clamp(40px, 6vh, 80px) 24px;
   overflow: hidden;
   isolation: isolate;
-  background: #0a0a0a;
+  background: #050807;
   color: #ffffff;
   content-visibility: auto;
   contain-intrinsic-size: 0 720px;
 }
 
-.eco-farewell__stage { position: absolute; inset: 0; z-index: 0; }
+.eco-farewell__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at center, #0d1f17 0%, #050807 100%);
+}
 
 .eco-farewell__image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   opacity: 0;
-  will-change: opacity;
-  animation: ecoFarewellFade 28s infinite ease-in-out;
+  transform: scale(1.06);
+  will-change: opacity, transform;
+  animation:
+    ecoFarewellFade 50s infinite ease-in-out,
+    ecoFarewellZoom 50s infinite ease-in-out;
 }
-.eco-farewell__image[data-frame="1"] { animation-delay: 0s; }
-.eco-farewell__image[data-frame="2"] { animation-delay: 7s; }
-.eco-farewell__image[data-frame="3"] { animation-delay: 14s; }
-.eco-farewell__image[data-frame="4"] { animation-delay: 21s; }
+.eco-farewell__image[data-frame="1"] { animation-delay: 0s, 0s; }
+.eco-farewell__image[data-frame="2"] { animation-delay: 10s, 10s; }
+.eco-farewell__image[data-frame="3"] { animation-delay: 20s, 20s; }
+.eco-farewell__image[data-frame="4"] { animation-delay: 30s, 30s; }
+.eco-farewell__image[data-frame="5"] { animation-delay: 40s, 40s; }
 
+/* 5 frames over 50s — each frame holds 10s, with 3s soft crossfade overlap */
 @keyframes ecoFarewellFade {
   0%    { opacity: 0; }
-  4%    { opacity: 1; }
-  25%   { opacity: 1; }
-  29%   { opacity: 0; }
+  6%    { opacity: 1; }
+  20%   { opacity: 1; }
+  26%   { opacity: 0; }
   100%  { opacity: 0; }
+}
+
+@keyframes ecoFarewellZoom {
+  0%    { transform: scale(1.06); }
+  26%   { transform: scale(1.14); }
+  100%  { transform: scale(1.14); }
 }
 
 .eco-farewell__overlay {
@@ -190,14 +204,22 @@
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(ellipse 120% 90% at center,
-      rgba(0, 0, 0, 0.0) 0%,
-      rgba(0, 0, 0, 0.35) 80%,
-      rgba(0, 0, 0, 0.55) 100%),
     linear-gradient(180deg,
-      rgba(0, 0, 0, 0.18) 0%,
-      rgba(0, 0, 0, 0.0) 35%,
-      rgba(0, 0, 0, 0.25) 100%);
+      rgba(5, 8, 7, 0.55) 0%,
+      rgba(5, 8, 7, 0.25) 30%,
+      rgba(5, 8, 7, 0.35) 65%,
+      rgba(5, 8, 7, 0.78) 100%);
+  pointer-events: none;
+}
+
+.eco-farewell__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse 110% 80% at center,
+    transparent 35%,
+    rgba(0, 0, 0, 0.35) 80%,
+    rgba(0, 0, 0, 0.65) 100%);
   pointer-events: none;
 }
 
@@ -213,44 +235,69 @@
 
 .eco-farewell__eyebrow {
   margin: 0;
-  font-size: clamp(0.78rem, 1.5vw, 0.92rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(0.72rem, 1.4vw, 0.86rem);
   font-weight: 700;
-  letter-spacing: 5px;
+  letter-spacing: 6px;
   text-transform: uppercase;
-  color: rgba(253, 224, 165, 0.95);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  color: rgba(167, 243, 208, 0.95);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+.eco-farewell__eyebrow::before,
+.eco-farewell__eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: clamp(20px, 4vw, 38px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(167, 243, 208, 0.7), transparent);
 }
 
 .eco-farewell__title {
   margin: 0;
   font-family: var(--font-display, "Playfair Display", Georgia, serif);
-  font-size: clamp(2.6rem, 9vw, 6rem);
-  font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #fffdf5 0%, #f5e9c0 50%, #d6e9d4 100%);
+  font-size: clamp(2.4rem, 7.5vw, 5.4rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.eco-farewell__title-accent {
+  display: inline-block;
+  font-style: italic;
+  background: linear-gradient(120deg, #6ee7b7 0%, #fde7a5 55%, #f5d27a 100%);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  animation: ecoAccentShimmer 8s ease-in-out infinite;
+}
+
+@keyframes ecoAccentShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
 }
 
 .eco-farewell__divider {
   display: inline-block;
-  width: 56px;
+  width: 80px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #d6b14f, transparent);
-  opacity: 0.7;
+  background: linear-gradient(90deg, transparent, rgba(214, 177, 79, 0.85), transparent);
+  opacity: 0.85;
 }
 
 .eco-farewell__subtitle {
   margin: 0;
   max-width: 620px;
-  font-size: clamp(1.02rem, 2vw, 1.32rem);
+  font-size: clamp(1.02rem, 2vw, 1.28rem);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
 }
 
 .eco-farewell__signature {
@@ -284,20 +331,21 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  max-width: min(720px, 92vw);
-  padding: clamp(36px, 5.5vw, 72px) clamp(28px, 5vw, 56px);
+  max-width: min(760px, 92vw);
+  padding: clamp(40px, 6vw, 80px) clamp(28px, 5vw, 64px);
   border-radius: clamp(24px, 3vw, 36px);
   display: grid;
-  gap: clamp(14px, 2.2vw, 26px);
+  gap: clamp(16px, 2.4vw, 28px);
   justify-items: center;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(6, 78, 59, 0.18) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(12px) saturate(120%);
-  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.10) 0%, rgba(6, 78, 59, 0.22) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
   box-shadow:
-    0 18px 50px rgba(0, 0, 0, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    0 24px 60px rgba(0, 0, 0, 0.40),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
 }
 
 .eco-farewell__glass::before {
@@ -381,8 +429,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .eco-farewell__image { animation: none; opacity: 0; transform: none; }
+  .eco-farewell__image { animation: none; opacity: 0; transform: scale(1.06); }
   .eco-farewell__image[data-frame="1"] { opacity: 1; }
+  .eco-farewell__title-accent { animation: none; }
   .eco-farewell__glass::before { animation: none; transform: translateX(-100%); }
   .eco-farewell__mote { animation: none; opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
