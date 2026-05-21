@@ -132,9 +132,9 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               exit={{ opacity: 0, y: -20 }}
               className="pointer-events-auto flex flex-col items-center"
             >
-              <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-3 sm:mb-6 w-full">
+              <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-5 mb-3 sm:mb-6 w-full px-2 sm:px-0">
                 <RspcbLogo className="h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 shadow-md" />
-                <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-tight whitespace-nowrap">
+                <h1 className="text-lg sm:text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-tight sm:whitespace-nowrap">
                   Rajasthan State<span className="text-orange-500"> Pollution Control Board</span>
                 </h1>
               </div>
