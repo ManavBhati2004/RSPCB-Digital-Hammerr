@@ -206,6 +206,11 @@ const Calculator = () => {
           <ArrowLeft size={18} /> Back to Home
         </Link>
 
+        {/* Mobile FAQ — shown below Back to Home on small screens; xl uses the fixed sidebar above. */}
+        <div className="md:hidden mb-6">
+          <ZeroHourFaqCard />
+        </div>
+
         {/* Identity / Use Type slide-down bar */}
         <div className="glass-card mb-5 sm:mb-6 overflow-hidden">
           <button
@@ -282,6 +287,10 @@ const Calculator = () => {
             )}
           </AnimatePresence>
         </div>
+
+        <p className="mb-5 sm:mb-6 text-center text-sm sm:text-base text-slate-600 font-medium">
+          You can contribute through saving in electricity consumption and saving in fuel consumption
+        </p>
 
         <div className="glass-card overflow-hidden">
           <div className="flex border-b border-slate-200 bg-white/50">
@@ -363,7 +372,7 @@ const Calculator = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <DrivingCarHeader vehicleType={vType === '2 Wheeler' ? 'twoWheeler' : vType === 'Cycle' ? 'cycle' : 'fourWheeler'} />
-                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Vehicle CO2 Contribution</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6">Vehicle used daily</h2>
                   <form onSubmit={calculateVehicle} className="space-y-5 sm:space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
                       <div>
@@ -382,7 +391,7 @@ const Calculator = () => {
                       </div>
                       <div className="sm:col-span-2 md:col-span-1">
                         <label className="block text-sm font-semibold text-slate-700 mb-2">Distance travelled (KM)</label>
-                        <input type="number" required value={distance} onChange={e => setDistance(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="e.g. 50" />
+                        <input type="number" required value={distance} onChange={e => setDistance(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 outline-none bg-white" placeholder="by cycling/carpooling/public transport" />
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
@@ -413,8 +422,8 @@ const Calculator = () => {
           </div>
         </div>
 
-        {/* Inline FAQ — shown on <xl where the fixed sidebar variant is hidden. */}
-        <div className="xl:hidden mt-8 sm:mt-10">
+        {/* Inline FAQ — shown on md–lg where neither the mobile-top variant nor the fixed sidebar is visible. */}
+        <div className="hidden md:block xl:hidden mt-8 sm:mt-10">
           <ZeroHourFaqCard />
         </div>
       </div>
