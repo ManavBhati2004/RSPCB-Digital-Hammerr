@@ -312,12 +312,35 @@ const LandingPage = () => {
               {page.name}
             </button>
           ))}
-          <Link
-            to="/calculator"
-            className="px-4 xl:px-5 py-2 rounded-full text-sm font-bold transition-all text-slate-300 hover:text-white hover:bg-white/10"
-          >
-            Contribution
-          </Link>
+          <div className="relative flex items-center">
+            <Link
+              to="/calculator"
+              className="px-4 xl:px-5 py-2 rounded-full text-sm font-bold transition-all text-slate-300 hover:text-white hover:bg-white/10"
+            >
+              Contribution
+            </Link>
+            <AnimatePresence>
+              {activePage === 2 && (
+                <motion.span
+                  key="contrib-hint-desktop"
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.35, delay: 0.25 }}
+                  className="ml-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] xl:text-xs font-bold uppercase tracking-wider whitespace-nowrap shadow-md shadow-orange-500/40"
+                >
+                  <motion.span
+                    aria-hidden
+                    animate={{ x: [0, -3, 0] }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    ←
+                  </motion.span>
+                  Click here now
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </motion.nav>
 
@@ -347,12 +370,35 @@ const LandingPage = () => {
               {page.name}
             </button>
           ))}
-          <Link
-            to="/calculator"
-            className="px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-white/10"
-          >
-            Contribution
-          </Link>
+          <div className="relative flex items-center">
+            <Link
+              to="/calculator"
+              className="px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-white/10"
+            >
+              Contribution
+            </Link>
+            <AnimatePresence>
+              {activePage === 2 && (
+                <motion.span
+                  key="contrib-hint-mobile"
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -6 }}
+                  transition={{ duration: 0.35, delay: 0.25 }}
+                  className="ml-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[9px] font-bold uppercase tracking-wide whitespace-nowrap shadow-md shadow-orange-500/40"
+                >
+                  <motion.span
+                    aria-hidden
+                    animate={{ x: [0, -2, 0] }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    ←
+                  </motion.span>
+                  Click here
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </motion.div>
 

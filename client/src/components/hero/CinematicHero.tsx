@@ -142,7 +142,7 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
                 YOU CAN HELP SAVE THE WORLD
               </p>
               <p className="text-xs sm:text-base md:text-lg text-slate-300 max-w-xl mx-auto mb-4 sm:mb-10 drop-shadow-md px-2 leading-relaxed">
-                Our activities are leaving a heavy carbon footprint. Click  the button below to initiate District-wide optimization.
+                Our activities are leaving a heavy carbon footprint. Click  the button below to initiate Positive optimization.
               </p>
               <button
                 onClick={handleTransform}
