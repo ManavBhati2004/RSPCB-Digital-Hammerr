@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wind, Factory as FactoryIcon, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -253,11 +253,14 @@ const LandingPage = () => {
   const [heroTransformed, setHeroTransformed] = useState(false);
   const showNav = activePage !== 0 || heroTransformed;
   const contributionMobileRef = useRef<HTMLAnchorElement | null>(null);
+  const hintRef = useRef<HTMLDivElement | null>(null);
   const [contribAnchor, setContribAnchor] = useState<{ centerX: number; bottom: number } | null>(null);
+  const [hintWidth, setHintWidth] = useState<number | null>(null);
 
   useEffect(() => {
     if (activePage !== 2 || !showNav) {
       setContribAnchor(null);
+      setHintWidth(null);
       return;
     }
     const measure = () => {
@@ -268,17 +271,25 @@ const LandingPage = () => {
       setContribAnchor({ centerX: rect.left + rect.width / 2, bottom: rect.bottom });
     };
     measure();
-    const t1 = window.setTimeout(measure, 200);
-    const t2 = window.setTimeout(measure, 700);
+    // Re-measure after the nav fade/slide animation settles (~1.4s)
+    const t1 = window.setTimeout(measure, 250);
+    const t2 = window.setTimeout(measure, 900);
+    const t3 = window.setTimeout(measure, 1600);
     window.addEventListener('resize', measure);
     window.addEventListener('orientationchange', measure);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
       window.removeEventListener('resize', measure);
       window.removeEventListener('orientationchange', measure);
     };
   }, [activePage, showNav]);
+
+  useLayoutEffect(() => {
+    if (!contribAnchor) return;
+    if (hintRef.current) setHintWidth(hintRef.current.offsetWidth);
+  }, [contribAnchor]);
 
 
   const pages = [
@@ -407,38 +418,50 @@ const LandingPage = () => {
         </div>
       </motion.div>
 
-      {/* Mobile-only contribution hint — measured against the actual Contribution link so the arrow lands directly under it */}
+      {/* Mobile-only contribution hint — measured against the actual Contribution link, with the arrow re-anchored when the pill has to slide left to fit on narrow screens */}
       <AnimatePresence>
-        {activePage === 2 && contribAnchor && (
-          <motion.div
-            key="contrib-hint-mobile-floating"
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.35, delay: 0.35 }}
-            className="lg:hidden fixed z-50 pointer-events-none"
-            style={{
-              top: contribAnchor.bottom + 8,
-              left: Math.min(
-                Math.max(contribAnchor.centerX, 70),
-                (typeof window !== 'undefined' ? window.innerWidth : 360) - 70
-              ),
-              transform: 'translateX(-50%)',
-            }}
-          >
-            <span className="relative inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold uppercase tracking-wide whitespace-nowrap shadow-lg shadow-orange-500/40 ring-1 ring-orange-300/50">
-              <motion.span
-                aria-hidden
-                className="absolute left-1/2 -top-1.5 -translate-x-1/2 text-amber-500 text-base leading-none drop-shadow-[0_-1px_2px_rgba(0,0,0,0.25)]"
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                ▲
-              </motion.span>
-              Click here now
-            </span>
-          </motion.div>
-        )}
+        {activePage === 2 && contribAnchor && (() => {
+          const PADDING = 8;
+          const vw = typeof window !== 'undefined' ? window.innerWidth : 360;
+          const measuredWidth = hintWidth ?? 130;
+          const idealLeft = contribAnchor.centerX - measuredWidth / 2;
+          const clampedLeft = Math.min(
+            Math.max(idealLeft, PADDING),
+            vw - measuredWidth - PADDING
+          );
+          const arrowOffsetPx = Math.max(
+            10,
+            Math.min(measuredWidth - 10, contribAnchor.centerX - clampedLeft)
+          );
+          return (
+            <motion.div
+              ref={hintRef}
+              key="contrib-hint-mobile-floating"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: hintWidth ? 1 : 0, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.35 }}
+              className="lg:hidden fixed z-50 pointer-events-none"
+              style={{
+                top: contribAnchor.bottom + 10,
+                left: clampedLeft,
+              }}
+            >
+              <span className="relative inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold uppercase tracking-wide whitespace-nowrap shadow-lg shadow-orange-500/40 ring-1 ring-orange-300/50">
+                <motion.span
+                  aria-hidden
+                  className="absolute -top-1.5 text-amber-500 text-base leading-none drop-shadow-[0_-1px_2px_rgba(0,0,0,0.25)]"
+                  style={{ left: arrowOffsetPx, transform: 'translateX(-50%)' }}
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  ▲
+                </motion.span>
+                Click here now
+              </span>
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
 
       {/* Main Content Area (Full Screen Slider) */}
