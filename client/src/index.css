@@ -175,27 +175,26 @@
   transform: scale(1.06);
   will-change: opacity, transform;
   animation:
-    ecoFarewellFade 50s infinite ease-in-out,
-    ecoFarewellZoom 50s infinite ease-in-out;
+    ecoFarewellFade 40s infinite ease-in-out,
+    ecoFarewellZoom 40s infinite ease-in-out;
 }
 .eco-farewell__image[data-frame="1"] { animation-delay: 0s, 0s; }
 .eco-farewell__image[data-frame="2"] { animation-delay: 10s, 10s; }
 .eco-farewell__image[data-frame="3"] { animation-delay: 20s, 20s; }
 .eco-farewell__image[data-frame="4"] { animation-delay: 30s, 30s; }
-.eco-farewell__image[data-frame="5"] { animation-delay: 40s, 40s; }
 
-/* 5 frames over 50s — each frame holds 10s, with 3s soft crossfade overlap */
+/* 4 frames over 40s — each holds 10s with ~2.5s soft crossfade overlap */
 @keyframes ecoFarewellFade {
   0%    { opacity: 0; }
   6%    { opacity: 1; }
-  20%   { opacity: 1; }
-  26%   { opacity: 0; }
+  25%   { opacity: 1; }
+  31%   { opacity: 0; }
   100%  { opacity: 0; }
 }
 
 @keyframes ecoFarewellZoom {
   0%    { transform: scale(1.06); }
-  26%   { transform: scale(1.14); }
+  31%   { transform: scale(1.14); }
   100%  { transform: scale(1.14); }
 }
 
@@ -253,6 +252,23 @@
   width: clamp(20px, 4vw, 38px);
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(167, 243, 208, 0.7), transparent);
+}
+
+.eco-farewell__icon {
+  display: block;
+  width: clamp(72px, 11vw, 120px);
+  height: auto;
+  margin: 0 auto;
+  filter:
+    drop-shadow(0 6px 18px rgba(16, 185, 129, 0.45))
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  animation: ecoIconFloat 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes ecoIconFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-6px) rotate(2deg); }
 }
 
 .eco-farewell__title {
@@ -432,6 +448,7 @@
   .eco-farewell__image { animation: none; opacity: 0; transform: scale(1.06); }
   .eco-farewell__image[data-frame="1"] { opacity: 1; }
   .eco-farewell__title-accent { animation: none; }
+  .eco-farewell__icon { animation: none; transform: none; }
   .eco-farewell__glass::before { animation: none; transform: translateX(-100%); }
   .eco-farewell__mote { animation: none; opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }

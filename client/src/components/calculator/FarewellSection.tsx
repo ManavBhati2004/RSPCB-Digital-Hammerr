@@ -2,13 +2,13 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
-const img1 = new URL('../../assets/thankyou/image.png', import.meta.url).href;
-const img2 = new URL('../../assets/thankyou/image copy.png', import.meta.url).href;
-const img3 = new URL('../../assets/thankyou/image copy 2.png', import.meta.url).href;
-const img4 = new URL('../../assets/thankyou/image copy 3.png', import.meta.url).href;
-const img5 = new URL('../../assets/thankyou/image copy 4.png', import.meta.url).href;
+const earthIcon = new URL('../../assets/thankyou/image.png', import.meta.url).href;
+const img1 = new URL('../../assets/thankyou/image copy.png', import.meta.url).href;
+const img2 = new URL('../../assets/thankyou/image copy 2.png', import.meta.url).href;
+const img3 = new URL('../../assets/thankyou/image copy 3.png', import.meta.url).href;
+const img4 = new URL('../../assets/thankyou/image copy 4.png', import.meta.url).href;
 
-const frames = [img1, img2, img3, img4, img5];
+const frames = [img1, img2, img3, img4];
 
 export default function FarewellSection() {
   const ref = useRef<HTMLElement>(null);
@@ -62,6 +62,14 @@ export default function FarewellSection() {
       </div>
       <div className="eco-farewell__content">
         <div className="eco-farewell__glass">
+          <img
+            className="eco-farewell__icon"
+            src={earthIcon}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+          />
           <h2 className="eco-farewell__title">
             Together we can <span className="eco-farewell__title-accent">make a change</span>
           </h2>
