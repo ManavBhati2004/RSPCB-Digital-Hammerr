@@ -126,8 +126,8 @@ function followUpsFor(intentKey) {
 
 function fuelFormulaExplanation(language) {
   const body =
-    '2-wheeler petrol: (distance travelled by cycling/carpooling/public transport(in km) / average ) x 2.31 kg CO2/litre\n' +
-    '4-wheeler petrol: (distance travelled by cycling/carpooling/public transport(in km) / average ) x 2.31 kg CO2/litre\n' +
+    '2-wheeler petrol: (distance travelled by cycling/carpooling/public transport(in km) / average ) x 2.31 kg CO2/litre\n\n' +
+    '4-wheeler petrol: (distance travelled by cycling/carpooling/public transport(in km) / average ) x 2.31 kg CO2/litre\n\n' +
     '4-wheeler diesel: (distance travelled by cycling/carpooling/public transport(in km) / average ) x 2.68 kg CO2/litre';
   if (language !== 'english') {
     return `${body}\n\nResult kg CO₂ me, 2 decimals tak round.`;
