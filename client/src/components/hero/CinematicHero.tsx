@@ -144,21 +144,6 @@ export const CinematicHero: React.FC<Props> = ({ onTransform }) => {
               <p className="text-xs sm:text-base md:text-lg text-slate-300 max-w-xl mx-auto mb-4 sm:mb-10 drop-shadow-md px-2 leading-relaxed">
                 Our activities are leaving a heavy carbon footprint. Click  the button below to initiate District-wide optimization.
               </p>
-              <motion.p
-                className="mb-3 sm:mb-5 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-bold tracking-[0.15em] sm:tracking-[0.2em] uppercase bg-gradient-to-r from-emerald-300 via-amber-200 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(251,191,36,0.45)]"
-                animate={{ opacity: [0.65, 1, 0.65], y: [0, -3, 0] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <span>Click here to know more</span>
-                <motion.span
-                  aria-hidden
-                  className="text-orange-400"
-                  animate={{ y: [0, 4, 0] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  ↓
-                </motion.span>
-              </motion.p>
               <button
                 onClick={handleTransform}
                 className="px-5 sm:px-10 py-3 sm:py-5 bg-red-600 hover:bg-red-500 text-white rounded-full text-sm sm:text-xl font-extrabold shadow-[0_0_40px_rgba(220,38,38,0.6)] hover:scale-105 transition-all"

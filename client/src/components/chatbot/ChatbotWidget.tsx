@@ -124,15 +124,23 @@ const ChatbotWidget = () => {
   return (
     <>
       {!isOpen && (
-        <button
-          ref={launcherRef}
-          type="button"
-          className="chatbot-launcher"
-          aria-label="Open carbon assistant"
-          onClick={() => setIsOpen(true)}
-        >
-          <Leaf size={26} />
-        </button>
+        <>
+          {location.pathname === '/' && (
+            <div className="chatbot-launcher-hint" aria-hidden="true">
+              <span>Click here to know more</span>
+              <span className="chatbot-launcher-hint__arrow">↓</span>
+            </div>
+          )}
+          <button
+            ref={launcherRef}
+            type="button"
+            className="chatbot-launcher"
+            aria-label="Open carbon assistant"
+            onClick={() => setIsOpen(true)}
+          >
+            <Leaf size={26} />
+          </button>
+        </>
       )}
 
       {isOpen && (
