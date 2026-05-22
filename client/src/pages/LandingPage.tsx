@@ -95,7 +95,14 @@ const AwarenessFlipShowcase = () => {
 
 const API = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
 
-type RecentEntry = { id: string; name: string; co2: number; source: 'electricity' | 'vehicle'; createdAt: string };
+type RecentEntry = {
+  id: string;
+  name: string;
+  co2: number;
+  unit: 'kg' | 'tonnes';
+  source: 'electricity' | 'vehicle';
+  createdAt: string;
+};
 
 const formatAgo = (createdAt: number, now: number) => {
   const s = Math.max(0, Math.floor((now - createdAt) / 1000));
@@ -147,14 +154,11 @@ const useAnalyticsTotals = () => {
     const fetchAll = async () => {
       try {
         const statsRes = await axios.get<{
-          totalCO2Saved: number;
-          totalVehicleCO2: number;
+          totalCO2Tonnes: number;
           registeredUnits: number;
         }>(`${API}/api/data/stats`);
         if (cancelled) return;
-        const elec = Number(statsRes.data.totalCO2Saved) || 0;
-        const veh = Number(statsRes.data.totalVehicleCO2) || 0;
-        setCo2Tonnes(elec + veh / 1000);
+        setCo2Tonnes(Number(statsRes.data.totalCO2Tonnes) || 0);
         setUnitCount(Number(statsRes.data.registeredUnits) || 0);
       } catch (err) {
         console.error('Analytics totals fetch failed:', err);
@@ -236,7 +240,7 @@ const LiveLog = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-slate-900 font-bold leading-tight truncate">{entry.name}</p>
                   <p className="text-xs sm:text-sm text-emerald-700 font-extrabold leading-tight mt-0.5">
-                    saved {entry.co2.toLocaleString(undefined, { maximumFractionDigits: 20, useGrouping: true })} kg CO₂
+                    saved {entry.co2.toLocaleString(undefined, { maximumFractionDigits: 4, useGrouping: true })} {entry.unit} CO₂
                   </p>
                 </div>
                 <span className="text-[10px] sm:text-xs text-slate-500 font-medium shrink-0 ml-2">

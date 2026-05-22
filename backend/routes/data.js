@@ -80,6 +80,11 @@ router.get('/stats', async (req, res) => {
     for (const r of vehicles)    { const n = pickPersonalName(r); if (n) personalNames.add(n); }
     const registeredUnits = factoryUnits + personalNames.size;
 
+    const sumKg =
+      electricity.reduce((acc, r) => acc + (Number(r.co2Saved) || 0), 0) +
+      vehicles.reduce((acc, r) => acc + (Number(r.co2Saved) || 0), 0);
+    const totalCO2Tonnes = sumKg / 1000;
+
     res.json({
       factories,
       electricity,
@@ -89,7 +94,8 @@ router.get('/stats', async (req, res) => {
       totalEnergyOffset,
       totalVehicleCO2,
       factoryCount: factories.length,
-      registeredUnits
+      registeredUnits,
+      totalCO2Tonnes
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -388,21 +394,24 @@ router.get('/recent', async (req, res) => {
       (r.factoryName && r.factoryName.trim()) ||
       'Anonymous';
 
+    // co2Saved is always stored in kg. Personal rows display as kg; Factory rows
+    // display as tonnes (raw / 1000) so the live log reads naturally per useType.
+    const shape = (r, source) => {
+      const isPersonal = r.useType === 'Personal';
+      const raw = Number(r.co2Saved) || 0;
+      return {
+        id: String(r._id),
+        name: pickName(r),
+        co2: isPersonal ? raw : raw / 1000,
+        unit: isPersonal ? 'kg' : 'tonnes',
+        source,
+        createdAt: r.createdAt,
+      };
+    };
+
     const merged = [
-      ...elec.map((r) => ({
-        id: String(r._id),
-        name: pickName(r),
-        co2: (Number(r.co2Saved) || 0) * 1000, // electricity co2Saved is tonnes → kg
-        source: 'electricity',
-        createdAt: r.createdAt,
-      })),
-      ...veh.map((r) => ({
-        id: String(r._id),
-        name: pickName(r),
-        co2: Number(r.co2Saved) || 0, // vehicle co2Saved is already kg
-        source: 'vehicle',
-        createdAt: r.createdAt,
-      })),
+      ...elec.map((r) => shape(r, 'electricity')),
+      ...veh.map((r) => shape(r, 'vehicle')),
     ]
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, limit);
