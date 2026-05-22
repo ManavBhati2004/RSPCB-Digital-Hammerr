@@ -277,7 +277,7 @@ const Calculator = () => {
 
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      {useType === 'Personal' ? 'Your Name (optional)' : 'Factory Name'}
+                      {useType === 'Personal' ? 'Your Name' : 'Factory Name'}
                     </label>
                     <input
                       type="text"
