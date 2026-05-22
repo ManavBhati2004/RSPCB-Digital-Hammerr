@@ -295,19 +295,22 @@ router.get('/leaderboard/combined', async (req, res) => {
     const nameGroupStage = {
       $group: {
         _id: {
-          $let: {
-            vars: {
-              trimmedIndiv: { $trim: { input: { $ifNull: ['$individualName', ''] } } },
-              trimmedFactory: { $trim: { input: { $ifNull: ['$factoryName', ''] } } }
-            },
-            in: {
-              $cond: [
-                { $gt: [{ $strLenCP: '$$trimmedIndiv' }, 0] },
-                '$$trimmedIndiv',
-                { $cond: [{ $gt: [{ $strLenCP: '$$trimmedFactory' }, 0] }, '$$trimmedFactory', 'Anonymous'] }
-              ]
+          name: {
+            $let: {
+              vars: {
+                trimmedIndiv: { $trim: { input: { $ifNull: ['$individualName', ''] } } },
+                trimmedFactory: { $trim: { input: { $ifNull: ['$factoryName', ''] } } }
+              },
+              in: {
+                $cond: [
+                  { $gt: [{ $strLenCP: '$$trimmedIndiv' }, 0] },
+                  '$$trimmedIndiv',
+                  { $cond: [{ $gt: [{ $strLenCP: '$$trimmedFactory' }, 0] }, '$$trimmedFactory', 'Anonymous'] }
+                ]
+              }
             }
-          }
+          },
+          useType: { $ifNull: ['$useType', 'Personal'] }
         },
         co2Saved: { $sum: { $ifNull: ['$co2Saved', 0] } }
       }
@@ -318,31 +321,39 @@ router.get('/leaderboard/combined', async (req, res) => {
       VehicleRecord.aggregate([nameGroupStage])
     ]);
 
-    const byName = new Map();
+    const keyOf = (name, useType) => `${name}${useType}`;
+    const byKey = new Map();
     for (const row of electricityTotals) {
-      byName.set(row._id, { name: row._id, electricity: row.co2Saved, vehicle: 0 });
+      const k = keyOf(row._id.name, row._id.useType);
+      byKey.set(k, { name: row._id.name, useType: row._id.useType, electricity: row.co2Saved, vehicle: 0 });
     }
     for (const row of vehicleTotals) {
-      const existing = byName.get(row._id);
+      const k = keyOf(row._id.name, row._id.useType);
+      const existing = byKey.get(k);
       if (existing) existing.vehicle = row.co2Saved;
-      else byName.set(row._id, { name: row._id, electricity: 0, vehicle: row.co2Saved });
+      else byKey.set(k, { name: row._id.name, useType: row._id.useType, electricity: 0, vehicle: row.co2Saved });
     }
 
-    const combined = [...byName.values()]
+    const combined = [...byKey.values()]
       .map((e) => {
         const hasElec = e.electricity > 0;
         const hasVeh = e.vehicle > 0;
         let category = 'Combined';
         if (hasElec && !hasVeh) category = 'Electricity';
         else if (!hasElec && hasVeh) category = 'Vehicle';
+        const totalCO2Kg = e.electricity + e.vehicle;
+        const isFactory = e.useType === 'Factory';
         return {
           username: e.name,
           category,
-          totalCO2: e.electricity + e.vehicle
+          useType: e.useType,
+          totalCO2: isFactory ? totalCO2Kg / 1000 : totalCO2Kg,
+          unit: isFactory ? 'tonnes' : 'kg',
+          totalCO2Kg
         };
       })
-      .filter((e) => e.totalCO2 > 0)
-      .sort((a, b) => b.totalCO2 - a.totalCO2)
+      .filter((e) => e.totalCO2Kg > 0)
+      .sort((a, b) => b.totalCO2Kg - a.totalCO2Kg)
       .slice(0, 50)
       .map((e, i) => ({ rank: i + 1, ...e }));
 

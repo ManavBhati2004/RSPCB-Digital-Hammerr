@@ -10,7 +10,9 @@ type Row = {
   rank: number;
   username: string;
   category: 'Combined' | 'Vehicle' | 'Electricity';
+  useType?: 'Personal' | 'Factory';
   totalCO2: number;
+  unit?: 'kg' | 'tonnes';
 };
 
 const categoryPillClass = (category: Row['category']) => {
@@ -43,9 +45,12 @@ const TopContributors = () => {
     };
     fetchRows();
     const id = window.setInterval(fetchRows, 5000);
+    const onRefresh = () => fetchRows();
+    window.addEventListener('rspcb:stats-refresh', onRefresh);
     return () => {
       cancelled = true;
       window.clearInterval(id);
+      window.removeEventListener('rspcb:stats-refresh', onRefresh);
     };
   }, []);
 
@@ -170,7 +175,11 @@ const TopContributors = () => {
                       </span>
                     </td>
                     <td className="px-3 sm:px-4 py-2 sm:py-3 text-right font-bold text-green-700">
-                      {row.totalCO2.toFixed(3)} <span className="text-[10px] sm:text-xs text-slate-500 font-medium">kg</span>
+                      {row.totalCO2.toLocaleString(undefined, {
+                        minimumFractionDigits: row.unit === 'tonnes' ? 4 : 3,
+                        maximumFractionDigits: row.unit === 'tonnes' ? 4 : 3,
+                      })}{' '}
+                      <span className="text-[10px] sm:text-xs text-slate-500 font-medium">{row.unit ?? 'kg'}</span>
                     </td>
                   </tr>
                 ))
